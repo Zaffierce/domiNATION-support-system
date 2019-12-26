@@ -1,0 +1,19 @@
+{
+  "name": "domination-support-system",
+  "version": "1.0.0",
+  "description": "This is the fullstack support ticket system for the DomiNATION Gaming community.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zaffierce/domiNATION-support-system.git"
+  },
+  "author": "Jon Veach",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Zaffierce/domiNATION-support-system/issues"
+  },
+  "homepage": "https://github.com/Zaffierce/domiNATION-support-system#readme"
+}
