@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const fetch = require('node-fetch');
 const btoa = require('btoa');
@@ -8,16 +9,19 @@ const router = express.Router();
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const PORT = process.env.PORT || 3001;
+const DISCORD_BOT_ID = process.env.DISCORD_BOT_ID;
+const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID;
+const DISCORD_ADMIN_GROUP_ID = process.env.DISCORD_ADMIN_GROUP_ID;
+const PORT = process.env.PORT;
 const redirect = encodeURIComponent(`http://localhost:${PORT}/api/discord/callback`);
 
 router.get('/login', (req, res) => {
   res.redirect(`https://discordapp.com/api/oauth2/authorize?client_id=${CLIENT_ID}&scope=identify&response_type=code&redirect_uri=${redirect}`);
 });
 
-//store token in state
+//store token in state?
 
-router.get('/callback', catchAsync(async (req, res) => {
+router.get('/callback', catchAsync(async (req, res)=> {
   if (!req.query.code) throw new Error('NoCodeProvided');
   const code = req.query.code;
   const creds = btoa(`${CLIENT_ID}:${CLIENT_SECRET}`);
@@ -29,22 +33,31 @@ router.get('/callback', catchAsync(async (req, res) => {
       },
     });
   const json = await response.json();
-
   superagent.get('https://discordapp.com/api/users/@me')
       .set('Authorization', `Bearer ${json.access_token}`)
-      .then(responseFromSuper => {
-        //check here if the token is valid or not. check status code
-
-        //if its 200
-        //if react... create react app, serve react app from public folder ... requires own port
-        //react front end listening on a path using ajax
-        //server listening to backend
-        //when it hears something come in thats valid, it'll login and send user ID
-        //can compile and build it and then store it staticly in public folder
-        res.render('pages/loggedIn', {userID: responseFromSuper.body.id});
-        //
+      .then(queryUser => {
+        //480355364613783564 - Test Server
+        //264114888346042368 - DomiNATION
+        superagent.get(`https://discordapp.com/api/guilds/${DISCORD_GUILD_ID}/members/${queryUser.body.id}`)
+          .set('Authorization', `Bot ${DISCORD_BOT_ID}`)
+          .then(queryGuildForUser => {
+            let isAdmin = false;
+            if (queryGuildForUser.body.roles == null) {
+              console.log("No roles exist for this user");
+            } else {
+              for (userGroup in queryGuildForUser.body.roles) {
+                if (queryGuildForUser.body.roles[userGroup] === DISCORD_ADMIN_GROUP_ID) {
+                  isAdmin = true;
+                } 
+              }
+              if (isAdmin === true) {
+                res.render('pages/adminPage', {response : queryUser.body});
+              } else {
+                res.render('pages/loggedIn', {response: queryUser.body});
+              }
+            }
+          });
       }).catch(error => console.log(error));
-  // res.redirect(`/?token=${json.access_token}`);
 }));
 
 module.exports = router;

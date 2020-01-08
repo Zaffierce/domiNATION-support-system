@@ -5,8 +5,9 @@ const superagent = require('superagent');
 const pg = require('pg');
 const app = express();
 const methodOverride = require('method-override');
+const apiRouter = require('./api/discord');
 require('dotenv').config();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 
 app.set('view engine', 'ejs');
 
@@ -25,7 +26,7 @@ app.use(methodOverride((request, response) => {
 }));
 
 app.get('/', index);
-app.use('/api/discord', require('./api/discord'));
+app.use('/api/discord', apiRouter);
 app.use((err, req, res, next) => {
   switch (err.message) {
     case 'NoCodeProvided':
