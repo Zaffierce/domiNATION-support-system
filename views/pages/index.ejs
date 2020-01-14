@@ -24,6 +24,9 @@
 <body>
 <div class="container">
   <a href="/api/discord/login">Login through discord</a>
+  <% if (locals.t) { %>
+    <%= t %>
+  <% } %>
 </div>
 </body>
 </html>

@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const fetch = require('node-fetch');
 const btoa = require('btoa');
-const { catchAsync } = require('../utils');
+const { catchAsync } = require('../my-app/src/util/utils');
 const superagent = require('superagent');
 
 const router = express.Router();
