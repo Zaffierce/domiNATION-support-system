@@ -1,20 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+<%- include('../partials/head.ejs'); %>
+  <title>User: <%= user.username %> - DomiNATION Ark: Survival Evolved Community</title>
+<%- include('../partials/css.ejs'); %>
 </head>
 <body>
-  <nav>
-    <a href="/">Home</a>
-  </nav>
-  <% if (adminPermissions === true) { %>
-    <%- include('../partials/adminPanel.ejs'); %>
-  <% } %>
+    <%- include('../partials/nav.ejs'); %>
+    <h1 class="ng-scope">Welcome</h1>
+    <img src="<%=user.picture%>"/>
+    <div>Your userID is <%= user.id %></div>
+    <div>You currently have ### open tickets.</div>
+    </div>
+
 </body>
-<footer>
-  <script src="/js/app.js"></script>
-</footer>
 </html>

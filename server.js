@@ -16,12 +16,19 @@ const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const DISCORD_BOT_ID = process.env.DISCORD_BOT_ID;
 const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID;
-const DISCORD_ADMIN_GROUP_ID = String(process.env.DISCORD_ADMIN_GROUP_ID);
+const DISCORD_ADMIN_GROUP_ID = process.env.DISCORD_ADMIN_GROUP_ID;
+const DISCORD_PATREON_SUPPORTER = process.env.DISCORD_PATREON_SUPPORTER;
+//Domi ID = 305656646250790912;
+const DISCORD_PATREON_SUPPORTERPLUS = process.env.DISCORD_PATREON_SUPPORTERPLUS;
+const DISCORD_PATREON_SUPPORTERPLUSPLUS = process.env.DISCORD_PATREON_SUPPORTERPLUSPLUS;
+const DISCORD_PATREON_DOMINATOR = process.env.DISCORD_PATREON_DOMINATOR;
+//DISCORD_PATREON_SUPPORTER || r === DISCORD_PATREON_SUPPORTERPLUS || r === DISCORD_PATREON_SUPPORTERPLUSPLUS 
+//|| r === DISCORD_PATREON_DOMINATOR) {
 const PORT = process.env.PORT || 3002;
 const redirect = encodeURIComponent(`http://localhost:${PORT}/api/discord/callback`);
 
 const cookieParser = require('cookie-parser');
-const session = require('express-session');
+// const session = require('express-session');
 
 
 app.set('view engine', 'ejs');
@@ -34,22 +41,6 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.static('./public'));
 
 app.use(cookieParser());
-app.use(session({
-  key: 'user_sid',
-  secret: 'somerandonstuffs',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    // const cookieExpirationInMS = (30*86400); // 30 days 
-      expires: (30*86400)
-  }
-}));
-app.use((req, res, next) => {
-  if (req.cookies.user_sid && !req.session.user) {
-      res.clearCookie('user_sid');        
-  }
-  next();
-});
 
 app.use(methodOverride((request, response) => {
   if (request.body && typeof request.body === 'object' && '_method' in request.body) {
@@ -63,17 +54,23 @@ app.get('/', catchAsync(async(req, res) => {
   if (req.cookies['Token'] == null) {
     res.redirect('/login');
   } else {
-    const checkAdminPermissions = await authenticateUser(req.cookies['Token']);
-    if (checkAdminPermissions === true) {
-      res.render('./pages/index', {adminPermissions : true});  
+    const validateUser = await authenticateUser(req.cookies['Token']);
+    console.log(validateUser);
+    if (validateUser.isAdmin === true) {
+      res.render('./pages/index', {adminPermissions : true, user : validateUser});  
     } else {
-      res.render('./pages/index', {adminPermissions : false});
+      res.render('./pages/index', {adminPermissions : false, user : validateUser});
     }
   }
 }));
 
 app.get('/login', (req, res) => {
   res.redirect(`https://discordapp.com/api/oauth2/authorize?client_id=${CLIENT_ID}&scope=identify&response_type=code&redirect_uri=${redirect}`);
+});
+
+app.get('/logout', (req, res) => {
+  res.clearCookie('Token');
+  res.redirect('/');
 });
 
 app.get('/api/discord/callback', catchAsync(async (req, res) => {
@@ -89,32 +86,58 @@ app.get('/api/discord/callback', catchAsync(async (req, res) => {
     },
   });
   const json = await response.json();
-  const cookieExpirationInMS = (30*86400); // 30 days 
+  const cookieExpirationInMS = 2592000000; // 30 days 
   res.cookie('Token', json.access_token, {maxAge: cookieExpirationInMS, httpOnly: true});
-  req.session.secret = json.access_token;
   res.redirect('/');
 }));
 
 async function authenticateUser(token) {
+  let result = {
+    isAdmin: false,
+    username: null,
+    id: null,
+    picture: null
+  }
   if (token === undefined) {
-    return false;
+    return result = {
+      isAdmin: false
+    }
   } else {
-    let result = false;
     try {
       let userResponse = await superagent.get('https://discordapp.com/api/users/@me').set('Authorization', `Bearer ${token}`);
       let user = userResponse.body;
-      // console.log(user);
       let rolesResponse = await superagent.get(`https://discordapp.com/api/guilds/${DISCORD_GUILD_ID}/members/${user.id}`).set('Authorization', `Bot ${DISCORD_BOT_ID}`);
       let roles = rolesResponse.body.roles;
-      console.log(roles);
+      let userAvatar = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`;
       if (roles == null) {
-        return result;
+        return result = {
+          isAdmin: false,
+          isPatreon: false,
+          username: user.username,
+          id: user.id,
+          picture: userAvatar
+        };
       } else {
         roles.forEach(r => {
-          if (r == DISCORD_ADMIN_GROUP_ID) 
-            return result = true;
+          if (r === DISCORD_ADMIN_GROUP_ID) {
+            result = {
+              isAdmin: true,
+            };
+          if (r === DISCORD_PATREON_SUPPORTER || r === DISCORD_PATREON_SUPPORTERPLUS || r === DISCORD_PATREON_SUPPORTERPLUSPLUS || r === DISCORD_PATREON_DOMINATOR) {
+            result = {
+              isPatreon: true
+            }
+          }
+
+          }
+            //Do extra logic checks for Patreon groups.  Yis.
         });
-        return result;
+        return result = {
+          isAdmin: result.isAdmin,
+          username: user.username,
+          id: user.id,
+          picture: userAvatar
+        };
       }
     } catch (e) {
       return e;
@@ -142,6 +165,45 @@ app.use((err, req, res, next) => {
       });
   }
 });
+
+app.get('/admin', catchAsync(async(req, res) => {
+  if (req.cookies['Token'] == null) {
+    res.redirect('/login');
+  } else {
+    const validateUser = await authenticateUser(req.cookies['Token']);
+    if (validateUser.isAdmin === true) {
+      res.render('./pages/adminPage', {adminPermissions : true, user : validateUser});  
+    } else {
+      res.render('./pages/unauthorized');
+    }
+  }
+}));
+
+app.get('/new', catchAsync(async(req, res) => {
+  if (req.cookies['Token'] == null) {
+    res.redirect('/login');
+  } else {
+    const validateUser = await authenticateUser(req.cookies['Token']);
+    if (validateUser.isAdmin === true) {
+      res.render('./pages/newTicket', {adminPermissions : true, user : validateUser});  
+    } else {
+      res.render('./pages/newTicket', {adminPermissions : false, user : validateUser});
+    }
+  }
+}));
+
+app.get('/status', catchAsync(async(req, res) => {
+  if (req.cookies['Token'] == null) {
+    res.redirect('/login');
+  } else {
+    const validateUser = await authenticateUser(req.cookies['Token']);
+    if (validateUser.isAdmin === true) {
+      res.render('./pages/status', {adminPermissions : true, user : validateUser});  
+    } else {
+      res.render('./pages/status', {adminPermissions : false, user : validateUser});
+    }
+  }
+}));
 
 app.get('*', (req, res) => {res.status(404).render('pages/error')});
 

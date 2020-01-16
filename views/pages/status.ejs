@@ -1,13 +1,13 @@
 <%- include('../partials/head.ejs'); %>
-  <title>Admin Page : <%= user.username %> - DomiNATION Ark: Survival Evolved Community</title>
+  <title>Ticket Status : <%= user.username %> - DomiNATION Ark: Survival Evolved Community</title>
 <%- include('../partials/css.ejs'); %>
 </head>
 <body>
   <%- include('../partials/nav.ejs'); %>
-  <h1 class="ng-scope">Administrative Panel</h1>
+  <h1 class="ng-scope">Status Page</h1>
   <img src="<%=user.picture%>"/>
   <div>Your userID is <%= user.id %></div>
-  <div>There are currently ### open tickets and ### closed tickets.</div>
+  <div>You current have ### tickets open, and you've submitted ### tickets.</div>
   </div>
 </body>
 </html>

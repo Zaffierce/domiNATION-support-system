@@ -1,0 +1,12 @@
+<%- include('../partials/head.ejs'); %>
+  <title>Unauthorized <%= user.username %> - DomiNATION Ark: Survival Evolved Community</title>
+<%- include('../partials/css.ejs'); %>
+</head>
+<body>
+  <%- include('../partials/nav.ejs'); %>
+  <h1 class="ng-scope">Error</h1>
+  <img src="<%=user.picture%>"/>
+  <div>An error has occured, you are not authorized to view this page.  Please return.</div>
+  </div>
+</body>
+</html>
