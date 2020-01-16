@@ -1,32 +1,20 @@
-<%- include('../layout/head.ejs') %>
-<style>
-  .container {
-    display: flex;
-    width: 100%;
-    padding: 40px 0;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .container a {
-    background: #7289DA;
-    padding: 0 20px;
-    line-height: 35px;
-    color: #fff;
-    font-family: 'Helvetica', 'Arial', sans-sefir;
-    font-size: 20px;
-    display: block;
-    text-decoration: none;
-    border-radius: 3px;
-  }
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
 </head>
 <body>
-<div class="container">
-  <a href="/api/discord/login">Login through discord</a>
-  <% if (locals.t) { %>
-    <%= t %>
+  <nav>
+    <a href="/">Home</a>
+  </nav>
+  <% if (adminPermissions === true) { %>
+    <%- include('../partials/adminPanel.ejs'); %>
   <% } %>
-</div>
 </body>
+<footer>
+  <script src="/js/app.js"></script>
+</footer>
 </html>

@@ -5,7 +5,6 @@ const superagent = require('superagent');
 const pg = require('pg');
 const app = express();
 const methodOverride = require('method-override');
-// const apiRouter = require('./my-app/src/auth/authenticateUser');
 const fetch = require('node-fetch');
 const btoa = require('btoa');
 const { catchAsync } = require('./my-app/src/util/utils');
@@ -41,7 +40,8 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-      expires: 600000
+    // const cookieExpirationInMS = (30*86400); // 30 days 
+      expires: (30*86400)
   }
 }));
 app.use((req, res, next) => {
@@ -50,14 +50,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-var sessionChecker = (req, res, next) => {
-  console.log("In sessionChecker")
-  if (req.session.user && req.cookies.user_sid) {
-      res.redirect('/dashboard');
-  } else {
-      next();
-  }    
-};
 
 app.use(methodOverride((request, response) => {
   if (request.body && typeof request.body === 'object' && '_method' in request.body) {
@@ -67,15 +59,23 @@ app.use(methodOverride((request, response) => {
   }
 }));
 
-app.get('/', sessionChecker, (req, res) => {
-  res.redirect('/login');
-});
+app.get('/', catchAsync(async(req, res) => {
+  if (req.cookies['Token'] == null) {
+    res.redirect('/login');
+  } else {
+    const checkAdminPermissions = await authenticateUser(req.cookies['Token']);
+    if (checkAdminPermissions === true) {
+      res.render('./pages/index', {adminPermissions : true});  
+    } else {
+      res.render('./pages/index', {adminPermissions : false});
+    }
+  }
+}));
 
 app.get('/login', (req, res) => {
   res.redirect(`https://discordapp.com/api/oauth2/authorize?client_id=${CLIENT_ID}&scope=identify&response_type=code&redirect_uri=${redirect}`);
 });
 
-// app.get('/api/discord/callback', catchAsync(async (req, res) => {
 app.get('/api/discord/callback', catchAsync(async (req, res) => {
   if (!req.query.code) throw new Error('NoCodeProvided');
 
@@ -89,24 +89,11 @@ app.get('/api/discord/callback', catchAsync(async (req, res) => {
     },
   });
   const json = await response.json();
-  //Store the token somewhere
-  const checkAdminPermissions = await authenticateUser(json.access_token);
-
-  res.cookie('Token', json.access_token, {maxAge: 900000, httpOnly: true});
+  const cookieExpirationInMS = (30*86400); // 30 days 
+  res.cookie('Token', json.access_token, {maxAge: cookieExpirationInMS, httpOnly: true});
   req.session.secret = json.access_token;
-
-  console.log("checkAdminPermissions", checkAdminPermissions);
-  console.log("current session", req.session);
-  res.redirect('/loggedIn');
+  res.redirect('/');
 }));
-
-app.get('/loggedIn', (req, res) => {
-  console.log("loggedIn", req.session);
-  console.log("cookie", req.cookies['Token']);
-  // console.log(req.cookies);
-  res.render('./pages/loggedIn', {t: "banananananananana"});
-  // res.render('./pages/loggedIn',{t : json.access_token});
-})
 
 async function authenticateUser(token) {
   if (token === undefined) {
@@ -116,8 +103,10 @@ async function authenticateUser(token) {
     try {
       let userResponse = await superagent.get('https://discordapp.com/api/users/@me').set('Authorization', `Bearer ${token}`);
       let user = userResponse.body;
+      // console.log(user);
       let rolesResponse = await superagent.get(`https://discordapp.com/api/guilds/${DISCORD_GUILD_ID}/members/${user.id}`).set('Authorization', `Bot ${DISCORD_BOT_ID}`);
       let roles = rolesResponse.body.roles;
+      console.log(roles);
       if (roles == null) {
         return result;
       } else {
@@ -133,16 +122,6 @@ async function authenticateUser(token) {
   }
 }
 
-
-// app.route('/login')
-//   .get(sessionChecker, (req, res) => {
-//     res.render('./pages/index');
-  // });
-  // .post((req, res) => {
-  //   let 
-  // })
-
-// app.get('/loggedIn', loggedIn)
 app.use('/api/discord', router);
 app.use((err, req, res, next) => {
   switch (err.message) {
@@ -164,23 +143,6 @@ app.use((err, req, res, next) => {
   }
 });
 
-// app.use('/loggedIn', loggedIn);
-
 app.get('*', (req, res) => {res.status(404).render('pages/error')});
-
-async function index(req, res){
-let auth = await apiRouter.authenticateUser(req.t);
-
-// console.log("auth", auth);
-  res.render('./pages/index');
-}
-
-// function loggedIn(req, res) {
-//   let auth = await apiRouter.authenticateUser(req.t);
-//   // res.render('./pages/loggedIn');
-// }
-
-
-
 
 app.listen(PORT, () => console.log(`Server is live on ${PORT}`));
