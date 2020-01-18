@@ -7,7 +7,126 @@
   <h1 class="ng-scope">Status Page</h1>
   <img src="<%=user.picture%>"/>
   <div>Your userID is <%= user.id %></div>
-  <div>Submit a new ticket shit here.</div>
+  <br>
+  <br>
+  <div class="ng-scope">
+    <form>
+      <fieldset name="generalInfo">
+        <label for="ign">What is your in-game name?</label>
+        <input type="text" name="ign">
+
+        <label for="discordName">What is your discord name?</label>
+        <input type="text" name="discordName" value="<%= user.username %>">
+        
+        <label for="serverAssistance">Please choose a server...</label>
+        <select name="serverAssistance">
+        <%- include('../partials/serverList.ejs'); %>
+        </select>
+
+        <label for="ticketType">Please choose which type of ticket you would like to submit:</label>
+        <select name="ticketType">
+          <option value="general">General</option>
+          <option value="elementReq">Element Request</option>
+          <option value="patreonReq">Patreon Request</option>
+          <option value="banAppeal">Ban Appeal</option>
+          <option value="bugReport">Report a Bug</option>
+        </select>
+      </fieldset>
+
+      <fieldset name="ticketGeneral">
+        <legend>General Ticket:</legend>
+        <label for="genTribeName">What is your tribe name?</label>
+        <input type="text" name="genTribeName">
+
+        <label for="genCoords">What is your approximate coordinates?  Please provide CCC location:</label>
+        <input type="text" name="genCoords">
+
+        <label for="genDesc">Please describe your issue</label>
+        <textarea name="genDesc" rows="10" cols="30"></textarea>
+
+        <label for="genSolution">What have you done to resolve this issue?</label>
+        <textarea name="genSolution" rows="10" cols="30"></textarea>
+      </fieldset>
+
+      <fieldset name="ticketElementChoice">
+        <legend>Please choose which kind of ticket:</legend>
+        <label for="elementChoice">Which kind of Element ticket would you like to submit?</label>
+        <select name="eleTicketType">
+          <option name="eventElement">Element from an Event</option>
+          <option name="transferElement">Transfer Element</option>
+        </select>
+      </fieldset>
+
+      <fieldset name="eleEvent">
+        <legend>Element from an Event:</legend>
+        <label for="eleEventName">Which event did you attend?</label>
+        <input name="eleEventName" type="text">
+
+        <label for="eleEventServer">Please choose a server...</label>
+        <select name="eleEventServer">
+          <%- include('../partials/serverList.ejs'); %>
+        </select>
+
+        <label for="elePatreon">Are you a patreon?</label>
+        <input name="elePatreon" type="text">
+
+        <label for="eleDropoff">Please provide a specific drop-off location and PIN code:</label>
+        <input name="eleDropoff" type="text">
+
+      </fieldset>
+
+      <fieldset name="eleXfr">
+        <legend>Transfer Element:</legend>
+        <label for="eleXfrAmount">How much element do you wish to transfer?</label>
+        <input type="numeric" name="eleXfrAmount">
+
+        <label for="eleXfrServerFrom">Which server do you wish to transfer from?</label>
+        <select name="eleXfrServerFrom">
+          <%- include('../partials/serverList.ejs'); %>
+        </select>
+
+        <label for="eleXfrPickup">Specific pickup location & PIN code:</label>
+        <input type="text" name="eleXfrPickup">
+
+        <label for="eleXfrServerTo">Which server do you wish to transfer to?</label>
+        <select name="eleXfrServerTo">
+          <%- include('../partials/serverList.ejs'); %>
+        </select>
+
+        <label for="eleXfrDropoff">Specific pickup location & PIN code:</label>
+        <input type="text" name="eleXfrDropoff">
+      </fieldset>
+
+      <!--Render this section only if the user is patreon?-->
+      <fieldset name="ticketPatreonChoice">
+        <legend>Please choose which kind of ticket:</legend>
+        <label for="patreonChoice">Which kind of Patreon ticket would you like to submit?</label>
+        <select name="patTicketType">
+          <option name="patDinoReq">Monthly Dino Request</option>
+          <option name="patInsuranceReq">Dino Insurance</option>
+        </select>
+      </fieldset>
+
+      <fieldset name="patDino">
+        <legend>Monthly Patreon Dino Request:</legend>
+
+        <label for="patServer">Which server would you like your dino on?</label>
+        <select name="patServer">
+          <%- include('../partials/serverList.ejs'); %>
+        </select>
+
+        <label for="patDinoChoice">Please select the dino you want</label>
+        <select name="dinoChoice">
+          <!--ton of options here-->
+        </select>
+
+        <label for="patDinoColored">Do you want the dino colored?</label>
+        <!--Radial buttons for Y/N... render color options if Y?-->
+
+      </fieldset>
+    </form>
+  </div>
+
   </div>
 </body>
 </html>

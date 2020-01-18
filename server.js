@@ -94,7 +94,9 @@ app.get('/api/discord/callback', catchAsync(async (req, res) => {
 async function authenticateUser(token) {
   let result = {
     isAdmin: false,
+    isPatreon: false,
     username: null,
+    discriminator: null,
     id: null,
     picture: null
   }
@@ -106,6 +108,7 @@ async function authenticateUser(token) {
     try {
       let userResponse = await superagent.get('https://discordapp.com/api/users/@me').set('Authorization', `Bearer ${token}`);
       let user = userResponse.body;
+      console.log(user);
       let rolesResponse = await superagent.get(`https://discordapp.com/api/guilds/${DISCORD_GUILD_ID}/members/${user.id}`).set('Authorization', `Bot ${DISCORD_BOT_ID}`);
       let roles = rolesResponse.body.roles;
       let userAvatar = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`;
@@ -114,27 +117,25 @@ async function authenticateUser(token) {
           isAdmin: false,
           isPatreon: false,
           username: user.username,
+          discriminator: user.discriminator,
           id: user.id,
           picture: userAvatar
         };
       } else {
-        roles.forEach(r => {
-          if (r === DISCORD_ADMIN_GROUP_ID) {
-            result = {
-              isAdmin: true,
-            };
-          if (r === DISCORD_PATREON_SUPPORTER || r === DISCORD_PATREON_SUPPORTERPLUS || r === DISCORD_PATREON_SUPPORTERPLUSPLUS || r === DISCORD_PATREON_DOMINATOR) {
-            result = {
-              isPatreon: true
-            }
-          }
-
-          }
-            //Do extra logic checks for Patreon groups.  Yis.
+        roles.forEach(role => {
+        if (role === DISCORD_ADMIN_GROUP_ID) {
+            result.isAdmin = true;
+        }
+        if (role === DISCORD_PATREON_SUPPORTER || role === DISCORD_PATREON_SUPPORTERPLUS || 
+            role === DISCORD_PATREON_SUPPORTERPLUSPLUS || role === DISCORD_PATREON_DOMINATOR) {
+          result.isPatreon = true;
+        }
         });
         return result = {
           isAdmin: result.isAdmin,
+          isPatreon: result.isPatreon,
           username: user.username,
+          discriminator: user.discriminator,
           id: user.id,
           picture: userAvatar
         };
