@@ -1,6 +1,6 @@
-#generalInfo {
+/* #generalInfo {
 
-}
+} */
 
 #ticketGeneral, #ticketElementChoice, #eleEvent, #eleXfr, #ticketPatreonChoice, #patDino, #patInsurance, #banAppeal, #reportABug {
   display: none;
