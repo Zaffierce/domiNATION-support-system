@@ -15,19 +15,37 @@
   <br>
   <br>
   <br>
-
-
   <form name="basicform" id="basicform">
     <div id="sf1" class="frm form-group">
       <fieldset>
-        <legend>Step 1 of 3</legend>
-
-        <div class="form-group">
-          <label class="col-lg-2 control-label" for="uname">Your Name: </label>
-          <div class="col-lg-6">
-            <input type="text" placeholder="Your Name" id="uname" name="uname" class="form-control" autocomplete="off">
-          </div>
+        <legend>General Information</legend>
+        <div class="form-group col-md-6">
+          <label for="ign">What is your in-game name?</label>
+          <input type="text" id="ign" name="ign" class="form-control" >
         </div>
+        <div class="form-group col-md-6">
+          <label for="discordName">What is your discord name?</label>
+          <input type="text" class="form-control" name="discordName" value="<%= user.username %>#<%= user.discriminator %>">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="serverAssistance">Which server do you need assistance on?</label>
+          <select name="serverAssistance" class="form-control" id="generalServerSelect" required>
+          <%- include('../partials/serverList.ejs'); %>
+          </select>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="ticketType">What do you need help with?</label>
+          <select name="ticketType" class="form-control" id="generalTicketSelect" required>
+            <option value="">Please choose...</option>
+            <option value="ticketGeneral">General assistance</option>
+            <option value="ticketElementChoice">Element Request</option>
+            <option value="ticketPatreonChoice">Patreon Request</option>
+            <option value="banAppeal">Ban Appeal</option>
+            <option value="reportABug">Report a Bug</option>
+          </select>
+        </div>
+      </fieldset>
+    </div>
 
         <div class="form-group">
           <div class="col-lg-10 col-lg-offset-2">
@@ -93,166 +111,7 @@
     </div>
   </form>
 
-  <form class="submitTicket" id="submitTicket">
-    <!-- <div class="form-row" id="generalInfo">
-      <legend>General Information:</legend>
-      <div class="form-group col-md-6">
-        <label for="ign">What is your in-game name?</label>
-        <input type="text" class="form-control" name="ign" required>
-      </div>
-      <div class="form-group col-md-6">
-        <label for="discordName">What is your discord name?</label>
-        <input type="text" class="form-control" name="discordName" value="<%= user.username %>" required>
-      </div>
-      <div class="form-group col-md-6">
-        <label for="serverAssistance">Which server do you need assistance on?</label>
-        <select name="serverAssistance" class="form-control" id="generalServerSelect" required>
-        <%- include('../partials/serverList.ejs'); %>
-        </select>
-      </div>
-      <div class="form-group col-md-6">
-        <label for="ticketType">What do you need help with?</label>
-        <select name="ticketType" class="form-control" id="generalTicketSelect" required>
-          <option value="">Please choose...</option>
-          <option value="ticketGeneral">General assistance</option>
-          <option value="ticketElementChoice">Element Request</option>
-          <option value="ticketPatreonChoice">Patreon Request</option>
-          <option value="banAppeal">Ban Appeal</option>
-          <option value="reportABug">Report a Bug</option>
-        </select>
-      </div>
-      <button class="btn btn-primary" type="button" id="genBtn">Next</button>
-    </div> -->
-
-    <!-- <div class="form-row" name="ticketGeneral" id="ticketGeneral">
-      <legend>General Ticket:</legend>
-      <div class="form-group col-md-6">
-        <label for="genTribeName">What is your tribe name?</label>
-        <input type="text" name="genTribeName" class="form-control" required>
-      </div>
-      <div class="form-group col-md-6">
-        <label for="genCoords">What is your approximate coordinates?  Please provide CCC location:</label>
-        <input type="text" name="genCoords" class="form-control" required>
-      </div>
-      <div class="form-group col-md-12">
-        <label for="genDesc">Please describe your issue</label>
-        <textarea name="genDesc" class="form-control" rows="3" required></textarea>
-      </div>
-      <div class="form-group col-md-12">
-        <label for="genSolution">What have you done to resolve this issue?</label>
-        <textarea name="genSolution" class="form-control" rows="3" required></textarea>
-      </div>
-    </div> -->
-
-    <!--<fieldset name="ticketElementChoice" id="ticketElementChoice">
-      <legend>Please choose which kind of ticket:</legend>
-      <label for="elementChoice">Which kind of Element ticket would you like to submit?</label>
-      <select name="eleTicketType">
-        <option name="eventElement">Element from an Event</option>
-        <option name="transferElement">Transfer Element</option>
-      </select>
-    </fieldset>
-
-    <fieldset name="eleEvent" id="eleEvent">
-      <legend>Element from an Event:</legend>
-      <label for="eleEventName">Which event did you attend?</label>
-      <input name="eleEventName" type="text">
-      <label for="eleEventServer">Please choose a server...</label>
-      <select name="eleEventServer">
-        <%- include('../partials/serverList.ejs'); %>
-      </select>
-      <label for="elePatreon">Are you a patreon?</label>
-      <input name="elePatreon" type="text">
-      <label for="eleDropoff">Please provide a specific drop-off location and PIN code:</label>
-      <input name="eleDropoff" type="text">
-    </fieldset>
-
-    <fieldset name="eleXfr" id="eleXfr">
-      <legend>Transfer Element:</legend>
-      <label for="eleXfrAmount">How much element do you wish to transfer?</label>
-      <input type="numeric" name="eleXfrAmount">
-      <label for="eleXfrServerFrom">Which server do you wish to transfer from?</label>
-      <select name="eleXfrServerFrom">
-        <%- include('../partials/serverList.ejs'); %>
-      </select>
-      <label for="eleXfrPickup">Specific pickup location & PIN code:</label>
-      <input type="text" name="eleXfrPickup">
-      <label for="eleXfrServerTo">Which server do you wish to transfer to?</label>
-      <select name="eleXfrServerTo">
-        <%- include('../partials/serverList.ejs'); %>
-      </select>
-      <label for="eleXfrDropoff">Specific pickup location & PIN code:</label>
-      <input type="text" name="eleXfrDropoff">
-    </fieldset>
-
-    //Render this section only if the user is patreon?
-    <fieldset name="ticketPatreonChoice" id="ticketPatreonChoice">
-      <legend>Please choose which kind of ticket:</legend>
-      <label for="patreonChoice">Which kind of Patreon ticket would you like to submit?</label>
-      <select name="patTicketType">
-        <option name="patDinoReq">Monthly Dino Request</option>
-        <option name="patInsuranceReq">Dino Insurance</option>
-      </select>
-    </fieldset>
-
-    <fieldset name="patDino" id="patDino">
-      <legend>Monthly Patreon Dino Request:</legend>
-      <label for="patDinoServer">Which server would you like your dino on?</label>
-      <select name="patDinoServer">
-        <%- include('../partials/serverList.ejs'); %>
-      </select>
-      <label for="patDinoChoice">Please select the dino you want</label>
-      <select name="dinoChoice">
-        //ton of options here
-      </select>
-      <label for="patDinoColored">Do you want the dino colored?</label>
-    //Radial buttons for Y/N... render color options if Y?
-      <label for="patDinoDropoff">Specific pickup location & PIN code:</label>
-      <input type="text" name="patDinoDropoff">
-      <label for="patDinoEmailAddress">Please provide your email address:</label>
-      <input type="text" name="patDinoEmailAddress">
-    </fieldset>
-
-    <fieldset name="patInsurance" id="patInsurance">
-      <legend>Dino Insurance Request</legend>
-      <label for="patInsuranceDino">Please provide the link from the website of the dead dino:</label>
-      <input type="text" name="patInsuranceDino">
-      <label for="patInsuranceEmailAddress">Please provide your email address:</label>
-      <input type="text" name="patInsuranceEmailAddress">
-      <label for="patInsuranceMonth">If you know, please provide the month you claimed this in:</label>
-      <input type="text" name="patInsuranceMonth">
-      <label for="patInsuranceDeathDisc">Please give a brief description of how the dino died:</label>
-      <input type="text" name="patInsuranceDeathDisc">
-    </fieldset>
-
-    <fieldset name="banAppeal" id="banAppeal">
-      <legend>Ban Appeal</legend>
-      <label for="banAppealSteamID">What is your Steam ID?</label>
-      <input type="text" name="banAppealSteamID">
-      <label for="banAppealEmailAddress">What is a good email address to contact you at?</label>
-      <input type="text" name="banAppealEmailAddress">
-      <label for="banAppealBannedReason">Why were you banned?</label>
-      <input type="text" name="banAppealBannedReason">
-      <label for="banAppealUnbannedReason">Why do you think your ban should be removed?</label>
-      <input type="text" name="banAppealUnbannedReason">
-    </fieldset>
-
-    <fieldset name="reportABug" id="reportABug">
-      <legend>Report a Bug</legend>
-      <label for="reportABugIssue">Please tell us your issue:</label>
-      <input type="text" name="reportABugIssue">
-      <label for="reportABugRecreate">Are you able to recreate this?  If so, how?</label>
-      //Radial button? with additional prompt if yes?
-      <input type="text" name="reportABugRecreate">
-      <label for="reportABugLostItems">Did you lose anything?</label>
-      //Warning for "proof required"
-      <input type="text" name="reportABugLostItems">
-    </fieldset>-->
-    <br >
-    <!-- <button class="btn btn-primary" type="submit">Submit form</button> -->
-    <!-- <button class="btn btn-primary" id="submit">Next</button> -->
-
-  </form>
+  
   </div>
 <footer>
 

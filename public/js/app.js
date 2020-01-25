@@ -3,16 +3,13 @@
 $(() => {
   var v = jQuery("#basicform").validate({
       rules: {
-        uname: {
+        ign: {
           required: true,
-          minlength: 2,
-          maxlength: 16
+          minlength: 1,
         },
-        uemail: {
+        discordName: {
           required: true,
-          minlength: 2,
-          email: true,
-          maxlength: 100,
+          minlength: 5,
         },
         upass1: {
           required: true,

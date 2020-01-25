@@ -55,7 +55,6 @@ app.get('/', catchAsync(async(req, res) => {
     res.redirect('/login');
   } else {
     const validateUser = await authenticateUser(req.cookies['Token']);
-    console.log(validateUser);
     if (validateUser.isAdmin === true) {
       res.render('./pages/index', {adminPermissions : true, user : validateUser});  
     } else {
@@ -108,7 +107,6 @@ async function authenticateUser(token) {
     try {
       let userResponse = await superagent.get('https://discordapp.com/api/users/@me').set('Authorization', `Bearer ${token}`);
       let user = userResponse.body;
-      console.log(user);
       let rolesResponse = await superagent.get(`https://discordapp.com/api/guilds/${DISCORD_GUILD_ID}/members/${user.id}`).set('Authorization', `Bot ${DISCORD_BOT_ID}`);
       let roles = rolesResponse.body.roles;
       let userAvatar = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`;
