@@ -178,6 +178,16 @@ app.get('/admin', catchAsync(async(req, res) => {
   }
 }));
 
+app.post('/form_initial', catchAsync(async(req, res) => {
+  if (req.cookies['Token'] == null) {
+    res.redirect('/login');
+  } else {
+    let ticketType = req.body.ticketType;
+    console.log(ticketType);
+    res.redirect('/new');
+  }   
+}));
+
 app.get('/new', catchAsync(async(req, res) => {
   if (req.cookies['Token'] == null) {
     res.redirect('/login');
