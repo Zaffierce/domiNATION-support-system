@@ -1,6 +1,6 @@
-<%- include('../partials/head.ejs'); %>
+<%- include('../../partials/head.ejs'); %>
   <title>Submit a new Ticket : <%= user.username %> - DomiNATION Ark: Survival Evolved Community</title>
-<%- include('../partials/css.ejs'); %>
+<%- include('../../partials/css.ejs'); %>
 <link rel="stylesheet" type="text/css" href="styles/forms.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" type="text/javascript"></script>
 <script src="/js/app.js" type="text/javascript"></script>
@@ -8,7 +8,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js" integrity="sha256-PbFF1Mdg86urwOYXWNJPP4z5Ge9KLp6KXX1NURQY8Ho=" crossorigin="anonymous"></script>
 </head>
 <body>
-  <%- include('../partials/nav.ejs'); %>
+  <%- include('../../partials/nav.ejs'); %>
   <br>
   <br>
   <br>
@@ -17,18 +17,19 @@
       <legend>General Information:</legend>
       <div class="form-group col-md-6">
         <label for="ign">What is your in-game name?</label>
-        <input type="text" class="form-control" name="ign" required>
+        <input type="text" class="form-control" name="ign" value="<%= generalInfo.ign %>" readonly>
         <div class="invalid-feedback">Please enter a name.</div>
       </div>
       <div class="form-group col-md-6">
         <label for="discordName">What is your discord name?</label>
-        <input type="text" class="form-control" name="discordName" value="<%= user.username%>#<%=user.discriminator %>" required>
+        <input type="text" class="form-control" name="discordName" value="<%= user.username%>#<%=user.discriminator %>" readonly>
         <div class="invalid-feedback">Please enter a name.</div>
       </div>
       <div class="form-group col-md-6">
         <label for="serverAssistance">Which server do you need assistance on?</label>
-        <select name="serverAssistance" class="form-control" id="generalServerSelect" required>
-        <%- include('../partials/serverList.ejs'); %>
+        <select name="serverAssistance" class="form-control" id="generalServerSelect">
+        <!-- <%- include('../../partials/serverList.ejs'); %> -->
+<option value="<%= generalInfo.serverAssistance" 
         </select>
         <div class="invalid-feedback">Please choose a server.</div>
       </div>

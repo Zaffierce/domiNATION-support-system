@@ -55,13 +55,10 @@ app.get('/', catchAsync(async(req, res) => {
     res.redirect('/login');
   } else {
     const validateUser = await authenticateUser(req.cookies['Token']);
-    if (validateUser.isAdmin === true) {
-      res.render('./pages/index', {adminPermissions : true, user : validateUser});  
-    } else {
-      res.render('./pages/index', {adminPermissions : false, user : validateUser});
+      res.render('./pages/index', {user : validateUser});
     }
   }
-}));
+));
 
 app.get('/login', (req, res) => {
   res.redirect(`https://discordapp.com/api/oauth2/authorize?client_id=${CLIENT_ID}&scope=identify&response_type=code&redirect_uri=${redirect}`);
@@ -171,7 +168,7 @@ app.get('/admin', catchAsync(async(req, res) => {
   } else {
     const validateUser = await authenticateUser(req.cookies['Token']);
     if (validateUser.isAdmin === true) {
-      res.render('./pages/adminPage', {adminPermissions : true, user : validateUser});  
+      res.render('./pages/adminPage', {user : validateUser});  
     } else {
       res.render('./pages/unauthorized');
     }
@@ -182,37 +179,48 @@ app.post('/form_initial', catchAsync(async(req, res) => {
   if (req.cookies['Token'] == null) {
     res.redirect('/login');
   } else {
+    const validateUser = await authenticateUser(req.cookies['Token']);
     let ticketType = req.body.ticketType;
-    console.log(ticketType);
-    res.redirect('/new');
+    let initialInfo = req.body;
+    if (ticketType === "ticketGeneral") {
+      
+    }
+    if (ticketType === "ticketElementChoice") {
+      res.redirect('/new/element');
+    }
+    if (ticketType === "ticketPatreonChoice") {
+      res.redirect('/new/patreon');
+    }
+    if (ticketType === "banAppeal") {
+      console.log(initialInfo);
+      res.render('./pages/forms/ticketBanAppeal', {user : validateUser, generalInfo: initialInfo});
+    }
+    if (ticketType === "reportABug") {
+      res.redirect('/new/bug');
+    }    
   }   
 }));
 
+//Just pass validatedUser.isAdmin and do something based off of that.
 app.get('/new', catchAsync(async(req, res) => {
   if (req.cookies['Token'] == null) {
     res.redirect('/login');
   } else {
     const validateUser = await authenticateUser(req.cookies['Token']);
-    if (validateUser.isAdmin === true) {
-      res.render('./pages/newTicket', {adminPermissions : true, user : validateUser});  
-    } else {
-      res.render('./pages/newTicket', {adminPermissions : false, user : validateUser});
+      res.render('./pages/forms/newTicket', {user : validateUser});
     }
   }
-}));
+));
 
 app.get('/status', catchAsync(async(req, res) => {
   if (req.cookies['Token'] == null) {
     res.redirect('/login');
   } else {
     const validateUser = await authenticateUser(req.cookies['Token']);
-    if (validateUser.isAdmin === true) {
-      res.render('./pages/status', {adminPermissions : true, user : validateUser});  
-    } else {
-      res.render('./pages/status', {adminPermissions : false, user : validateUser});
+      res.render('./pages/status', {user : validateUser});
     }
   }
-}));
+));
 
 app.get('*', (req, res) => {res.status(404).render('pages/error')});
 

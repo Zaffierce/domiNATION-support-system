@@ -7,7 +7,7 @@
             <a class="nav-button" href="/">Home</a>
             <a class="nav-button" href="/new">Open Ticket</a>
             <a class="nav-button" href="/status">Status of a ticket</a>
-            <% if (adminPermissions === true) { %>
+            <% if (user.isAdmin === true) { %>
               <a class="nav-button" href="/admin">Manage</a>
             <% } %>
             <a class="nav-button" href="https://domination-gaming.com/">Return to main website</a>
