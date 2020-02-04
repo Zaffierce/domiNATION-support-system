@@ -201,6 +201,15 @@ app.post('/form_initial', catchAsync(async(req, res) => {
   }   
 }));
 
+app.post('/form_submit', catchAsync(async(req, res) =>{
+  if (req.cookies['Token'] == null) {
+    res.redirect('/login');
+  } else {
+    console.log(req.body);
+    res.redirect('/new');
+  }
+}))
+
 //Just pass validatedUser.isAdmin and do something based off of that.
 app.get('/new', catchAsync(async(req, res) => {
   if (req.cookies['Token'] == null) {

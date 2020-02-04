@@ -12,12 +12,12 @@
   <br>
   <br>
   <br>
-  <form class="needs-validation" novalidate action="form_initial" method="POST">
-    <div class="form-row">
+  <form class="needs-validation" novalidate action="form_submit" method="POST">
+    <div class="form-row" hidden>
       <legend>General Information:</legend>
       <div class="form-group col-md-6">
         <label for="ign">What is your in-game name?</label>
-        <input type="text" class="form-control" name="ign" value="<%= generalInfo.ign %>" readonly>
+        <input type="text" class="form-control" name="ign" value="<%= generalInfo.ign %>">
         <div class="invalid-feedback">Please enter a name.</div>
       </div>
       <div class="form-group col-md-6">
@@ -28,23 +28,32 @@
       <div class="form-group col-md-6">
         <label for="serverAssistance">Which server do you need assistance on?</label>
         <select name="serverAssistance" class="form-control" id="generalServerSelect">
-        <!-- <%- include('../../partials/serverList.ejs'); %> -->
-<option value="<%= generalInfo.serverAssistance" 
+        <option value="<%= generalInfo.serverAssistance %>"></option>
         </select>
         <div class="invalid-feedback">Please choose a server.</div>
       </div>
       <div class="form-group col-md-6">
         <label for="ticketType">What do you need help with?</label>
         <select name="ticketType" class="form-control" id="generalTicketSelect" required>
-          <option value="">Please choose...</option>
-          <option value="ticketGeneral">General assistance</option>
-          <option value="ticketElementChoice">Element Request</option>
-          <option value="ticketPatreonChoice">Patreon Request</option>
-          <option value="banAppeal">Ban Appeal</option>
-          <option value="reportABug">Report a Bug</option>
+          <option value="<%= generalInfo.ticketType %>"></option>
         </select>
         <div class="invalid-feedback">Please choose a ticket type.</div>
       </div>
+    </div>
+    <div class="form-row">
+      <legend>Ban Appeal</legend>
+      <div class="form-group col-md-6">
+          <label for="banAppealSteamID">What is your Steam ID?</label>
+          <input type="text" name="banAppealSteamID" class="form-control" required>
+          <label for="banAppealEmailAddress">What is a good email address to contact you at?</label>
+          <input type="text" name="banAppealEmailAddress" class="form-control" required>
+          <label for="banAppealBannedReason">Why were you banned?</label>
+          <input type="text" name="banAppealBannedReason" class="form-control" required>
+          <label for="banAppealUnbannedReason">Why do you think your ban should be removed?</label>
+          <input type="text" name="banAppealUnbannedReason" class="form-control" required>
+        </fieldset>
+      </div>
+
     </div>
     <input type="submit" value="Click to Submit">
   </form>
