@@ -12,7 +12,7 @@
   <br>
   <br>
   <br>
-  <form class="needs-validation" novalidate action="form_submit" method="POST">
+  <form class="needs-validation" novalidate action="form_initial" method="POST">
     <div class="form-row" hidden>
       <legend>General Information:</legend>
       <div class="form-group col-md-6">
@@ -32,25 +32,18 @@
         </select>
         <div class="invalid-feedback">Please choose a server.</div>
       </div>
-      <div class="form-group col-md-6">
-        <label for="ticketType">What do you need help with?</label>
-        <select name="ticketType" class="form-control" id="generalTicketSelect" required>
-          <option value="<%= generalInfo.ticketType %>"></option>
-        </select>
-        <div class="invalid-feedback">Please choose a ticket type.</div>
-      </div>
     </div>
     <div class="form-row">
-      <legend>Ban Appeal</legend>
-      <div class="form-group col-md-6">
-          <label for="banAppealSteamID">Which Event did you attend?</label>
-          <input type="text" name="banAppealSteamID" class="form-control" required>
-          <label for="banAppealEmailAddress">What is a good email address to contact you at?</label>
-          <input type="text" name="banAppealEmailAddress" class="form-control" required>
-          <label for="banAppealBannedReason">Why were you banned?</label>
-          <input type="text" name="banAppealBannedReason" class="form-control" required>
-          <label for="banAppealUnbannedReason">Why do you think your ban should be removed?</label>
-          <input type="text" name="banAppealUnbannedReason" class="form-control" required>
+      <legend></legend>
+      <div class="form-group col-md-12">
+        <div class="form-group col-md-12">
+            <label for="ticketType">Which option are you requesting?</label>
+            <select name="ticketType" class="form-control" id="generalTicketSelect" required>
+              <option value="elementEvent">Element from an Event</option>
+              <option value="elementTransfer">Transfer Element to another server</option>
+            </select>
+            <div class="invalid-feedback">Please choose a ticket type.</div>
+          </div>
         </fieldset>
       </div>
 

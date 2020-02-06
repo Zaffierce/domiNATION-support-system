@@ -186,13 +186,19 @@ app.post('/form_initial', catchAsync(async(req, res) => {
       
     }
     if (ticketType === "ticketElementChoice") {
-      res.redirect('/new/element');
+      res.render('./pages/forms/elementRequestChoice', {user : validateUser, generalInfo: initialInfo});
+    }
+    if (ticketType === "elementEvent") {
+      console.log(req.body);
+      res.render('./pages/forms/ticketElement');
+    }
+    if (ticketType === "elementTransfer") {
+      console.log(req.body);
     }
     if (ticketType === "ticketPatreonChoice") {
       res.redirect('/new/patreon');
     }
     if (ticketType === "banAppeal") {
-      console.log(initialInfo);
       res.render('./pages/forms/ticketBanAppeal', {user : validateUser, generalInfo: initialInfo});
     }
     if (ticketType === "reportABug") {
