@@ -22,18 +22,27 @@
     <div class="invalid-feedback">Please choose a ticket type.</div>
   </div>
     <div class="form-row">
-      <legend>Element from an Event:</legend>
+      <legend>Transfer Element:</legend>
       <div class="form-group col-md-6">
-          <label for="eleEventName">Which Event did you attend?</label>
-          <input type="text" name="eleEventName" class="form-control" required>
-          <label for="eleEventServer">Which server do you want the element on?</label>
-          <select name="eleEventServer" class="form-control" id="eleEventServer" required>
+          <label for="eleXfrAmount">How much element do you wish to transfer?</label>
+          <input type="number" name="eleXfrAmount" class="form-control" required>
+
+          <label for="eleXfrServerFrom">Which server do you wish to transfer FROM?</label>
+          <select name="eleXfrServerFrom" class="form-control" id="eleXfrServerFrom" required>
           <%- include('../../partials/serverList.ejs'); %>
           </select>
-          <label for="elePatreon">Are you Patreon?</label>
-          <input type="text" name="elePatreon" class="form-control" required>
-          <label for="eleDropoff">PLease provide a specific drop-off location and PIN code:</label>
-          <input type="text" name="eleDropoff" class="form-control" required>
+
+          <label for="eleXfrPickup">Specific pickup location & PIN code:</label>
+          <input type="text" name="eleXfrPickup" class="form-control" required>
+
+
+          <label for="eleXfrServerTo">Which server do you wish to transfer TO?</label>
+          <select name="eleXfrServerTo" class="form-control" id="eleXfrServerTo" required>
+          <%- include('../../partials/serverList.ejs'); %>
+          </select>
+
+          <label for="eleXfrDropoff">Specific drop-off location & PIN code:</label>
+          <input type="text" name="eleXfrDropoff" class="form-control" required>
         </fieldset>
       </div>
     </div>

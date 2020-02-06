@@ -13,28 +13,9 @@
   <br>
   <br>
   <form class="needs-validation" novalidate action="form_initial" method="POST">
-    <div class="form-row" hidden>
-      <legend>General Information:</legend>
-      <div class="form-group col-md-6">
-        <label for="ign">What is your in-game name?</label>
-        <input type="text" class="form-control" name="ign" value="<%= generalInfo.ign %>">
-        <div class="invalid-feedback">Please enter a name.</div>
-      </div>
-      <div class="form-group col-md-6">
-        <label for="discordName">What is your discord name?</label>
-        <input type="text" class="form-control" name="discordName" value="<%= user.username%>#<%=user.discriminator %>" readonly>
-        <div class="invalid-feedback">Please enter a name.</div>
-      </div>
-      <div class="form-group col-md-6">
-        <label for="serverAssistance">Which server do you need assistance on?</label>
-        <select name="serverAssistance" class="form-control" id="generalServerSelect">
-        <option value="<%= generalInfo.serverAssistance %>"></option>
-        </select>
-        <div class="invalid-feedback">Please choose a server.</div>
-      </div>
-    </div>
+    <%- include('../../partials/completedGeneralTicket.ejs'); %>
     <div class="form-row">
-      <legend></legend>
+      <legend>Please choose an option</legend>
       <div class="form-group col-md-12">
         <div class="form-group col-md-12">
             <label for="ticketType">Which option are you requesting?</label>

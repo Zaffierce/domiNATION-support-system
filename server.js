@@ -182,18 +182,19 @@ app.post('/form_initial', catchAsync(async(req, res) => {
     const validateUser = await authenticateUser(req.cookies['Token']);
     let ticketType = req.body.ticketType;
     let initialInfo = req.body;
+    console.log("Ticket type is:",ticketType);
     if (ticketType === "ticketGeneral") {
       
     }
     if (ticketType === "ticketElementChoice") {
+      console.log(req.body);
       res.render('./pages/forms/elementRequestChoice', {user : validateUser, generalInfo: initialInfo});
     }
     if (ticketType === "elementEvent") {
-      console.log(req.body);
-      res.render('./pages/forms/ticketElement');
+    res.render('./pages/forms/ticketElement', {user : validateUser, generalInfo: initialInfo});
     }
     if (ticketType === "elementTransfer") {
-      console.log(req.body);
+      res.render('./pages/forms/ticketElementXfr', {user : validateUser, generalInfo: initialInfo});
     }
     if (ticketType === "ticketPatreonChoice") {
       res.redirect('/new/patreon');
@@ -211,6 +212,7 @@ app.post('/form_submit', catchAsync(async(req, res) =>{
   if (req.cookies['Token'] == null) {
     res.redirect('/login');
   } else {
+    console.log("********TICKET SUBMITTED*******")
     console.log(req.body);
     res.redirect('/new');
   }
