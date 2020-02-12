@@ -16,7 +16,7 @@
     <%- include('../../partials/completedGeneralTicket.ejs'); %>
     <div class="form-row">
       <legend>Patreon Dino Request</legend>
-      <div class="form-group col-md-6">
+      <div class="form-group col-md-12">
           <label for="patreonDinoServer">Which server do you want your dino on?</label>
           <select name="patreonDinoServer" class="form-control" id="patreonDinoServer" required>
           <%- include('../../partials/serverList.ejs'); %>
@@ -32,6 +32,50 @@
             <option value="no">No</option>
             <option value="yes">Yes</option>
           </select>
+
+          <div class="regions form-row" hidden>
+            <div class="form-group col-md-4">
+              <label for="patreonDinoRegion0">Region 0:</label>
+              <select name="patreonDinoRegion0" class="form-control" id="patreonDinoRegion0">
+                <%- include('../../partials/dinoColors.ejs'); %>
+              </select>
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="patreonDinoRegion1">Region 1:</label>
+              <select name="patreonDinoRegion1" class="form-control" id="patreonDinoRegion1">
+                <%- include('../../partials/dinoColors.ejs'); %>
+              </select>
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="patreonDinoRegion2">Region 2:</label>
+              <select name="patreonDinoRegion2" class="form-control" id="patreonDinoRegion2">
+                <%- include('../../partials/dinoColors.ejs'); %>
+              </select>
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="patreonDinoRegion3">Region 3:</label>
+              <select name="patreonDinoRegion3" class="form-control" id="patreonDinoRegion3">
+                <%- include('../../partials/dinoColors.ejs'); %>
+              </select>
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="patreonDinoRegion4">Region 4:</label>
+              <select name="patreonDinoRegion4" class="form-control" id="patreonDinoRegion4">
+                <%- include('../../partials/dinoColors.ejs'); %>
+              </select>
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="patreonDinoRegion5">Region 5:</label>
+              <select name="patreonDinoRegion5" class="form-control" id="patreonDinoRegion5">
+                <%- include('../../partials/dinoColors.ejs'); %>
+              </select>
+            </div>
+          </div>
 
           <label for="patreonDinoSex">Do you want a specific sex?</label>
           <select name="patreonDinoSex" class="form-control" id="patreonDinoSex">

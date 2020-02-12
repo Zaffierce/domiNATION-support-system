@@ -199,10 +199,14 @@ app.post('/form_initial', catchAsync(async(req, res) => {
         res.render('./pages/forms/patreonRequestChoice', {user : validateUser, generalInfo: initialInfo});
     }
     if (ticketType === "patreonMonthlyDino") {
-      client.query('select * from dinosaurs order by name asc;').then(sqlResult => {
-        console.log(sqlResult.rows);
-        res.render('./pages/forms/ticketPatreonDinoRequest', {user : validateUser, generalInfo: initialInfo, dino_names : sqlResult.rows});
-      })
+      client.query('select * from dinosaurs order by name asc;').then(sqlDinosaurs => {
+        client.query('select * from dinocolors;').then(sqlDinoColors => {
+          res.render('./pages/forms/ticketPatreonDinoRequest', {user : validateUser, 
+                                                                generalInfo: initialInfo, 
+                                                                dino_names : sqlDinosaurs.rows,
+                                                                dino_colors: sqlDinoColors.rows});
+        });
+      });
     }
     if (ticketType === "patreonDinoInsurance") {
       res.render('./pages/forms/ticketPatreonDinoInsurance', {user : validateUser, generalInfo: initialInfo});

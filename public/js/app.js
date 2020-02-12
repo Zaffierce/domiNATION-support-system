@@ -11,8 +11,20 @@ $(() => {
         event.preventDefault();
         event.stopPropagation();
       }
-      form.classList.add('was-validated');
+      form.classList.add("was-validated");
     }, false);
+  });
+
+  $('#patreonDinoColored').change(function(event) {
+    if ($(this).val() === 'yes') {
+      $('.regions').removeAttr("hidden");
+      //Unhide some stuff
+      console.log("value was changed to yes")
+    } else if ($(this).val() === 'no') {
+      //Hide some stuff
+      $('.regions').attr("hidden", "hidden");
+      console.log("value was changed to no");
+    }
   });
   
   // $('#test').click(function(event) {

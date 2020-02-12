@@ -5,3 +5,259 @@
 #ticketGeneral, #ticketElementChoice, #eleEvent, #eleXfr, #ticketPatreonChoice, #patDino, #patInsurance, #banAppeal, #reportABug {
   display: none;
 }
+
+.dinoText {
+  color: #FFFFFF;
+  text-shadow: 1px 1px 4px black, 0 0 1em black, 0 0 0.2em black;
+  text-align: center;
+}
+
+#red {
+  background-color: #ff0000;
+}
+#blue{
+  background-color: #0000ff;
+}
+#green{
+  background-color: #00ff00;
+}
+#yellow{
+  background-color: #ffff00;
+}
+#cyan{
+  background-color: #00ffff;
+}
+#magenta{
+  background-color: #ff00ff;
+}
+#lightgreen{
+  background-color: #c0ffba;
+}
+#lightgrey{
+  background-color: #c8caca;
+}
+#lightbrown{
+  background-color: #786759;
+}
+#lightorange{
+  background-color: #ffb46c;
+}
+#lightred{
+  background-color: #ff756c;
+}
+#lightyellow{
+  background-color: #fffa8a;
+}
+#darkgrey{
+  background-color: #7b7b7b;
+}
+#black{
+  background-color: #3b3b3b;
+}
+#brown{
+  background-color: #593a2a;
+}
+#darkgreen{
+  background-color: #224900;
+}
+#darkred{
+  background-color: #812118;
+}
+#white{
+  background-color: #ffffff;
+}
+#dinolightred{
+  background-color: #ffa8a8;
+}
+#dinodarkred{
+  background-color: #592b2b;
+}
+#dinolightorange{
+  background-color: #ffb694;
+}
+#dinodarkorange{
+  background-color: #88532f;
+}
+#dinolightyellow{
+  background-color: #cacaa0;
+}
+#dinodarkyellow{
+  background-color: #94946c;
+}
+#dinolightgreen{
+  background-color: #e0ffe0;
+}
+#dinomediumgreen{
+  background-color: #799479;
+}
+#dinodarkgreen{
+  background-color: #224122;
+}
+#dinolightblue{
+  background-color: #d9e0ff;
+}
+#dinodarkblue{
+  background-color: #394263;
+}
+#dinolightpurple{
+  background-color: #e4d9ff;
+}
+#dinodarkpurple{
+  background-color: #403459;
+}
+#dinolightbrown{
+  background-color: #ffe0ba;
+}
+#dinomediumbrown{
+  background-color: #948575;
+}
+#dinodarkbrown{
+  background-color: #594e41;
+}
+#dinodarkergrey{
+  background-color: #595959;
+}
+#dinoalbino{
+  background-color: #ffffff;
+}
+#bigfootzero{
+  background-color: #b79683;
+}
+#bigfootfour{
+  background-color: #eadad5;
+}
+#bigfootfive{
+  background-color: #d0a794;
+}
+#wolffur{
+  background-color: #c3b39f;
+}
+#darkwolffur{
+  background-color: #887666;
+}
+#dragonbasezero{
+  background-color: #a0664b;
+}
+#dragonbaseone{
+  background-color: #cb7956;
+}
+#dragonfire{
+  background-color: #bc4f00;
+}
+#dragongreenzero{
+  background-color: #79846c;
+}
+#dragongreenone{
+  background-color: #909c79;
+}
+#dragongreentwo{
+  background-color: #a5a48b;
+}
+#dragongreenthree{
+  background-color: #2D4B56;
+}
+#wyvernpurplezero{
+  background-color: #302C4F;
+}
+#wyvernpurpleone{
+  background-color: #705E88;
+}
+#wyvernpurpleone{
+  background-color: #705E88;
+}
+#wyvernbluezero{
+  background-color: #1F3964;
+}
+#wyvernblueone{
+  background-color: #101B2D;
+}
+#dinomediumblue{
+  background-color: #1D60D2;
+}
+#dinodeepblue{
+  background-color: #0E23A9;
+}
+#nearwhite{
+  background-color: #D8D8D8;
+}
+#nearblack{
+  background-color: #141414;
+}
+#blackdye{
+  background-color: #020202;
+}
+#bluedye{
+  background-color: #ffffff;
+}
+#browndye{
+  background-color: #2D1E0F;
+}
+#cyandye{
+  background-color: #ffffff;
+}
+#forestdye{
+  background-color: #002600;
+}
+#greendye{
+  background-color: #ffffff;
+}
+#purpledye{
+  background-color: #26007F;
+}
+#orangedye{
+  background-color: #FF3F00;
+}
+#parchmentdye{
+  background-color: #FFFF7F;
+}
+#pinkdye{
+  background-color: #FF33C1;
+}
+#unusedpurpledye{
+  background-color: #3300BF;
+}
+#reddye{
+  background-color: #ffffff;
+}
+#royaltydye{
+  background-color: #330066;
+}
+#silverdye{
+  background-color: #BFBFBF;
+}
+#skybluedye{
+  background-color: #7FAAFF;
+}
+#tandye{
+  background-color: #FFD772;
+}
+#tangerinedye{
+  background-color: #6C2105;
+}
+#whitedye{
+  background-color: #FCFCFC;
+}
+#yellowdye{
+  background-color: #ffffff;
+}
+#magentadye{
+  background-color: #CC02B2;
+}
+#brickdye{
+  background-color: #4C0702;
+}
+#cantaloupedye{
+  background-color: #FF5400;
+}
+#muddye{
+  background-color: #0F0A05;
+}
+#navydye{
+  background-color: #070726;
+}
+#olivedye{
+  background-color: #7F7F19;
+}
+#steelgray{
+  background-color: #ffffff;
+}
