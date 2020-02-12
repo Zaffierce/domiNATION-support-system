@@ -38,7 +38,9 @@
           <option value="">Please choose...</option>
           <option value="ticketGeneral">General assistance</option>
           <option value="ticketElementChoice">Element Request</option>
-          <option value="ticketPatreonChoice">Patreon Request</option>
+          <% if (user.isPatreon === true) { %>
+            <option value="ticketPatreonChoice">Patreon Request</option>
+          <% } %>
           <option value="banAppeal">Ban Appeal</option>
           <option value="reportABug">Report a Bug</option>
         </select>

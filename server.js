@@ -187,17 +187,25 @@ app.post('/form_initial', catchAsync(async(req, res) => {
       
     }
     if (ticketType === "ticketElementChoice") {
-      console.log(req.body);
       res.render('./pages/forms/elementRequestChoice', {user : validateUser, generalInfo: initialInfo});
     }
     if (ticketType === "elementEvent") {
-    res.render('./pages/forms/ticketElement', {user : validateUser, generalInfo: initialInfo});
+      res.render('./pages/forms/ticketElement', {user : validateUser, generalInfo: initialInfo});
     }
     if (ticketType === "elementTransfer") {
       res.render('./pages/forms/ticketElementXfr', {user : validateUser, generalInfo: initialInfo});
     }
     if (ticketType === "ticketPatreonChoice") {
-      res.redirect('/new/patreon');
+        res.render('./pages/forms/patreonRequestChoice', {user : validateUser, generalInfo: initialInfo});
+    }
+    if (ticketType === "patreonMonthlyDino") {
+      client.query('select * from dinosaurs order by name asc;').then(sqlResult => {
+        console.log(sqlResult.rows);
+        res.render('./pages/forms/ticketPatreonDinoRequest', {user : validateUser, generalInfo: initialInfo, dino_names : sqlResult.rows});
+      })
+    }
+    if (ticketType === "patreonDinoInsurance") {
+      res.render('./pages/forms/ticketPatreonDinoInsurance', {user : validateUser, generalInfo: initialInfo});
     }
     if (ticketType === "banAppeal") {
       res.render('./pages/forms/ticketBanAppeal', {user : validateUser, generalInfo: initialInfo});

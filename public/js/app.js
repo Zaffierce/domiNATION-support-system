@@ -14,8 +14,17 @@ $(() => {
       form.classList.add('was-validated');
     }, false);
   });
+  
+  // $('#test').click(function(event) {
+  //   $('.gen').removeAttr('hidden');
+  //   //hide some divs
+  //   //unhide button
+  // });
 
 });
+
+
+
 
 
 // //Implement a queue system for a Back button?
