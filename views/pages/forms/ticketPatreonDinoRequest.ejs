@@ -27,7 +27,9 @@
             <%- include('../../partials/dinoList.ejs'); %>
           </select>
 
-          <label for="patreonDinoColored">Do you want your dino colored?</label>
+          <label for="patreonDinoColored">Do you want your dino colored?
+            <div class="regions warning" hidden>***Warning:  This will result in your dinosaur being Spayed/Neutered.***</div>
+          </label>
           <select name="patreonDinoColored" class="form-control" id="patreonDinoColored">
             <option value="no">No</option>
             <option value="yes">Yes</option>

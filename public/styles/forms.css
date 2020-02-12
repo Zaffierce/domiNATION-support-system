@@ -12,6 +12,11 @@
   text-align: center;
 }
 
+.warning {
+  font-size: 12px;
+  color: red;
+}
+
 #red {
   background-color: #ff0000;
 }

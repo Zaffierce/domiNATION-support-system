@@ -201,10 +201,11 @@ app.post('/form_initial', catchAsync(async(req, res) => {
     if (ticketType === "patreonMonthlyDino") {
       client.query('select * from dinosaurs order by name asc;').then(sqlDinosaurs => {
         client.query('select * from dinocolors;').then(sqlDinoColors => {
-          res.render('./pages/forms/ticketPatreonDinoRequest', {user : validateUser, 
-                                                                generalInfo: initialInfo, 
-                                                                dino_names : sqlDinosaurs.rows,
-                                                                dino_colors: sqlDinoColors.rows});
+          res.render('./pages/forms/ticketPatreonDinoRequest', 
+          {user : validateUser, 
+          generalInfo: initialInfo, 
+          dino_names : sqlDinosaurs.rows,
+          dino_colors: sqlDinoColors.rows});
         });
       });
     }
