@@ -6,11 +6,18 @@
   display: none;
 }
 
-.dinoText {
+.dinoColorBox {
+  width: 50px;
+  height: 25px;
+  float: right;
+  border: 1px solid black;
+}
+
+/* .dinoText {
   color: #FFFFFF;
   text-shadow: 1px 1px 4px black, 0 0 1em black, 0 0 0.2em black;
   text-align: center;
-}
+} */
 
 .warning {
   font-size: 12px;

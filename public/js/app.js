@@ -1,5 +1,6 @@
 'use strict';
 
+
 $(() => {
 
 
@@ -18,20 +19,20 @@ $(() => {
   $('#patreonDinoColored').change(function(event) {
     if ($(this).val() === 'yes') {
       $('.regions').removeAttr("hidden");
-      //Unhide some stuff
-      console.log("value was changed to yes")
     } else if ($(this).val() === 'no') {
-      //Hide some stuff
       $('.regions').attr("hidden", "hidden");
-      console.log("value was changed to no");
     }
   });
+
+  $('.dinoColorPicker').change(function(event) {
+    if ($(this).val() === 'na') {
+    $(this).parent().find('.dinoColorBox').attr("hidden", "hidden");  
+    } else {
+      $(this).parent().find('.dinoColorBox').removeAttr("hidden");
+      $(this).parent().find('.dinoColorBox').css("background-color", '#'+$(this).children('option:selected').attr("id"));
+    }
+  })  
   
-  // $('#test').click(function(event) {
-  //   $('.gen').removeAttr('hidden');
-  //   //hide some divs
-  //   //unhide button
-  // });
 
 });
 

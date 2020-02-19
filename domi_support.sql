@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.11 (Ubuntu 10.11-1.pgdg18.04+1)
--- Dumped by pg_dump version 10.11 (Ubuntu 10.11-1.pgdg18.04+1)
+-- Dumped from database version 10.9 (Ubuntu 10.9-1.pgdg18.04+1)
+-- Dumped by pg_dump version 10.9 (Ubuntu 10.9-1.pgdg18.04+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -41,7 +41,7 @@ SET default_with_oids = false;
 CREATE TABLE public.dinocolors (
     id integer,
     color_name character varying(255),
-    color_id character varying(255)
+    color_hex character varying(255)
 );
 
 
@@ -92,89 +92,89 @@ ALTER TABLE ONLY public.dinosaurs ALTER COLUMN id SET DEFAULT nextval('public.di
 -- Data for Name: dinocolors; Type: TABLE DATA; Schema: public; Owner: jon
 --
 
-COPY public.dinocolors (id, color_name, color_id) FROM stdin;
-1	Red	red
-2	Blue	blue
-3	Green	green
-4	Yellow	yellow
-5	Cyan	cyan
-6	Magenta	magenta
-7	Light Green	lightgreen
-8	Light Grey	lightgrey
-9	Light Brown	lightbrown
-10	Light Orange	lightorange
-12	Light Red	lightred
-11	Light Yellow	lightyellow
-13	Dark Grey	darkgrey
-14	Black	black
-15	Brown	brown
-16	Dark Green	darkgreen
-17	Dark Red	darkred
-18	White	white
-19	Dino Light Red	dinolightred
-20	Dino Dark Red	dinodarkred
-21	Dino Light Orange	dinolightorange
-22	Dino Dark Orange	dinodarkorange
-23	Dino Light Yellow	dinolightyellow
-24	Dino Dark Yellow	dinodarkyellow
-25	Dino Light Green	dinolightgreen
-26	Dino Medium Green	dinomediumgreen
-27	Dino Dark Green	dinodarkgreen
-28	Dino Light Blue	dinolightblue
-29	Dino Dark Blue	dinodarkblue
-30	Dino Light Purple	dinolightpurple
-31	Dino Dark Purple	dinodarkpurple
-32	Dino Light Brown	dinolightbrown
-33	Dino Medium Brown	dinomediumbrown
-34	Dino Dark Brown	dinodarkbrown
-35	Dino Darker Grey	dinodarkergrey
-36	Dino Albino	dinoalbino
-37	BigFoot0	bigfootzero
-38	BigFoot4	bigfootfour
-39	BigFoot5	bigfootfive
-40	WolfFur	wolffur
-41	DarkWolfFur	darkwolffur
-42	DragonBase0	dragonbasezero
-43	DragonBase1	dragonbaseone
-44	DragonFire	dragonfire
-45	DragonGreen0	dragongreenzero
-46	DragonGreen1	dragongreenone
-47	DragonGreen2	dragongreentwo
-48	DragonGreen3	dragongreenthree
-49	WyvernPurple0	wyvernpurplezero
-50	WyvernPurple1	wyvernpurpleone
-51	WyvernBlue0	wyvernbluezero
-52	WyvernBlue1	wyvernblueone
-53	Dino Medium Blue	dinomediumblue
-54	Dino Deep Blue	dinodeepblue
-55	NearWhite	nearwhite
-56	NearBlack	nearblack
-201	Black Dye	blackdye
-202	Blue Dye	bluedye
-203	Brown Dye	browndye
-204	Cyan Dye	cyandye
-205	Forest Dye	forestdye
-206	Green Dye	greendye
-207	Purple Dye	purpledye
-208	Orange Dye	orangedye
-209	Parchment Dye	parchmentdye
-210	Pink Dye	pinkdye
-211	Unused Purple Dye	unusedpurpledye
-212	Red Dye	reddye
-213	Royalty Dye	royaltydye
-214	Silver Dye	silverdye
-215	Sky Blue Dye	skybluedye
-216	Tan Dye	tandye
-217	Tangerine Dye	tangerinedye
-218	White Dye	whitedye
-219	Yellow Dye	yellowdye
-220	Magenta Dye	magentadye
-221	Brick Dye	brickdye
-222	Cantaloupe Dye	cantaloupedye
-223	Mud Dye	muddye
-224	Navy Dye	navydye
-225	Olive Dye	olivedye
-226	Steel Gray	steelgray
+COPY public.dinocolors (id, color_name, color_hex) FROM stdin;
+1	Red	ff0000
+2	Blue	0000ff
+3	Green	00ff00
+4	Yellow	ffff00
+5	Cyan	00ffff
+6	Magenta	ff00ff
+7	Light Green	c0ffba
+8	Light Grey	c8caca
+9	Light Brown	786759
+10	Light Orange	ffb46c
+12	Light Red	fffa8a
+11	Light Yellow	ff756c
+13	Dark Grey	7b7b7b
+14	Black	3b3b3b
+15	Brown	593a2a
+16	Dark Green	224900
+17	Dark Red	812118
+18	White	ffffff
+19	Dino Light Red	ffa8a8
+20	Dino Dark Red	592b2b
+21	Dino Light Orange	ffb694
+22	Dino Dark Orange	88532f
+23	Dino Light Yellow	cacaa0
+24	Dino Dark Yellow	94946c
+25	Dino Light Green	e0ffe0
+26	Dino Medium Green	799479
+27	Dino Dark Green	224122
+28	Dino Light Blue	d9e0ff
+29	Dino Dark Blue	394263
+30	Dino Light Purple	e4d9ff
+31	Dino Dark Purple	403459
+32	Dino Light Brown	ffe0ba
+33	Dino Medium Brown	948575
+34	Dino Dark Brown	594e41
+35	Dino Darker Grey	595959
+36	Dino Albino	ffffff
+37	BigFoot0	b79683
+38	BigFoot4	eadad5
+39	BigFoot5	d0a794
+40	WolfFur	c3b39f
+41	DarkWolfFur	887666
+42	DragonBase0	a0664b
+43	DragonBase1	cb7956
+44	DragonFire	bc4f00
+45	DragonGreen0	79846c
+46	DragonGreen1	909c79
+47	DragonGreen2	a5a48b
+48	DragonGreen3	2D4B56
+49	WyvernPurple0	302C4F
+50	WyvernPurple1	705E88
+51	WyvernBlue0	1F3964
+52	WyvernBlue1	101B2D
+53	Dino Medium Blue	1D60D2
+54	Dino Deep Blue	0E23A9
+55	NearWhite	D8D8D8
+56	NearBlack	141414
+201	Black Dye	020202
+202	Blue Dye	ffffff
+203	Brown Dye	2D1E0F
+204	Cyan Dye	ffffff
+205	Forest Dye	002600
+206	Green Dye	ffffff
+207	Purple Dye	26007F
+208	Orange Dye	FF3F00
+209	Parchment Dye	FFFF7F
+210	Pink Dye	FF33C1
+211	Unused Purple Dye	3300BF
+212	Red Dye	ffffff
+213	Royalty Dye	330066
+214	Silver Dye	BFBFBF
+215	Sky Blue Dye	7FAAFF
+216	Tan Dye	FFD772
+217	Tangerine Dye	6C2105
+218	White Dye	FCFCFC
+219	Yellow Dye	ffffff
+220	Magenta Dye	CC02B2
+221	Brick Dye	4C0702
+222	Cantaloupe Dye	FF5400
+223	Mud Dye	0F0A05
+224	Navy Dye	070726
+225	Olive Dye	7F7F19
+226	Steel Gray	ffffff
 \.
 
 
