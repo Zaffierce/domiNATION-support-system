@@ -54,11 +54,37 @@ app.get('/', catchAsync(async(req, res) => {
   if (req.cookies['Token'] == null) {
     res.redirect('/login');
   } else {
+    let openTickets = 0;
     const validateUser = await authenticateUser(req.cookies['Token']);
-      res.render('./pages/index', {user : validateUser});
+    //Sad code makes me sad.
+    //Database relations pls.
+    checkDB('ticket_general', validateUser.id).then(count_gen => {
+      openTickets += count_gen.rowCount;
+      checkDB('element_event', validateUser.id).then(count_element => {
+        openTickets += count_element.rowCount;
+        checkDB('element_transfer', validateUser.id).then(count_transfer => {
+          openTickets += count_transfer.rowCount;
+          checkDB('patreon_dino_request', validateUser.id).then(count_dino_reqs => {
+            openTickets += count_dino_reqs.rowCount;
+            checkDB('patreon_dino_insurance', validateUser.id).then(count_insurance => {
+              openTickets += count_insurance.rowCount;
+              checkDB('ban_appeal', validateUser.id).then(count_ban_appeal => {
+                openTickets += count_ban_appeal.rowCount;
+                checkDB('bug_report', validateUser.id).then(count_bug_report => {
+                  openTickets += count_bug_report.rowCount;
+                  console.log(openTickets);
+                  res.render('./pages/index', {user : validateUser, openTickets});
+                })
+              })
+            })
+          })
+        })
+      })
+    });
     }
   }
 ));
+
 
 app.get('/login', (req, res) => {
   res.redirect(`https://discordapp.com/api/oauth2/authorize?client_id=${CLIENT_ID}&scope=identify&response_type=code&redirect_uri=${redirect}`);
@@ -86,6 +112,157 @@ app.get('/api/discord/callback', catchAsync(async (req, res) => {
   res.cookie('Token', json.access_token, {maxAge: cookieExpirationInMS, httpOnly: true});
   res.redirect('/');
 }));
+
+app.use('/api/discord', router);
+app.use((err, req, res, next) => {
+  switch (err.message) {
+    case 'NoCodeProvided':
+      return res.status(400).send({
+        status: 'PLEASE LOG IN',
+        error: err.message,
+      });
+    case 'InvalidCode':
+      return res.status(401).send({
+        status: 'REVOKED TOKEN',
+        error: err.message,
+      });  
+    default:
+      return res.status(500).send({
+        status: 'ERROR',
+        error: err.message,
+      });
+  }
+});
+
+app.get('/admin', catchAsync(async(req, res) => {
+  if (req.cookies['Token'] == null) {
+    res.redirect('/login');
+  } else {
+    const validateUser = await authenticateUser(req.cookies['Token']);
+    if (validateUser.isAdmin === true) {
+      res.render('./pages/adminPage', {user : validateUser});  
+    } else {
+      res.render('./pages/unauthorized');
+    }
+  }
+}));
+
+app.post('/form_initial', catchAsync(async(req, res) => {
+  if (req.cookies['Token'] == null) {
+    res.redirect('/login');
+  } else {
+    const validateUser = await authenticateUser(req.cookies['Token']);
+    let ticketType = req.body.ticketType;
+    let initialInfo = req.body;
+    console.log("Ticket type is:",ticketType);
+    console.log(validateUser);
+    if (ticketType === "ticketGeneral") {
+      res.render('./pages/forms/ticketGeneral', {user : validateUser, generalInfo: initialInfo, ticketType});
+    }
+    if (ticketType === "ticketElementChoice") {
+      res.render('./pages/forms/elementRequestChoice', {user : validateUser, generalInfo: initialInfo, ticketType});
+    }
+    if (ticketType === "elementEvent") {
+      res.render('./pages/forms/ticketElement', {user : validateUser, generalInfo: initialInfo, ticketType});
+    }
+    if (ticketType === "elementTransfer") {
+      res.render('./pages/forms/ticketElementXfr', {user : validateUser, generalInfo: initialInfo, ticketType});
+    }
+    if (ticketType === "ticketPatreonChoice") {
+      res.render('./pages/forms/patreonRequestChoice', {user : validateUser, generalInfo: initialInfo, ticketType});
+    }
+    if (ticketType === "patreonMonthlyDino") {
+      client.query('select * from dinosaurs order by name asc;').then(sqlDinosaurs => {
+        client.query('select * from dinocolors;').then(sqlDinoColors => {
+          res.render('./pages/forms/ticketPatreonDinoRequest', 
+          {user : validateUser, 
+          generalInfo: initialInfo, 
+          dino_names : sqlDinosaurs.rows,
+          dino_colors: sqlDinoColors.rows,
+          ticketType});
+        });
+      });
+    }
+    if (ticketType === "patreonDinoInsurance") {
+      res.render('./pages/forms/ticketPatreonDinoInsurance', {user : validateUser, generalInfo: initialInfo, ticketType});
+    }
+    if (ticketType === "banAppeal") {
+      res.render('./pages/forms/ticketBanAppeal', {user : validateUser, generalInfo: initialInfo, ticketType});
+    }
+    if (ticketType === "reportABug") {
+      res.render('./pages/forms/ticketReportABug', {user : validateUser, generalInfo: initialInfo, ticketType});
+    }    
+  }   
+}));
+
+app.post('/form_submit', catchAsync(async(req, res) =>{
+  if (req.cookies['Token'] == null) {
+    res.redirect('/login');
+  } else {
+    const validateUser = await authenticateUser(req.cookies['Token']);
+    let sqlQueryInsert;
+    let sqlValueArr = [];
+
+    // console.log("********TICKET SUBMITTED*******");
+    // console.log(req.body);
+
+    let ticketType = req.body.typeOfRequest;
+    let ticket = req.body;
+    if (ticketType === "ticketGeneral") {
+      sqlQueryInsert = 'INSERT INTO ticket_general (ign, discord_name, discord_id, server_assistance, status, tribe_name, coordinates, issue, resolution) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);';
+      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.tribe_name, ticket.coordinates, ticket.issue, ticket.resolution];
+    }
+    if (ticketType === "elementEvent") {
+      sqlQueryInsert = 'INSERT INTO element_event (ign, discord_name, discord_id, server_assistance, status, event_name, serverid_dropoff, patreon_status, element_dropoff_location) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);';
+      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.event_name, ticket.serverid_dropoff, ticket.patreon, ticket.element_dropoff_location];
+    }
+    if (ticketType === "elementTransfer") {
+      sqlQueryInsert = 'INSERT INTO element_transfer (ign, discord_name, discord_id, server_assistance, status, transfer_amount, serverid_pickup, server_pickup_location, serverid_dropoff, server_dropoff_location) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);';
+      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.transfer_amount, ticket.serverid_pickup, ticket.server_pickup_location, ticket.serverid_dropff, ticket.server_dropoff_location];
+    }
+    if (ticketType === "patreonMonthlyDino") {
+      sqlQueryInsert = 'INSERT INTO patreon_dino_request (ign, discord_name, discord_id, server_assistance, status, serverid_dropoff, dino_name, colored, region0, region1, region2, region3, region4, region5, sex, server_dropoff_location, email_address) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17);';
+      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.serverid_dropoff, ticket.dino_choice, ticket.dino_color, ticket.region0, ticket.region1, ticket.region2, ticket.region3, ticket.region4, ticket.region5, ticket.sex, ticket.server_dropoff_location, ticket.email_address];
+    }
+    if (ticketType === "patreonDinoInsurance") {
+      sqlQueryInsert = 'INSERT INTO patreon_dino_insurance (ign, discord_name, discord_id, server_assistance, status, dino_link, email_address, month_claimed, explanation) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);';
+      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.link, ticket.email_address, ticket.month_claimed, ticket.explanation];
+    }
+    if (ticketType === "banAppeal") {
+      sqlQueryInsert = 'INSERT INTO ban_appeal (ign, discord_name, discord_id, server_assistance, status, steam_id, email_address, banned_reason, unban_reason) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);';
+      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.steam_id, ticket.email_address, ticket.reason, ticket.unbanned_explanation];
+    }
+    if (ticketType === "reportABug") {
+      sqlQueryInsert = 'INSERT INTO bug_report (ign, discord_name, discord_id, server_assistance, status, issue, recreate, lost_items) VALUES ($1, $2, $3, $4, $5, $6, $7, $8);';
+      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.issue, ticket.recreate, ticket.lost_items];
+    }
+    client.query(sqlQueryInsert, sqlValueArr);
+    res.redirect('/');
+  }
+}))
+
+//Just pass validatedUser.isAdmin and do something based off of that.
+app.get('/new', catchAsync(async(req, res) => {
+  if (req.cookies['Token'] == null) {
+    res.redirect('/login');
+  } else {
+    const validateUser = await authenticateUser(req.cookies['Token']);
+      res.render('./pages/forms/newTicket', {user : validateUser});
+    }
+  }
+));
+
+app.get('/status', catchAsync(async(req, res) => {
+  if (req.cookies['Token'] == null) {
+    res.redirect('/login');
+  } else {
+    const validateUser = await authenticateUser(req.cookies['Token']);
+      res.render('./pages/status', {user : validateUser});
+    }
+  }
+));
+
+app.get('*', (req, res) => {res.status(404).render('pages/error')});
 
 async function authenticateUser(token) {
   let result = {
@@ -141,117 +318,8 @@ async function authenticateUser(token) {
   }
 }
 
-app.use('/api/discord', router);
-app.use((err, req, res, next) => {
-  switch (err.message) {
-    case 'NoCodeProvided':
-      return res.status(400).send({
-        status: 'PLEASE LOG IN',
-        error: err.message,
-      });
-    case 'InvalidCode':
-      return res.status(401).send({
-        status: 'REVOKED TOKEN',
-        error: err.message,
-      });  
-    default:
-      return res.status(500).send({
-        status: 'ERROR',
-        error: err.message,
-      });
-  }
-});
-
-app.get('/admin', catchAsync(async(req, res) => {
-  if (req.cookies['Token'] == null) {
-    res.redirect('/login');
-  } else {
-    const validateUser = await authenticateUser(req.cookies['Token']);
-    if (validateUser.isAdmin === true) {
-      res.render('./pages/adminPage', {user : validateUser});  
-    } else {
-      res.render('./pages/unauthorized');
-    }
-  }
-}));
-
-app.post('/form_initial', catchAsync(async(req, res) => {
-  if (req.cookies['Token'] == null) {
-    res.redirect('/login');
-  } else {
-    const validateUser = await authenticateUser(req.cookies['Token']);
-    let ticketType = req.body.ticketType;
-    let initialInfo = req.body;
-    console.log("Ticket type is:",ticketType);
-    if (ticketType === "ticketGeneral") {
-      
-    }
-    if (ticketType === "ticketElementChoice") {
-      res.render('./pages/forms/elementRequestChoice', {user : validateUser, generalInfo: initialInfo});
-    }
-    if (ticketType === "elementEvent") {
-      res.render('./pages/forms/ticketElement', {user : validateUser, generalInfo: initialInfo});
-    }
-    if (ticketType === "elementTransfer") {
-      res.render('./pages/forms/ticketElementXfr', {user : validateUser, generalInfo: initialInfo});
-    }
-    if (ticketType === "ticketPatreonChoice") {
-        res.render('./pages/forms/patreonRequestChoice', {user : validateUser, generalInfo: initialInfo});
-    }
-    if (ticketType === "patreonMonthlyDino") {
-      client.query('select * from dinosaurs order by name asc;').then(sqlDinosaurs => {
-        client.query('select * from dinocolors;').then(sqlDinoColors => {
-          res.render('./pages/forms/ticketPatreonDinoRequest', 
-          {user : validateUser, 
-          generalInfo: initialInfo, 
-          dino_names : sqlDinosaurs.rows,
-          dino_colors: sqlDinoColors.rows});
-        });
-      });
-    }
-    if (ticketType === "patreonDinoInsurance") {
-      res.render('./pages/forms/ticketPatreonDinoInsurance', {user : validateUser, generalInfo: initialInfo});
-    }
-    if (ticketType === "banAppeal") {
-      res.render('./pages/forms/ticketBanAppeal', {user : validateUser, generalInfo: initialInfo});
-    }
-    if (ticketType === "reportABug") {
-      res.redirect('/new/bug');
-    }    
-  }   
-}));
-
-app.post('/form_submit', catchAsync(async(req, res) =>{
-  if (req.cookies['Token'] == null) {
-    res.redirect('/login');
-  } else {
-    console.log("********TICKET SUBMITTED*******")
-    console.log(req.body);
-    res.redirect('/new');
-  }
-}))
-
-//Just pass validatedUser.isAdmin and do something based off of that.
-app.get('/new', catchAsync(async(req, res) => {
-  if (req.cookies['Token'] == null) {
-    res.redirect('/login');
-  } else {
-    const validateUser = await authenticateUser(req.cookies['Token']);
-      res.render('./pages/forms/newTicket', {user : validateUser});
-    }
-  }
-));
-
-app.get('/status', catchAsync(async(req, res) => {
-  if (req.cookies['Token'] == null) {
-    res.redirect('/login');
-  } else {
-    const validateUser = await authenticateUser(req.cookies['Token']);
-      res.render('./pages/status', {user : validateUser});
-    }
-  }
-));
-
-app.get('*', (req, res) => {res.status(404).render('pages/error')});
+function checkDB(table, id) {
+  return client.query(`SELECT * FROM ${table} where discord_id = '${id}';`);
+}
 
 app.listen(PORT, () => console.log(`Server is live on ${PORT}`));

@@ -17,80 +17,80 @@
     <div class="form-row">
       <legend>Patreon Dino Request</legend>
       <div class="form-group col-md-12">
-          <label for="patreonDinoServer">Which server do you want your dino on?</label>
-          <select name="patreonDinoServer" class="form-control" id="patreonDinoServer" required>
+          <label for="serverid_dropoff">Which server do you want your dino on?</label>
+          <select name="serverid_dropoff" class="form-control" id="serverid_dropoff" required>
           <%- include('../../partials/serverList.ejs'); %>
           </select>
 
-          <label for="patreonDinoChoice">Please select what dino you would like</label>
-          <select name="patreonDinoChoice" class="form-control" id="patreonDinoChoice" required>
+          <label for="dino_choice">Please select what dino you would like</label>
+          <select name="dino_choice" class="form-control" id="dino_choice" required>
             <%- include('../../partials/dinoList.ejs'); %>
           </select>
 
-          <label for="patreonDinoColored">Do you want your dino colored?
+          <label for="dino_color">Do you want your dino colored?
             <div class="regions warning" hidden>***Warning:  This will result in your dinosaur being Spayed/Neutered.***</div>
           </label>
-          <select name="patreonDinoColored" class="form-control" id="patreonDinoColored">
+          <select name="dino_color" class="form-control" id="dino_color">
             <option value="no">No</option>
             <option value="yes">Yes</option>
           </select>
 
           <div class="regions form-row" hidden>
             <div class="form-group col-md-4">
-              <label for="patreonDinoRegion0">Region 0 -&nbsp;<div class="dinoColorBox" hidden></div></label>
-              <select name="patreonDinoRegion0" class="form-control dinoColorPicker" id="patreonDinoRegion0">
+              <label for="region0">Region 0 -&nbsp;<div class="dinoColorBox" hidden></div></label>
+              <select name="region0" class="form-control dinoColorPicker" id="region0">
                 <%- include('../../partials/dinoColors.ejs'); %>
               </select>
             </div>
 
             <div class="form-group col-md-4">
-              <label for="patreonDinoRegion1">Region 1 -&nbsp;<div class="dinoColorBox" hidden></div></label>
-              <select name="patreonDinoRegion1" class="form-control dinoColorPicker" id="patreonDinoRegion1">
+              <label for="region1">Region 1 -&nbsp;<div class="dinoColorBox" hidden></div></label>
+              <select name="region1" class="form-control dinoColorPicker" id="region1">
               <%- include('../../partials/dinoColors.ejs'); %>
               </select>
             </div>
 
             <div class="form-group col-md-4">
-              <label for="patreonDinoRegion2">Region 2 -&nbsp;<div class="dinoColorBox" hidden></div></label>
-              <select name="patreonDinoRegion2" class="form-control dinoColorPicker" id="patreonDinoRegion2">
+              <label for="region2">Region 2 -&nbsp;<div class="dinoColorBox" hidden></div></label>
+              <select name="region2" class="form-control dinoColorPicker" id="region2">
                 <%- include('../../partials/dinoColors.ejs'); %>
               </select>
             </div>
 
             <div class="form-group col-md-4">
-              <label for="patreonDinoRegion3">Region 3 -&nbsp;<div class="dinoColorBox" hidden></div></label>
-              <select name="patreonDinoRegion3" class="form-control dinoColorPicker" id="patreonDinoRegion3">
+              <label for="region3">Region 3 -&nbsp;<div class="dinoColorBox" hidden></div></label>
+              <select name="region3" class="form-control dinoColorPicker" id="region3">
                 <%- include('../../partials/dinoColors.ejs'); %>
               </select>
             </div>
 
             <div class="form-group col-md-4">
-              <label for="patreonDinoRegion4">Region 4 -&nbsp;<div class="dinoColorBox" hidden></div></label>
-              <select name="patreonDinoRegion4" class="form-control dinoColorPicker" id="patreonDinoRegion4">
+              <label for="region4">Region 4 -&nbsp;<div class="dinoColorBox" hidden></div></label>
+              <select name="region4" class="form-control dinoColorPicker" id="region4">
                 <%- include('../../partials/dinoColors.ejs'); %>
               </select>
             </div>
 
             <div class="form-group col-md-4">
-              <label for="patreonDinoRegion5">Region 5 -&nbsp;<div class="dinoColorBox" hidden></div></label>
-              <select name="patreonDinoRegion5" class="form-control dinoColorPicker" id="patreonDinoRegion5">
+              <label for="region5">Region 5 -&nbsp;<div class="dinoColorBox" hidden></div></label>
+              <select name="region5" class="form-control dinoColorPicker" id="region5">
                 <%- include('../../partials/dinoColors.ejs'); %>
               </select>
             </div>
           </div>
 
-          <label for="patreonDinoSex">Do you want a specific sex?</label>
-          <select name="patreonDinoSex" class="form-control" id="patreonDinoSex">
+          <label for="sex">Do you want a specific sex?</label>
+          <select name="sex" class="form-control" id="sex">
             <option value="na">N/A</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
           </select>
 
-          <label for="patreonDinoDropoff">Specific drop-off location & PIN code:</label>
-          <input type="text" name="patreonDinoDropoff" class="form-control" required>
+          <label for="server_dropoff_location">Specific drop-off location & PIN code:</label>
+          <input type="text" name="server_dropoff_location" class="form-control" required>
 
-          <label for="patreonDinoEmail">Please provide your Patreon Email Address</label>
-          <input type="text" name="patreonDinoEmail" class="form-control" required>
+          <label for="email_address">Please provide your Patreon Email Address</label>
+          <input type="text" name="email_address" class="form-control" required>
       </div>
 
     </div>

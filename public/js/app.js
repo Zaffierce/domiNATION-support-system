@@ -16,7 +16,7 @@ $(() => {
     }, false);
   });
 
-  $('#patreonDinoColored').change(function(event) {
+  $('#dino_color').change(function(event) {
     if ($(this).val() === 'yes') {
       $('.regions').removeAttr("hidden");
     } else if ($(this).val() === 'no') {

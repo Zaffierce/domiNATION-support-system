@@ -24,16 +24,19 @@
     <div class="form-row">
       <legend>Element from an Event:</legend>
       <div class="form-group col-md-6">
-          <label for="eleEventName">Which Event did you attend?</label>
-          <input type="text" name="eleEventName" class="form-control" required>
-          <label for="eleEventServer">Which server do you want the element on?</label>
-          <select name="eleEventServer" class="form-control" id="eleEventServer" required>
+          <label for="event_name">Which Event did you attend?</label>
+          <input type="text" name="event_name" class="form-control" required>
+
+          <label for="serverid_dropoff">Which server do you want the element on?</label>
+          <select name="serverid_dropoff" class="form-control" id="server_dropoff" required>
           <%- include('../../partials/serverList.ejs'); %>
           </select>
-          <label for="elePatreon">Are you Patreon?</label>
-          <input type="text" name="elePatreon" class="form-control" required>
-          <label for="eleDropoff">PLease provide a specific drop-off location and PIN code:</label>
-          <input type="text" name="eleDropoff" class="form-control" required>
+
+          <label for="patreon">Are you Patreon?</label>
+          <input type="text" name="patreon" class="form-control" required>
+
+          <label for="element_dropoff_location">PLease provide a specific drop-off location and PIN code:</label>
+          <input type="text" name="element_dropoff_location" class="form-control" required>
         </fieldset>
       </div>
     </div>

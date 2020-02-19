@@ -24,25 +24,25 @@
     <div class="form-row">
       <legend>Transfer Element:</legend>
       <div class="form-group col-md-6">
-          <label for="eleXfrAmount">How much element do you wish to transfer?</label>
-          <input type="number" name="eleXfrAmount" class="form-control" required>
+          <label for="transfer_amount">How much element do you wish to transfer?</label>
+          <input type="number" name="transfer_amount" class="form-control" required>
 
-          <label for="eleXfrServerFrom">Which server do you wish to transfer FROM?</label>
-          <select name="eleXfrServerFrom" class="form-control" id="eleXfrServerFrom" required>
+          <label for="serverid_pickup">Which server do you wish to transfer FROM?</label>
+          <select name="serverid_pickup" class="form-control" id="serverid_pickup" required>
           <%- include('../../partials/serverList.ejs'); %>
           </select>
 
-          <label for="eleXfrPickup">Specific pickup location & PIN code:</label>
-          <input type="text" name="eleXfrPickup" class="form-control" required>
+          <label for="server_pickup_location">Specific pickup location & PIN code:</label>
+          <input type="text" name="server_pickup_location" class="form-control" required>
 
 
-          <label for="eleXfrServerTo">Which server do you wish to transfer TO?</label>
-          <select name="eleXfrServerTo" class="form-control" id="eleXfrServerTo" required>
+          <label for="serverid_dropoff">Which server do you wish to transfer TO?</label>
+          <select name="serverid_dropoff" class="form-control" id="serverid_dropoff" required>
           <%- include('../../partials/serverList.ejs'); %>
           </select>
 
-          <label for="eleXfrDropoff">Specific drop-off location & PIN code:</label>
-          <input type="text" name="eleXfrDropoff" class="form-control" required>
+          <label for="server_dropoff_location">Specific drop-off location & PIN code:</label>
+          <input type="text" name="server_dropoff_location" class="form-control" required>
         </fieldset>
       </div>
     </div>
