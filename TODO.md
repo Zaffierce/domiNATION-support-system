@@ -21,3 +21,6 @@ TODO
 
 [] Ban Appeal: Reason for banned & unbans
     - Increase size of boxes for sad story time.
+
+[] DATE!
+    - Add Date/Time that ticket was submitted.

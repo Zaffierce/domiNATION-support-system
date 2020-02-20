@@ -54,33 +54,14 @@ app.get('/', catchAsync(async(req, res) => {
   if (req.cookies['Token'] == null) {
     res.redirect('/login');
   } else {
-    let openTickets = 0;
     const validateUser = await authenticateUser(req.cookies['Token']);
-    //Sad code makes me sad.
-    //Database relations pls.
-    checkDB('ticket_general', validateUser.id).then(count_gen => {
-      openTickets += count_gen.rowCount;
-      checkDB('element_event', validateUser.id).then(count_element => {
-        openTickets += count_element.rowCount;
-        checkDB('element_transfer', validateUser.id).then(count_transfer => {
-          openTickets += count_transfer.rowCount;
-          checkDB('patreon_dino_request', validateUser.id).then(count_dino_reqs => {
-            openTickets += count_dino_reqs.rowCount;
-            checkDB('patreon_dino_insurance', validateUser.id).then(count_insurance => {
-              openTickets += count_insurance.rowCount;
-              checkDB('ban_appeal', validateUser.id).then(count_ban_appeal => {
-                openTickets += count_ban_appeal.rowCount;
-                checkDB('bug_report', validateUser.id).then(count_bug_report => {
-                  openTickets += count_bug_report.rowCount;
-                  console.log(openTickets);
-                  res.render('./pages/index', {user : validateUser, openTickets});
-                })
-              })
-            })
-          })
-        })
-      })
-    });
+    const usersOpenTickets = await findUserTickets(validateUser.id, "NEW");
+
+    console.log(usersOpenTickets);
+
+
+    res.render('./pages/index', {user : validateUser, openTickets : usersOpenTickets});
+    
     }
   }
 ));
@@ -154,8 +135,9 @@ app.post('/form_initial', catchAsync(async(req, res) => {
     const validateUser = await authenticateUser(req.cookies['Token']);
     let ticketType = req.body.ticketType;
     let initialInfo = req.body;
-    console.log("Ticket type is:",ticketType);
-    console.log(validateUser);
+    // console.log("Ticket type is:",ticketType);
+    // console.log(validateUser);
+    //Change to switch
     if (ticketType === "ticketGeneral") {
       res.render('./pages/forms/ticketGeneral', {user : validateUser, generalInfo: initialInfo, ticketType});
     }
@@ -208,6 +190,7 @@ app.post('/form_submit', catchAsync(async(req, res) =>{
 
     let ticketType = req.body.typeOfRequest;
     let ticket = req.body;
+    //Change to switch
     if (ticketType === "ticketGeneral") {
       sqlQueryInsert = 'INSERT INTO ticket_general (ign, discord_name, discord_id, server_assistance, status, tribe_name, coordinates, issue, resolution) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);';
       sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.tribe_name, ticket.coordinates, ticket.issue, ticket.resolution];
@@ -318,8 +301,37 @@ async function authenticateUser(token) {
   }
 }
 
-function checkDB(table, id) {
-  return client.query(`SELECT * FROM ${table} where discord_id = '${id}';`);
-}
+async function findUserTickets(userID, status) {
+  let openTickets = 0;
+  try {
+    let count_gen = await checkDB('ticket_general', userID, status);
+    let count_element = await checkDB('element_event', userID, status);
+    let count_transfer = await checkDB('element_transfer', userID, status);
+    let count_dino_req = await checkDB('patreon_dino_request', userID, status);
+    let count_insurance = await checkDB('patreon_dino_insurance', userID, status);
+    let count_ban = await checkDB('ban_appeal', userID, status);
+    let count_bug = await checkDB('bug_report', userID, status);
+
+    //Silly thing is silly.
+    openTickets += count_gen.rowCount += count_element.rowCount += count_transfer.rowCount
+    += count_dino_req.rowCount += count_insurance.rowCount += count_ban.rowCount 
+    += count_bug.rowCount;
+
+    return {
+      ticketCount : openTickets,
+      general: count_gen.rows, 
+      element: count_element.rows, 
+      transfer: count_transfer.rows, 
+      dino_req: count_dino_req.rows, 
+      dino_ins: count_insurance.rows, 
+      ban: count_ban.rows, 
+      bug: count_bug.rows
+    };
+} catch(e){ return e; }
+};
+
+function checkDB(table, userID, status) {
+  return client.query(`SELECT * FROM ${table} where discord_id = '${userID}' and status = '${status}';`);
+};
 
 app.listen(PORT, () => console.log(`Server is live on ${PORT}`));

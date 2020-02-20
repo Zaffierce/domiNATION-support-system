@@ -7,8 +7,44 @@
     <h1 class="ng-scope">Welcome</h1>
     <img src="<%=user.picture%>"/>
     <div>Your userID is <%= user.id %></div>
-    <div>You currently have <%= openTickets %> open tickets.</div>
-    </div>
+    <div>You currently have <%= openTickets.ticketCount %> open tickets.</div>
+
+      <% for (let i = 0; i < openTickets.general.length; i++) { %>
+        <h1>General Ticket</h1>
+        <h3><%= openTickets.general[i].id %></h3>
+      <% } %>
+
+      <% for (let i = 0; i < openTickets.element.length; i++) { %>
+        <h1>Element Requests</h1>
+        <h3><%= openTickets.element[i].id %></h3>
+      <% } %>
+
+      <% for (let i = 0; i < openTickets.transfer.length; i++) { %>
+        <h1>Element Transfers</h1>
+        <h3><%= openTickets.transfer[i].id %></h3>
+      <% } %>
+
+      <% for (let i = 0; i < openTickets.dino_req.length; i++) { %>
+        <h1>Patreon Dino Requests</h1>
+        <h3><%= openTickets.dino_req[i].id %></h3>
+      <% } %>
+
+      <% for (let i = 0; i < openTickets.dino_ins.length; i++) { %>
+        <h1>Patreon Dino Insurances</h1>
+        <h3><%= openTickets.dino_ins[i].id %></h3>
+      <% } %>
+
+      <% for (let i = 0; i < openTickets.ban.length; i++) { %>
+        <h1>Ban Appeal</h1>
+        <h3><%= openTickets.ban[i].id %></h3>
+      <% } %>
+
+      <% for (let i = 0; i < openTickets.bug.length; i++) { %>
+        <h1>Bug Reports</h1>
+        <h3><%= openTickets.bug[i].id %></h3>
+      <% } %>
+      
+    </div> <!--Close of content-->
 
 </body>
 </html>
