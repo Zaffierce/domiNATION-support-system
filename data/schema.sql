@@ -9,8 +9,8 @@ CREATE TABLE ticket_general (
     status VARCHAR(7),
     tribe_name VARCHAR(255),
     coordinates VARCHAR(255),
-    issue VARCHAR(255),
-    resolution VARCHAR(255)
+    issue TEXT,
+    resolution TEXT
 );
 
 DROP TABLE IF EXISTS element_event;

@@ -1,6 +1,7 @@
 <%- include('../partials/head.ejs'); %>
   <title>User: <%= user.username %> - DomiNATION Ark: Survival Evolved Community</title>
 <%- include('../partials/css.ejs'); %>
+<link rel="stylesheet" type="text/css" href="styles/forms.css">
 </head>
 <body>
     <%- include('../partials/nav.ejs'); %>
@@ -9,41 +10,143 @@
     <div>Your userID is <%= user.id %></div>
     <div>You currently have <%= openTickets.ticketCount %> open tickets.</div>
 
+    <div class="container"> <!--text center-->
+      
       <% for (let i = 0; i < openTickets.general.length; i++) { %>
-        <h1>General Ticket</h1>
-        <h3><%= openTickets.general[i].id %></h3>
+      <div class="row">
+        <div class="col-sm-3">
+          <div class="greybox infobox">
+            <span><strong>General Support Ticket</strong><br />
+            Status: <%= openTickets.general[i].status %> <br />
+            Submitted on:  2/19/2020 7:39PM</span>
+          </div>
+        </div>
+        <div class="col-sm-9">
+          <div class="greybox">
+            <% if (openTickets.general[i].issue.length > 128) { %>
+              <p><strong>Details: </strong><%= openTickets.general[i].issue.slice(0, 128)+"..." %></p>
+              <button class="btn btn-default">More Details</button>
+            <% } else {%>
+              <p><strong>Details: </strong><%= openTickets.general[i].issue %></p>
+              <button class="btn btn-default">More Details</button>
+            <% } %>
+          </div>
+        </div>
+      </div>
       <% } %>
 
       <% for (let i = 0; i < openTickets.element.length; i++) { %>
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="greybox infobox">
+              <span><strong>Element Reward Ticket</strong><br />
+              Status: <%= openTickets.element[i].status %> <br />
+              Submitted on:  2/19/2020 8:47PM
+              </span>
+            </div>
+          </div>
+          <div class="col-sm-9">
+            <div class="greybox">
+              <p><strong>Details: </strong><br />
+              Event Name: <%= openTickets.element[i].event_name %><br />
+              Server ID: <%= openTickets.element[i].serverid_dropoff %><br />
+              CCC: <%= openTickets.element[i].element_dropoff_location %>
+              </p>
+              <button class="btn btn-default">More Details</button>
+            </div>
+          </div>
+        </div>
         <h1>Element Requests</h1>
         <h3><%= openTickets.element[i].id %></h3>
       <% } %>
 
       <% for (let i = 0; i < openTickets.transfer.length; i++) { %>
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="greybox infobox">
+
+            </div>
+          </div>
+          <div class="col-sm-9">
+            <div class="greybox">
+
+            </div>
+          </div>
+        </div>
         <h1>Element Transfers</h1>
         <h3><%= openTickets.transfer[i].id %></h3>
       <% } %>
 
       <% for (let i = 0; i < openTickets.dino_req.length; i++) { %>
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="greybox infobox">
+
+            </div>
+          </div>
+          <div class="col-sm-9">
+            <div class="greybox">
+
+            </div>
+          </div>
+        </div>
         <h1>Patreon Dino Requests</h1>
         <h3><%= openTickets.dino_req[i].id %></h3>
       <% } %>
 
       <% for (let i = 0; i < openTickets.dino_ins.length; i++) { %>
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="greybox infobox">
+
+            </div>
+          </div>
+          <div class="col-sm-9">
+            <div class="greybox">
+
+            </div>
+          </div>
+        </div>
         <h1>Patreon Dino Insurances</h1>
         <h3><%= openTickets.dino_ins[i].id %></h3>
       <% } %>
 
       <% for (let i = 0; i < openTickets.ban.length; i++) { %>
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="greybox infobox">
+
+            </div>
+          </div>
+          <div class="col-sm-9">
+            <div class="greybox">
+
+            </div>
+          </div>
+        </div>
         <h1>Ban Appeal</h1>
         <h3><%= openTickets.ban[i].id %></h3>
       <% } %>
 
       <% for (let i = 0; i < openTickets.bug.length; i++) { %>
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="greybox infobox">
+
+            </div>
+          </div>
+          <div class="col-sm-9">
+            <div class="greybox">
+
+            </div>
+          </div>
+        </div>
         <h1>Bug Reports</h1>
         <h3><%= openTickets.bug[i].id %></h3>
       <% } %>
       
+    </div>
+
     </div> <!--Close of content-->
 
 </body>
