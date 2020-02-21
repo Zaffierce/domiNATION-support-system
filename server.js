@@ -343,7 +343,10 @@ function checkDB(table, userID, status) {
   return client.query(`SELECT * FROM ${table} where discord_id = '${userID}' and status = '${status}';`);
 };
 
-client.connect(() => {
-  app.listen(PORT, () => console.log(`Server is live on port ${PORT}`));
+client.connect((err) => {
+  if (err) {console.log(err) 
+  } else {
+    app.listen(PORT, () => console.log(`Server is live on port ${PORT}`));
+  }
 });
 // app.listen(PORT, () => console.log(`Server is live on ${PORT}`));
