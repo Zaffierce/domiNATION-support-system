@@ -10,7 +10,8 @@ CREATE TABLE ticket_general (
     tribe_name VARCHAR(255),
     coordinates VARCHAR(255),
     issue TEXT,
-    resolution TEXT
+    resolution TEXT,
+    submitted_on VARCHAR(20)
 );
 
 DROP TABLE IF EXISTS element_event;
@@ -25,8 +26,8 @@ CREATE TABLE element_event (
     event_name VARCHAR(255),
     serverid_dropoff INT,
     patreon_status VARCHAR(5),
-    element_dropoff_location VARCHAR(255)
-
+    element_dropoff_location VARCHAR(255),
+    submitted_on VARCHAR(20)
 );
 
 DROP TABLE IF EXISTS element_transfer;
@@ -42,8 +43,8 @@ CREATE TABLE element_transfer (
     serverid_pickup INT,
     server_pickup_location VARCHAR(255),
     serverid_dropoff INT,
-    server_dropoff_location VARCHAR(255)
-
+    server_dropoff_location VARCHAR(255),
+    submitted_on VARCHAR(20)
 );
 
 DROP TABLE IF EXISTS patreon_dino_request;
@@ -66,7 +67,8 @@ CREATE TABLE patreon_dino_request (
     region5 VARCHAR(5),
     sex VARCHAR(7),
     server_dropoff_location VARCHAR(255),
-    email_address VARCHAR(255)
+    email_address VARCHAR(255),
+    submitted_on VARCHAR(20)
 );
 
 DROP TABLE IF EXISTS patreon_dino_insurance;
@@ -81,7 +83,8 @@ CREATE TABLE patreon_dino_insurance (
     dino_link VARCHAR(255),
     email_address VARCHAR(255),
     month_claimed VARCHAR(255),
-    explanation TEXT
+    explanation TEXT,
+    submitted_on VARCHAR(20)
 );
 
 DROP TABLE IF EXISTS ban_appeal;
@@ -96,7 +99,8 @@ CREATE TABLE ban_appeal (
     steam_id VARCHAR(255),
     email_address VARCHAR(255),
     banned_reason TEXT,
-    unban_reason TEXT
+    unban_reason TEXT,
+    submitted_on VARCHAR(20)
 );
 
 DROP TABLE IF EXISTS bug_report;
@@ -110,5 +114,6 @@ CREATE TABLE bug_report (
     status VARCHAR(7),
     issue TEXT,
     recreate TEXT,
-    lost_items TEXT
+    lost_items TEXT,
+    submitted_on VARCHAR(20)
 );

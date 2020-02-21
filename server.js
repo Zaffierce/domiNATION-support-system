@@ -57,8 +57,7 @@ app.get('/', catchAsync(async(req, res) => {
     const validateUser = await authenticateUser(req.cookies['Token']);
     const usersOpenTickets = await findUserTickets(validateUser.id, "NEW");
 
-    console.log(usersOpenTickets);
-
+    // console.log(usersOpenTickets);
 
     res.render('./pages/index', {user : validateUser, openTickets : usersOpenTickets});
     
@@ -187,37 +186,47 @@ app.post('/form_submit', catchAsync(async(req, res) =>{
 
     // console.log("********TICKET SUBMITTED*******");
     // console.log(req.body);
+  
 
     let ticketType = req.body.typeOfRequest;
     let ticket = req.body;
+
+    let date = new Date();
+    let timestamp = ("00" + (date.getMonth() + 1)).slice(-2) 
+    + "/" + ("00" + date.getDate()).slice(-2) 
+    + "/" + date.getFullYear() + " " 
+    + ("00" + date.getHours()).slice(-2) + ":" 
+    + ("00" + date.getMinutes()).slice(-2) 
+    + ":" + ("00" + date.getSeconds()).slice(-2);
+
     //Change to switch
     if (ticketType === "ticketGeneral") {
-      sqlQueryInsert = 'INSERT INTO ticket_general (ign, discord_name, discord_id, server_assistance, status, tribe_name, coordinates, issue, resolution) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);';
-      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.tribe_name, ticket.coordinates, ticket.issue, ticket.resolution];
+      sqlQueryInsert = 'INSERT INTO ticket_general (ign, discord_name, discord_id, server_assistance, status, tribe_name, coordinates, issue, resolution, submitted_on) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);';
+      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.tribe_name, ticket.coordinates, ticket.issue, ticket.resolution, timestamp];
     }
     if (ticketType === "elementEvent") {
-      sqlQueryInsert = 'INSERT INTO element_event (ign, discord_name, discord_id, server_assistance, status, event_name, serverid_dropoff, patreon_status, element_dropoff_location) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);';
-      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.event_name, ticket.serverid_dropoff, ticket.patreon, ticket.element_dropoff_location];
+      sqlQueryInsert = 'INSERT INTO element_event (ign, discord_name, discord_id, server_assistance, status, event_name, serverid_dropoff, patreon_status, element_dropoff_location, submitted_on) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);';
+      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.event_name, ticket.serverid_dropoff, ticket.patreon, ticket.element_dropoff_location, timestamp];
     }
     if (ticketType === "elementTransfer") {
-      sqlQueryInsert = 'INSERT INTO element_transfer (ign, discord_name, discord_id, server_assistance, status, transfer_amount, serverid_pickup, server_pickup_location, serverid_dropoff, server_dropoff_location) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);';
-      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.transfer_amount, ticket.serverid_pickup, ticket.server_pickup_location, ticket.serverid_dropff, ticket.server_dropoff_location];
+      sqlQueryInsert = 'INSERT INTO element_transfer (ign, discord_name, discord_id, server_assistance, status, transfer_amount, serverid_pickup, server_pickup_location, serverid_dropoff, server_dropoff_location, submitted_on) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);';
+      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.transfer_amount, ticket.serverid_pickup, ticket.server_pickup_location, ticket.serverid_dropoff, ticket.server_dropoff_location, timestamp];
     }
     if (ticketType === "patreonMonthlyDino") {
-      sqlQueryInsert = 'INSERT INTO patreon_dino_request (ign, discord_name, discord_id, server_assistance, status, serverid_dropoff, dino_name, colored, region0, region1, region2, region3, region4, region5, sex, server_dropoff_location, email_address) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17);';
-      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.serverid_dropoff, ticket.dino_choice, ticket.dino_color, ticket.region0, ticket.region1, ticket.region2, ticket.region3, ticket.region4, ticket.region5, ticket.sex, ticket.server_dropoff_location, ticket.email_address];
+      sqlQueryInsert = 'INSERT INTO patreon_dino_request (ign, discord_name, discord_id, server_assistance, status, serverid_dropoff, dino_name, colored, region0, region1, region2, region3, region4, region5, sex, server_dropoff_location, email_address, submitted_on) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18);';
+      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.serverid_dropoff, ticket.dino_choice, ticket.dino_color, ticket.region0, ticket.region1, ticket.region2, ticket.region3, ticket.region4, ticket.region5, ticket.sex, ticket.server_dropoff_location, ticket.email_address, timestamp];
     }
     if (ticketType === "patreonDinoInsurance") {
-      sqlQueryInsert = 'INSERT INTO patreon_dino_insurance (ign, discord_name, discord_id, server_assistance, status, dino_link, email_address, month_claimed, explanation) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);';
-      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.link, ticket.email_address, ticket.month_claimed, ticket.explanation];
+      sqlQueryInsert = 'INSERT INTO patreon_dino_insurance (ign, discord_name, discord_id, server_assistance, status, dino_link, email_address, month_claimed, explanation, submitted_on) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);';
+      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.link, ticket.email_address, ticket.month_claimed, ticket.explanation, timestamp];
     }
     if (ticketType === "banAppeal") {
-      sqlQueryInsert = 'INSERT INTO ban_appeal (ign, discord_name, discord_id, server_assistance, status, steam_id, email_address, banned_reason, unban_reason) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);';
-      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.steam_id, ticket.email_address, ticket.reason, ticket.unbanned_explanation];
+      sqlQueryInsert = 'INSERT INTO ban_appeal (ign, discord_name, discord_id, server_assistance, status, steam_id, email_address, banned_reason, unban_reason, submitted_on) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);';
+      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.steam_id, ticket.email_address, ticket.reason, ticket.unbanned_explanation, timestamp];
     }
     if (ticketType === "reportABug") {
-      sqlQueryInsert = 'INSERT INTO bug_report (ign, discord_name, discord_id, server_assistance, status, issue, recreate, lost_items) VALUES ($1, $2, $3, $4, $5, $6, $7, $8);';
-      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.issue, ticket.recreate, ticket.lost_items];
+      sqlQueryInsert = 'INSERT INTO bug_report (ign, discord_name, discord_id, server_assistance, status, issue, recreate, lost_items, submitted_on) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $10);';
+      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.issue, ticket.recreate, ticket.lost_items, timestamp];
     }
     client.query(sqlQueryInsert, sqlValueArr);
     res.redirect('/');
