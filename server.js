@@ -25,7 +25,7 @@ const DISCORD_PATREON_DOMINATOR = process.env.DISCORD_PATREON_DOMINATOR;
 //DISCORD_PATREON_SUPPORTER || r === DISCORD_PATREON_SUPPORTERPLUS || r === DISCORD_PATREON_SUPPORTERPLUSPLUS 
 //|| r === DISCORD_PATREON_DOMINATOR) {
 const PORT = process.env.PORT || 3002;
-const redirect = encodeURIComponent(`http://localhost:${PORT}/api/discord/callback`);
+const redirect = encodeURIComponent(`http://144.172.70.232:${PORT}/api/discord/callback`);
 
 const cookieParser = require('cookie-parser');
 // const session = require('express-session');
