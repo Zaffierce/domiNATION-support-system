@@ -1,0 +1,27 @@
+<div class="form-row" hidden>
+  <legend>General Information:</legend>
+  <div class="form-group col-md-6">
+    <label for="ign">What is your in-game name?</label>
+    <input type="text" class="form-control" name="ign" value="<%= generalInfo.ign %>">
+    <div class="invalid-feedback">Please enter a name.</div>
+  </div>
+  <div class="form-group col-md-6">
+    <label for="discordName">What is your discord name?</label>
+    <input type="text" class="form-control" name="discordName" value="<%= user.username%>#<%=user.discriminator %>" readonly>
+    <div class="invalid-feedback">Please enter a name.</div>
+  </div>
+  <div class="form-group col-md-6">
+    <label for="serverAssistance">Which server do you need assistance on?</label>
+    <select name="serverAssistance" class="form-control" id="generalServerSelect">
+    <option value="<%= generalInfo.serverAssistance %>"></option>
+    </select>
+    <div class="invalid-feedback">Please choose a server.</div>
+  </div>
+  <div class="form-group col-md-6">
+    <label for="typeOfRequest">What do you need help with?</label>
+    <select name="typeOfRequest" class="form-control" id="generalTicketSelect" required>
+      <option value="<%= ticketType %>"></option>
+    </select>
+    <div class="invalid-feedback">Please choose a ticket type.</div>
+  </div>
+</div>

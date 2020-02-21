@@ -1,0 +1,5 @@
+  
+  <option value="na">Choose a color...</option>
+  <% for (let i = 0; i < dino_colors.length; i++) { %>
+    <option value="<%=dino_colors[i].id%>" class="dinoText" id="<%=dino_colors[i].color_hex%>"><%=dino_colors[i].color_name%></option>
+  <% }; %>
