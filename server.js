@@ -34,7 +34,7 @@ const cookieParser = require('cookie-parser');
 app.set('view engine', 'ejs');
 
 const client = new pg.Client(process.env.DATABASE_URL);
-client.connect();
+// client.connect();
 client.on('error', (error) => console.log(error));
 
 app.use(express.urlencoded({extended: true}));
@@ -343,4 +343,7 @@ function checkDB(table, userID, status) {
   return client.query(`SELECT * FROM ${table} where discord_id = '${userID}' and status = '${status}';`);
 };
 
-app.listen(PORT, () => console.log(`Server is live on ${PORT}`));
+client.connect(() => {
+  app.listen(PORT, () => console.log(`Server is live on port ${PORT}`));
+});
+// app.listen(PORT, () => console.log(`Server is live on ${PORT}`));
