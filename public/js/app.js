@@ -31,7 +31,15 @@ $(() => {
       $(this).parent().find('.dinoColorBox').removeAttr("hidden");
       $(this).parent().find('.dinoColorBox').css("background-color", '#'+$(this).children('option:selected').attr("id"));
     }
-  })  
+  });
+
+  $(function () {
+    $('[data-toggle="popover"]').popover()
+  })
+
+  $('.popover-dismiss').popover({
+    trigger: 'focus'
+  });
   
 
 });

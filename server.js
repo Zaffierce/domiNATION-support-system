@@ -34,8 +34,6 @@ const cookieParser = require('cookie-parser');
 app.set('view engine', 'ejs');
 
 const client = new pg.Client(process.env.DATABASE_URL);
-// client.connect();
-client.on('error', (error) => console.log(error));
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.static('./public'));
@@ -349,4 +347,3 @@ client.connect((err) => {
     app.listen(PORT, () => console.log(`Server is live on port ${PORT}`));
   }
 });
-// app.listen(PORT, () => console.log(`Server is live on ${PORT}`));
