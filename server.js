@@ -9,6 +9,7 @@ const fetch = require('node-fetch');
 const btoa = require('btoa');
 const { catchAsync } = require('./my-app/src/util/utils');
 const router = express.Router();
+// const log = require('simple-node-logger').createSimpleLogger('./logs/project.log');
 
 //Configurable variables//
 require('dotenv').config();
@@ -223,7 +224,7 @@ app.post('/form_submit', catchAsync(async(req, res) =>{
       sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.steam_id, ticket.email_address, ticket.reason, ticket.unbanned_explanation, timestamp];
     }
     if (ticketType === "reportABug") {
-      sqlQueryInsert = 'INSERT INTO bug_report (ign, discord_name, discord_id, server_assistance, status, issue, recreate, lost_items, submitted_on) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $10);';
+      sqlQueryInsert = 'INSERT INTO bug_report (ign, discord_name, discord_id, server_assistance, status, issue, recreate, lost_items, submitted_on) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);';
       sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.issue, ticket.recreate, ticket.lost_items, timestamp];
     }
     client.query(sqlQueryInsert, sqlValueArr);
