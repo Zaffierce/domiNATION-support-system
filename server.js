@@ -26,7 +26,8 @@ const DISCORD_PATREON_DOMINATOR = process.env.DISCORD_PATREON_DOMINATOR;
 //DISCORD_PATREON_SUPPORTER || r === DISCORD_PATREON_SUPPORTERPLUS || r === DISCORD_PATREON_SUPPORTERPLUSPLUS 
 //|| r === DISCORD_PATREON_DOMINATOR) {
 const PORT = process.env.PORT || 3002;
-const redirect = encodeURIComponent(`http://144.172.70.232:${PORT}/api/discord/callback`);
+// const redirect = encodeURIComponent(`http://144.172.70.232:${PORT}/api/discord/callback`);
+const redirect = encodeURIComponent(`http://localhost:${PORT}/api/discord/callback`);
 
 const cookieParser = require('cookie-parser');
 // const session = require('express-session');
@@ -230,7 +231,59 @@ app.post('/form_submit', catchAsync(async(req, res) =>{
     client.query(sqlQueryInsert, sqlValueArr);
     res.redirect('/');
   }
-}))
+}));
+
+app.get('/details/:ticket_type/:id', catchAsync(async(req, res) => {
+  if (req.cookies['Token'] == null) {
+    res.redirect('/login');
+  } else {
+    const validateUser = await authenticateUser(req.cookies['Token']);
+    let ticket_type = req.params.ticket_type;
+    let ticket_id = req.params.id;
+    //General
+    if (ticket_type === '1') {
+      client.query(`SELECT * FROM ticket_general where id = ${ticket_id};`).then(sqlRes => {
+        res.render('./pages/detailed/general', {user : validateUser, ticket : sqlRes.rows[0]});
+      });
+    }
+    //Element from Event
+    if (ticket_type === '2') {
+      client.query(`SELECT * FROM element_event where id = ${ticket_id};`).then(sqlRes => {
+        res.render('./pages/detailed/element_event', {user : validateUser, ticket : sqlRes.rows[0]});
+      });
+    }
+    //Element Transfer
+    if (ticket_type === '3') {
+      client.query(`SELECT * FROM element_transfer where id = ${ticket_id};`).then(sqlRes => {
+        res.render('./pages/detailed/element_transfer', {user : validateUser, ticket : sqlRes.rows[0]});
+      });
+    }
+    //Patreon Dino Request
+    if (ticket_type === '4') {
+      client.query(`SELECT * FROM patreon_dino_request where id = ${ticket_id};`).then(sqlRes => {
+        res.render('./pages/detailed/dino_request', {user : validateUser, ticket : sqlRes.rows[0]});
+      });
+    }
+    //Patreon Dino Insurance
+    if (ticket_type === '5') {
+      client.query(`SELECT * FROM patreon_dino_insurance where id = ${ticket_id};`).then(sqlRes => {
+        res.render('./pages/detailed/dino_insurance', {user : validateUser, ticket : sqlRes.rows[0]});
+      });
+    }
+    //Ban Appeal
+    if (ticket_type === '6') {
+      client.query(`SELECT * FROM ban_appeal where id = ${ticket_id};`).then(sqlRes => {
+        res.render('./pages/detailed/ban_appeal', {user : validateUser, ticket : sqlRes.rows[0]});
+      });
+    }
+    //Bug Request
+    if (ticket_type === '7') {
+      client.query(`SELECT * FROM bug_report where id = ${ticket_id};`).then(sqlRes => {
+        res.render('./pages/detailed/bug_report', {user : validateUser, ticket : sqlRes.rows[0]});
+      });
+    }
+  }
+}));
 
 //Just pass validatedUser.isAdmin and do something based off of that.
 app.get('/new', catchAsync(async(req, res) => {

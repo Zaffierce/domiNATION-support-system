@@ -22,12 +22,12 @@
 
         <% if (openTickets.general[i].issue.length > 256) { %>
         <div class="col-sm-9 infobox">
-          <span><strong>Details: </strong><%= openTickets.general[i].issue.slice(0, 256)+"..." %> <a href=''>More details</a></span>
+          <span><strong>Details: </strong><%= openTickets.general[i].issue.slice(0, 256)+"..." %> <a href='/details/1/<%=openTickets.general[i].id%>'>More details</a></span>
         </div>
 
         <% } else {%>
         <div class="col-sm-9 infobox">
-          <span><strong>Details: </strong><%= openTickets.general[i].issue+"..." %> <a href=''>More details</a></span>
+          <span><strong>Details: </strong><%= openTickets.general[i].issue+"..." %> <a href='/details/1/<%=openTickets.general[i].id%>'>More details</a></span>
         </div>
         <% } %>
 
@@ -49,7 +49,7 @@
             <%= openTickets.element[i].event_name %><br />
             Deliver to Server #: <%= openTickets.element[i].serverid_dropoff %><br />
             CCC: <%= openTickets.element[i].element_dropoff_location %><br />
-            <a href=''>More details</a></span>
+            <a href='/details/2/<%=openTickets.element[i].id%>'>More details</a></span>
         </div>
 
       </div>  
@@ -70,7 +70,7 @@
             Element Amount: <%= openTickets.transfer[i].transfer_amount%><br />
             From Server #: <%= openTickets.transfer[i].serverid_pickup %><br />
             To Server #: <%= openTickets.transfer[i].serverid_dropoff %><br />
-            <a href=''>More details</a></span>
+            <a href='/details/3/<%=openTickets.transfer[i].id%>'>More details</a></span>
         </div>
 
       </div>  
@@ -90,7 +90,7 @@
           <span><strong>Details: </strong>
             Dinosaur Choice: <%= openTickets.dino_req[i].dino_name%><br />
             To Server #: <%= openTickets.dino_req[i].serverid_dropoff %><br />
-            <a href=''>More details</a></span>
+            <a href='/details/4/<%=openTickets.dino_req[i].id%>'>More details</a></span>
         </div>
 
       </div>  
@@ -109,7 +109,7 @@
           <div class="col-sm-9 infobox">
             <span><strong>Details: </strong>
               Link to Dino: <%= openTickets.dino_ins[i].dino_link%><br />
-              <a href=''>More details</a></span>
+              <a href='/details/5/<%=openTickets.dino_ins[i].id%>'>More details</a></span>
           </div>
   
         </div>  
@@ -127,7 +127,7 @@
     
             <div class="col-sm-9 infobox">
               <span><strong>Details: </strong>
-                <a href=''>More details</a></span>
+                <a href='/details/6/<%=openTickets.ban[i].id%>'>More details</a></span>
             </div>
     
           </div>  
@@ -146,7 +146,7 @@
               <div class="col-sm-9 infobox">
                 <span><strong>Details: </strong>
                   Report: <%= openTickets.bug[i].issue%><br />
-                  <a href=''>More details</a></span>
+                  <a href='/details/7/<%=openTickets.bug[i].id%>'>More details</a></span>
               </div>
       
             </div>  
