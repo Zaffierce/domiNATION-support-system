@@ -30,11 +30,27 @@
           <select name="serverid_dropoff" class="form-control" id="server_dropoff" required>
           <%- include('../../partials/serverList.ejs'); %>
           </select>
+          <label for="patreon">
+            Are you Patreon?
+            <a tabindex="0" 
+            data-toggle="popover" 
+            data-trigger="focus"
+            data-html="true" 
+            title="Incorrect option?" 
+            data-content="This box is automatically populated based on the roles you have assigned to your Discord account in the DomiNATION server.  If this is the incorrect option, please ensure that you've signed into the correct account.">
+            <i class="fas fa-info-circle"></i>
+            </a>
+          </label>
+          <% if (user.isPatreon == true) { %>
+          <input type="text" name="patreon" class="form-control" value="Yes" readonly>
+          <% } else { %>
+          <input type="text" name="patreon" class="form-control" value="No" readonly>
+          <% } %>
 
-          <label for="patreon">Are you Patreon?</label>
-          <input type="text" name="patreon" class="form-control" required>
-
-          <label for="element_dropoff_location">PLease provide a specific drop-off location and PIN code:</label>
+          <label for="element_dropoff_location">
+            Please provide a the CCC location and PIN code:
+            <%- include('../../partials/ccc.ejs'); %>
+          </label>
           <input type="text" name="element_dropoff_location" class="form-control" required>
         </fieldset>
       </div>
