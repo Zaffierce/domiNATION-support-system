@@ -19,19 +19,15 @@ const DISCORD_BOT_ID = process.env.DISCORD_BOT_ID;
 const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID;
 const DISCORD_ADMIN_GROUP_ID = process.env.DISCORD_ADMIN_GROUP_ID;
 const DISCORD_PATREON_SUPPORTER = process.env.DISCORD_PATREON_SUPPORTER;
-//Domi ID = 305656646250790912;
 const DISCORD_PATREON_SUPPORTERPLUS = process.env.DISCORD_PATREON_SUPPORTERPLUS;
 const DISCORD_PATREON_SUPPORTERPLUSPLUS = process.env.DISCORD_PATREON_SUPPORTERPLUSPLUS;
 const DISCORD_PATREON_DOMINATOR = process.env.DISCORD_PATREON_DOMINATOR;
-//DISCORD_PATREON_SUPPORTER || r === DISCORD_PATREON_SUPPORTERPLUS || r === DISCORD_PATREON_SUPPORTERPLUSPLUS 
-//|| r === DISCORD_PATREON_DOMINATOR) {
 const PORT = process.env.PORT || 3002;
-// const redirect = encodeURIComponent(`http://144.172.70.232:${PORT}/api/discord/callback`);
-const redirect = encodeURIComponent(`http://localhost:${PORT}/api/discord/callback`);
+const CALLBACK = process.env.CALLBACK_URL;
+
+const redirect = encodeURIComponent(`${CALLBACK}`);
 
 const cookieParser = require('cookie-parser');
-// const session = require('express-session');
-
 
 app.set('view engine', 'ejs');
 
@@ -85,7 +81,7 @@ app.get('/api/discord/callback', catchAsync(async (req, res) => {
   });
   const json = await response.json();
   const cookieExpirationInMS = 2592000000; // 30 days 
-  res.cookie('Token', json.access_token, {maxAge: cookieExpirationInMS, httpOnly: true});
+  res.cookie('Token', json.access_token, {maxAge: cookieExpirationInMS, httpOnly: false});
   res.redirect('/');
 }));
 
