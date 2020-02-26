@@ -79,12 +79,12 @@
 
           <label for="sex">Do you want a specific sex?</label>
           <select name="sex" class="form-control" id="sex">
-            <option value="na">N/A</option>
+            <option value="na">Doesn't matter</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
           </select>
 
-          <label for="server_dropoff_location">Specific drop-off location & PIN code:</label>
+          <label for="server_dropoff_location">Specific drop-off CCC & PIN code:<%- include('../../partials/ccc.ejs'); %></label>
           <input type="text" name="server_dropoff_location" class="form-control" required>
 
           <label for="email_address">Please provide your Patreon Email Address</label>

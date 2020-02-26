@@ -31,7 +31,7 @@
           <%- include('../../partials/serverList.ejs'); %>
           </select>
 
-          <label for="server_pickup_location">Specific pickup location & PIN code:</label>
+          <label for="server_pickup_location">Specific pickup CCC & PIN code:<%- include('../../partials/ccc.ejs'); %></label>
           <input type="text" name="server_pickup_location" class="form-control" required>
 
 
@@ -40,7 +40,7 @@
           <%- include('../../partials/serverList.ejs'); %>
           </select>
 
-          <label for="server_dropoff_location">Specific drop-off location & PIN code:</label>
+          <label for="server_dropoff_location">Specific drop-off CCC & PIN code:<%- include('../../partials/ccc.ejs'); %></label>
           <input type="text" name="server_dropoff_location" class="form-control" required>
         </fieldset>
       </div>

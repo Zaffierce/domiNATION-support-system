@@ -56,11 +56,7 @@ app.get('/', catchAsync(async(req, res) => {
   } else {
     const validateUser = await authenticateUser(req.cookies['Token']);
     const usersOpenTickets = await findUserTickets(validateUser.id, "NEW");
-
-    // console.log(usersOpenTickets);
-
     res.render('./pages/index', {user : validateUser, openTickets : usersOpenTickets});
-    
     }
   }
 ));
@@ -120,7 +116,8 @@ app.get('/admin', catchAsync(async(req, res) => {
   } else {
     const validateUser = await authenticateUser(req.cookies['Token']);
     if (validateUser.isAdmin === true) {
-      res.render('./pages/adminPage', {user : validateUser});  
+      const openTickets = await findOpenTickets();
+      res.render('./pages/adminPage', {user : validateUser, openTickets : openTickets});  
     } else {
       res.render('./pages/unauthorized');
     }
@@ -362,6 +359,35 @@ async function authenticateUser(token) {
   }
 }
 
+async function findOpenTickets() {
+  let openTickets = 0;
+  try {
+    let count_gen = await checkDBAdmin('ticket_general', 'NEW');
+    let count_element = await checkDBAdmin('element_event', 'NEW');
+    let count_transfer = await checkDBAdmin('element_transfer', 'NEW');
+    let count_dino_req = await checkDBAdmin('patreon_dino_request', 'NEW');
+    let count_insurance = await checkDBAdmin('patreon_dino_insurance', 'NEW');
+    let count_ban = await checkDBAdmin('ban_appeal', 'NEW');
+    let count_bug = await checkDBAdmin('bug_report', 'NEW');
+
+    openTickets += count_gen.rowCount += count_element.rowCount += count_transfer.rowCount
+    += count_dino_req.rowCount += count_insurance.rowCount += count_ban.rowCount 
+    += count_bug.rowCount;
+
+    return {
+      ticketCount : openTickets,
+      general: count_gen.rows, 
+      element: count_element.rows, 
+      transfer: count_transfer.rows, 
+      dino_req: count_dino_req.rows, 
+      dino_ins: count_insurance.rows, 
+      ban: count_ban.rows, 
+      bug: count_bug.rows
+    };
+
+  } catch(e) {return e;}
+}
+
 async function findUserTickets(userID, status) {
   let openTickets = 0;
   try {
@@ -394,6 +420,10 @@ async function findUserTickets(userID, status) {
 function checkDB(table, userID, status) {
   return client.query(`SELECT * FROM ${table} where discord_id = '${userID}' and status = '${status}';`);
 };
+
+function checkDBAdmin(table, status) {
+  return client.query(`SELECT * FROM ${table} WHERE status = '${status}';`);
+}
 
 client.connect((err) => {
   if (err) {console.log(err) 
