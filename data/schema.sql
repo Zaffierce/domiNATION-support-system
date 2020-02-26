@@ -11,7 +11,9 @@ CREATE TABLE ticket_general (
     coordinates VARCHAR(255),
     issue TEXT,
     resolution TEXT,
-    submitted_on VARCHAR(20)
+    submitted_on VARCHAR(20),
+    closed_by VARCHAR(255),
+    closed_on VARCHAR(20)
 );
 
 DROP TABLE IF EXISTS element_event;
@@ -27,7 +29,9 @@ CREATE TABLE element_event (
     serverid_dropoff INT,
     patreon_status VARCHAR(5),
     element_dropoff_location VARCHAR(255),
-    submitted_on VARCHAR(20)
+    submitted_on VARCHAR(20),
+    closed_by VARCHAR(255),
+    closed_on VARCHAR(20)
 );
 
 DROP TABLE IF EXISTS element_transfer;
@@ -44,7 +48,9 @@ CREATE TABLE element_transfer (
     server_pickup_location VARCHAR(255),
     serverid_dropoff INT,
     server_dropoff_location VARCHAR(255),
-    submitted_on VARCHAR(20)
+    submitted_on VARCHAR(20),
+    closed_by VARCHAR(255),
+    closed_on VARCHAR(20)
 );
 
 DROP TABLE IF EXISTS patreon_dino_request;
@@ -68,7 +74,9 @@ CREATE TABLE patreon_dino_request (
     sex VARCHAR(7),
     server_dropoff_location VARCHAR(255),
     email_address VARCHAR(255),
-    submitted_on VARCHAR(20)
+    submitted_on VARCHAR(20),
+    closed_by VARCHAR(255),
+    closed_on VARCHAR(20)
 );
 
 DROP TABLE IF EXISTS patreon_dino_insurance;
@@ -84,7 +92,9 @@ CREATE TABLE patreon_dino_insurance (
     email_address VARCHAR(255),
     month_claimed VARCHAR(255),
     explanation TEXT,
-    submitted_on VARCHAR(20)
+    submitted_on VARCHAR(20),
+    closed_by VARCHAR(255),
+    closed_on VARCHAR(20)
 );
 
 DROP TABLE IF EXISTS ban_appeal;
@@ -100,7 +110,9 @@ CREATE TABLE ban_appeal (
     email_address VARCHAR(255),
     banned_reason TEXT,
     unban_reason TEXT,
-    submitted_on VARCHAR(20)
+    submitted_on VARCHAR(20),
+    closed_by VARCHAR(255),
+    closed_on VARCHAR(20)
 );
 
 DROP TABLE IF EXISTS bug_report;
@@ -115,5 +127,7 @@ CREATE TABLE bug_report (
     issue TEXT,
     recreate TEXT,
     lost_items TEXT,
-    submitted_on VARCHAR(20)
+    submitted_on VARCHAR(20),
+    closed_by VARCHAR(255),
+    closed_on VARCHAR(20)
 );
