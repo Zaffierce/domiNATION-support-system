@@ -294,7 +294,13 @@ app.get('/status', catchAsync(async(req, res) => {
     res.redirect('/login');
   } else {
     const validateUser = await authenticateUser(req.cookies['Token']);
-      res.render('./pages/status', {user : validateUser});
+    const usersOpenTickets = await findUserTickets(validateUser.id, "NEW");
+    const usersClosedTickets = await findUserTickets(validateUser.id, "CLOSED");
+      res.render('./pages/status', {
+        user : validateUser, 
+        openTickets : usersOpenTickets,
+        closedTickets : usersClosedTickets
+      });
     }
   }
 ));
