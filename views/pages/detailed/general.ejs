@@ -7,32 +7,53 @@
 </head>
 <body>
   <%- include('../../partials/nav.ejs'); %>
-    <div class="container">
-        <div class="row greybox">
-          <div class="col infobox">
-            <div>
-              <strong>Submitted on:</strong> <%= ticket.submitted_on %><br />
-              <strong>Status:</strong> <%= ticket.status %><br />
-              <strong>Username:</strong> <%= ticket.ign %><br />
-              <strong>Discord ID:</strong> <%= ticket.discord_name %><br />
-              <strong>Tribe Name:</strong> <%= ticket.tribe_name %><br />
-              <strong>Server ID:</strong> <%= ticket.server_assistance %><br />
-              <strong>CCC:</strong> <%= ticket.coordinates %><br />
-            </div>
-            <br />
-            <div>
-              <strong>Issue:</strong> <%= ticket.issue %><br />
-              <br />
-              <strong>Resolution:</strong> <%= ticket.resolution %>
-            </div>
-            <br />
-            <br />
-            <div class="text-center">
-              <%- include('../../partials/ticketButtons.ejs'); %>
-            </div>
-          </div>
+  <div class="container">
+    <div class="row greybox">
+      <div class="col infobox">
+        <div>
+          <strong>Submitted on:</strong> <%= ticket.submitted_on %><br />
+          <strong>Status:</strong> <%= ticket.status %><br />
+          <strong>Username:</strong> <%= ticket.ign %><br />
+          <strong>Discord ID:</strong> <%= ticket.discord_name %><br />
+          <strong>Tribe Name:</strong> <%= ticket.tribe_name %><br />
+          <strong>Server ID:</strong> <%= ticket.server_assistance %><br />
+          <strong>CCC:</strong> <%= ticket.coordinates %><br />
         </div>
+        <br />
+        <div>
+          <strong>Issue:</strong> <%= ticket.issue %><br />
+          <br />
+          <strong>Resolution:</strong> <%= ticket.resolution %>
+        </div>
+        <br />
+        <br />
+        <div class="text-center">
+          <div class="row">
+          <% if (user.isAdmin && ticket.status === "NEW") { %>
+            <div class="col-sm-6">
+              <form method="POST" action="/cancel/1/<%=ticket.id%>">
+                <input type="submit" class="btn btn-danger btn-lg" value="Cancel ticket">
+              </form>
+            </div>
+              <form method="POST" action="/complete/1/<%=ticket.id%>">
+                <input type="submit" class="btn btn-success btn-lg" value="Complete ticket">
+              </form>
+            </div>
+          <% } else if (ticket.status === "NEW") { %>
+            <div class="col">
+              <form method="POST" action="/cancel/1/<%=ticket.id%>">
+                <input type="submit" class="btn btn-danger btn-lg" value="Cancel ticket">
+              </form>
+            </div>
+          <% } else { %>
+            <div class="col">
+              This ticket has been closed.
+            </div>
+          <% } %>
+        </div>
+      </div>
     </div>
+  </div>
 </div> <!--Close of content-->
 
 </body>

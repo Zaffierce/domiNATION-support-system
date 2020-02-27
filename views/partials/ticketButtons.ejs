@@ -1,12 +1,14 @@
-<div class="row">
-  <div class="col-sm-4">
-    Button 1
-  </div>
-  <div class="col-sm-4">
-    Button 2
-  </div>
-  <div class="col-sm-4">
-    Button 3
-  </div>
-
+<div class="row text-center">
+  <% if (user.isAdmin) { %>
+    <div class="col-sm-6">
+      <a href="/cancel/<%=ticket.id%>" class="btn btn-danger btn-lg">Cancel ticket</a>
+    </div>
+    <div class="col-sm-6">
+      <a href="/complete/<%=ticket.id%>" class="btn btn-success btn-lg">Complete ticket</a>
+    </div>
+  <% } else { %>
+    <div class="col">
+      <a href="/cancel/<%=ticket.id%>" class="btn btn-danger btn-lg">Cancel ticket</a>
+    </div>
+  <% } %>
 </div>

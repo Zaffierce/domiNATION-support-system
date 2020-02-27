@@ -226,6 +226,118 @@ app.post('/form_submit', catchAsync(async(req, res) =>{
   }
 }));
 
+app.post('/cancel/:ticket_type/:id', catchAsync(async(req, res) => {
+  if (req.cookies['Token'] == null) {
+    res.redirect('/login');
+  } else {
+    const validateUser = await authenticateUser(req.cookies['Token']);
+    let ticket_type = req.params.ticket_type;
+    let ticket_id = req.params.id;
+
+    let date = new Date();
+    let timestamp = ("00" + (date.getMonth() + 1)).slice(-2) 
+    + "/" + ("00" + date.getDate()).slice(-2) 
+    + "/" + date.getFullYear() + " " 
+    + ("00" + date.getHours()).slice(-2) + ":" 
+    + ("00" + date.getMinutes()).slice(-2) 
+    + ":" + ("00" + date.getSeconds()).slice(-2);
+        //General
+      let sqlArr;
+      let sqlQuery;
+      if (ticket_type === '1') {
+        sqlQuery = `UPDATE ticket_general set status='CANCELLED', closed_by=$1, closed_on=$2 where id=$3;`;
+        sqlArr = [validateUser.username, timestamp, ticket_id];
+      }
+      //Element from Event
+      if (ticket_type === '2') {
+        sqlQuery = `UPDATE element_event set status='CANCELLED', closed_by=$1, closed_on=$2 where id=$3;`;
+        sqlArr = [validateUser.username, timestamp, ticket_id];
+      }
+      //Element Transfer
+      if (ticket_type === '3') {
+        sqlQuery = `UPDATE element_transfer set status='CANCELLED', closed_by=$1, closed_on=$2 where id=$3;`;
+        sqlArr = [validateUser.username, timestamp, ticket_id];
+      }
+      //Patreon Dino Request
+      if (ticket_type === '4') {
+        sqlQuery = `UPDATE patreon_dino_request set status='CANCELLED', closed_by=$1, closed_on=$2 where id=$3;`;
+        sqlArr = [validateUser.username, timestamp, ticket_id];
+      }
+      //Patreon Dino Insurance
+      if (ticket_type === '5') {
+        sqlQuery = `UPDATE patreon_dino_insurance set status='CANCELLED', closed_by=$1, closed_on=$2 where id=$3;`;
+        sqlArr = [validateUser.username, timestamp, ticket_id];
+      }
+      //Ban Appeal
+      if (ticket_type === '6') {
+        sqlQuery = `UPDATE ban_appeal set status='CANCELLED', closed_by=$1, closed_on=$2 where id=$3;`;
+        sqlArr = [validateUser.username, timestamp, ticket_id];
+      }
+      //Bug Request
+      if (ticket_type === '7') {
+        sqlQuery = `UPDATE bug_report set status='CANCELLED', closed_by=$1, closed_on=$2 where id=$3;`;
+        sqlArr = [validateUser.username, timestamp, ticket_id];
+      }
+    client.query(sqlQuery, sqlArr).then(res.redirect('/'));
+  }
+}));
+
+app.post('/complete/:ticket_type/:id', catchAsync(async(req, res) => {
+  if (req.cookies['Token'] == null) {
+    res.redirect('/login');
+  } else {
+    const validateUser = await authenticateUser(req.cookies['Token']);
+    let ticket_type = req.params.ticket_type;
+    let ticket_id = req.params.id;
+
+    let date = new Date();
+    let timestamp = ("00" + (date.getMonth() + 1)).slice(-2) 
+    + "/" + ("00" + date.getDate()).slice(-2) 
+    + "/" + date.getFullYear() + " " 
+    + ("00" + date.getHours()).slice(-2) + ":" 
+    + ("00" + date.getMinutes()).slice(-2) 
+    + ":" + ("00" + date.getSeconds()).slice(-2);
+        //General
+      let sqlArr;
+      let sqlQuery;
+      if (ticket_type === '1') {
+        sqlQuery = `UPDATE ticket_general set status='CLOSED', closed_by=$1, closed_on=$2 where id=$3;`;
+        sqlArr = [validateUser.username, timestamp, ticket_id];
+      }
+      //Element from Event
+      if (ticket_type === '2') {
+        sqlQuery = `UPDATE element_event set status='CLOSED', closed_by=$1, closed_on=$2 where id=$3;`;
+        sqlArr = [validateUser.username, timestamp, ticket_id];
+      }
+      //Element Transfer
+      if (ticket_type === '3') {
+        sqlQuery = `UPDATE element_transfer set status='CLOSED', closed_by=$1, closed_on=$2 where id=$3;`;
+        sqlArr = [validateUser.username, timestamp, ticket_id];
+      }
+      //Patreon Dino Request
+      if (ticket_type === '4') {
+        sqlQuery = `UPDATE patreon_dino_request set status='CLOSED', closed_by=$1, closed_on=$2 where id=$3;`;
+        sqlArr = [validateUser.username, timestamp, ticket_id];
+      }
+      //Patreon Dino Insurance
+      if (ticket_type === '5') {
+        sqlQuery = `UPDATE patreon_dino_insurance set status='CLOSED', closed_by=$1, closed_on=$2 where id=$3;`;
+        sqlArr = [validateUser.username, timestamp, ticket_id];
+      }
+      //Ban Appeal
+      if (ticket_type === '6') {
+        sqlQuery = `UPDATE ban_appeal set status='CLOSED', closed_by=$1, closed_on=$2 where id=$3;`;
+        sqlArr = [validateUser.username, timestamp, ticket_id];
+      }
+      //Bug Request
+      if (ticket_type === '7') {
+        sqlQuery = `UPDATE bug_report set status='CLOSED', closed_by=$1, closed_on=$2 where id=$3;`;
+        sqlArr = [validateUser.username, timestamp, ticket_id];
+      }
+    client.query(sqlQuery, sqlArr).then(res.redirect('/'));
+  }
+}));
+
 app.get('/details/:ticket_type/:id', catchAsync(async(req, res) => {
   if (req.cookies['Token'] == null) {
     res.redirect('/login');
@@ -238,7 +350,7 @@ app.get('/details/:ticket_type/:id', catchAsync(async(req, res) => {
       client.query(`SELECT * FROM ticket_general where id = ${ticket_id};`).then(sqlRes => {
         res.render('./pages/detailed/general', {user : validateUser, ticket : sqlRes.rows[0]});
       });
-    }
+    } 
     //Element from Event
     if (ticket_type === '2') {
       client.query(`SELECT * FROM element_event where id = ${ticket_id};`).then(sqlRes => {
@@ -296,10 +408,12 @@ app.get('/status', catchAsync(async(req, res) => {
     const validateUser = await authenticateUser(req.cookies['Token']);
     const usersOpenTickets = await findUserTickets(validateUser.id, "NEW");
     const usersClosedTickets = await findUserTickets(validateUser.id, "CLOSED");
+    const usersCancelledTickets = await findUserTickets(validateUser.id, "CANCELLED");
       res.render('./pages/status', {
         user : validateUser, 
         openTickets : usersOpenTickets,
-        closedTickets : usersClosedTickets
+        closedTickets : usersClosedTickets,
+        cancelledTickets : usersCancelledTickets
       });
     }
   }

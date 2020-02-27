@@ -9,22 +9,169 @@
   <%- include('../partials/nav.ejs'); %>
   <h1 class="ng-scope">Ticket's for <%= user.username %></h1>
   <br />
-  <div>You current have <%= openTickets.ticketCount %> ticket(s) open, and <%= closedTickets.ticketCount %> closed ticket(s).</div>
+  <div>You current have <%= openTickets.ticketCount %> ticket(s) open, <%= closedTickets.ticketCount %> closed ticket(s), and <%= cancelledTickets.ticketCount %> cancelled ticket(s).</div>
   <br />
   <div class="container">
     <div class="row">
-      <% for (let i = 0; i < openTickets.general.length; i++) { %>
-        <div class="col-md-6">
-          <h1 class="text-center">Open Tickets</h1>
-          <br />
-          <div class="col-sm-6 greybox infobox">
-            <span><strong>General Ticket</strong></span>
-            <%= openTickets.general[i].submitted_on %></div>
-        </div>
-        <div class="col-md-6">
-          <h1 class="text-center">Closed Tickets</h1>
+      <div class="col-md-4">
+        <h1 class="text-center">Open Tickets</h1>
+        <br />
+        <% for (let i = 0; i < openTickets.general.length; i++) { %>
+          <div class="col greybox infobox text-center">
+            <span><strong>General Ticket</strong></span><br />
+            Opened on: <%= openTickets.general[i].submitted_on %><br />
+            <a href='/details/1/<%=openTickets.general[i].id%>'>More details</a>
+          </div>
+        <% } %>
+        <% for (let i = 0; i < openTickets.element.length; i++) { %>
+          <div class="col greybox infobox text-center">
+            <span><strong>Element Reward Ticket</strong></span><br />
+            Opened on: <%= openTickets.element[i].submitted_on %><br />
+            <a href='/details/2/<%=openTickets.element[i].id%>'>More details</a>
+          </div>
+        <% } %>
+        <% for (let i = 0; i < openTickets.transfer.length; i++) { %>
+          <div class="col greybox infobox text-center">
+            <span><strong>Element Transfer Ticket</strong></span><br />
+            Opened on: <%= openTickets.transfer[i].submitted_on %><br />
+            <a href='/details/3/<%=openTickets.transfer[i].id%>'>More details</a>
+          </div>
+        <% } %>
+        <% for (let i = 0; i < openTickets.dino_req.length; i++) { %>
+          <div class="col greybox infobox text-center">
+            <span><strong>Patreon Dino Request</strong></span><br />
+            Opened on: <%= openTickets.dino_req[i].submitted_on %><br />
+            <a href='/details/4/<%=openTickets.dino_req[i].id%>'>More details</a>
+          </div>
+        <% } %>
+        <% for (let i = 0; i < openTickets.dino_ins.length; i++) { %>
+          <div class="col greybox infobox text-center">
+            <span><strong>Patreon Insurance Request</strong></span><br />
+            Opened on: <%= openTickets.dino_ins[i].submitted_on %><br />
+            <a href='/details/5/<%=openTickets.dino_ins[i].id%>'>More details</a>
+          </div>
+        <% } %>
+        <% for (let i = 0; i < openTickets.ban.length; i++) { %>
+          <div class="col greybox infobox text-center">
+            <span><strong>Ban Appeal</strong></span><br />
+            Opened on: <%= openTickets.ban[i].submitted_on %><br />
+            <a href='/details/6/<%=openTickets.ban[i].id%>'>More details</a>
+          </div>
+        <% } %>
+        <% for (let i = 0; i < openTickets.bug.length; i++) { %>
+          <div class="col greybox infobox text-center">
+            <span><strong>Bug Report</strong></span><br />
+            Opened on: <%= openTickets.bug[i].submitted_on %><br />
+            <a href='/details/7/<%=openTickets.bug[i].id%>'>More details</a>
+          </div>
+        <% } %>
+      </div>
+      <div class="col-md-4">
+        <h1 class="text-center">Completed Tickets</h1>
+        <br />
+      <% for (let i = 0; i < closedTickets.general.length; i++) { %>
+        <div class="col greybox infobox text-center">
+          <span><strong>General Ticket</strong></span><br />
+          Closed on: <%= closedTickets.general[i].closed_on %><br />
+          <a href='/details/1/<%=closedTickets.general[i].id%>'>More details</a>
         </div>
       <% } %>
+      <% for (let i = 0; i < closedTickets.element.length; i++) { %>
+        <div class="col greybox infobox text-center">
+          <span><strong>Element Reward Ticket</strong></span><br />
+          Opened on: <%= closedTickets.element[i].submitted_on %><br />
+          <a href='/details/2/<%=closedTickets.element[i].id%>'>More details</a>
+        </div>
+      <% } %>
+      <% for (let i = 0; i < closedTickets.transfer.length; i++) { %>
+        <div class="col greybox infobox text-center">
+          <span><strong>Element Transfer Ticket</strong></span><br />
+          Opened on: <%= closedTickets.transfer[i].submitted_on %><br />
+          <a href='/details/3/<%=closedTickets.transfer[i].id%>'>More details</a>
+        </div>
+      <% } %>
+      <% for (let i = 0; i < closedTickets.dino_req.length; i++) { %>
+        <div class="col greybox infobox text-center">
+          <span><strong>Patreon Dino Request</strong></span><br />
+          Opened on: <%= closedTickets.dino_req[i].submitted_on %><br />
+          <a href='/details/4/<%=closedTickets.dino_req[i].id%>'>More details</a>
+        </div>
+      <% } %>
+      <% for (let i = 0; i < closedTickets.dino_ins.length; i++) { %>
+        <div class="col greybox infobox text-center">
+          <span><strong>Patreon Insurance Request</strong></span><br />
+          Opened on: <%= closedTickets.dino_ins[i].submitted_on %><br />
+          <a href='/details/5/<%=closedTickets.dino_ins[i].id%>'>More details</a>
+        </div>
+      <% } %>
+      <% for (let i = 0; i < closedTickets.ban.length; i++) { %>
+        <div class="col greybox infobox text-center">
+          <span><strong>Ban Appeal</strong></span><br />
+          Opened on: <%= closedTickets.ban[i].submitted_on %><br />
+          <a href='/details/6/<%=closedTickets.ban[i].id%>'>More details</a>
+        </div>
+      <% } %>
+      <% for (let i = 0; i < closedTickets.bug.length; i++) { %>
+        <div class="col greybox infobox text-center">
+          <span><strong>Bug Report</strong></span><br />
+          Opened on: <%= closedTickets.bug[i].submitted_on %><br />
+          <a href='/details/7/<%=closedTickets.bug[i].id%>'>More details</a>
+        </div>
+      <% } %>
+      </div>
+      <div class="col-md-4">
+        <h1 class="text-center">Cancelled Tickets</h1>
+        <br />
+      <% for (let i = 0; i < cancelledTickets.general.length; i++) { %>
+        <div class="col greybox infobox text-center">
+          <span><strong>General Ticket</strong></span><br />
+          Closed on: <%= cancelledTickets.general[i].closed_on %><br />
+          <a href='/details/1/<%=cancelledTickets.general[i].id%>'>More details</a>
+        </div>
+      <% } %>
+      <% for (let i = 0; i < cancelledTickets.element.length; i++) { %>
+        <div class="col greybox infobox text-center">
+          <span><strong>Element Reward Ticket</strong></span><br />
+          Opened on: <%= cancelledTickets.element[i].submitted_on %><br />
+          <a href='/details/2/<%=cancelledTickets.element[i].id%>'>More details</a>
+        </div>
+      <% } %>
+      <% for (let i = 0; i < cancelledTickets.transfer.length; i++) { %>
+        <div class="col greybox infobox text-center">
+          <span><strong>Element Transfer Ticket</strong></span><br />
+          Opened on: <%= cancelledTickets.transfer[i].submitted_on %><br />
+          <a href='/details/3/<%=cancelledTickets.transfer[i].id%>'>More details</a>
+        </div>
+      <% } %>
+      <% for (let i = 0; i < cancelledTickets.dino_req.length; i++) { %>
+        <div class="col greybox infobox text-center">
+          <span><strong>Patreon Dino Request</strong></span><br />
+          Opened on: <%= cancelledTickets.dino_req[i].submitted_on %><br />
+          <a href='/details/4/<%=cancelledTickets.dino_req[i].id%>'>More details</a>
+        </div>
+      <% } %>
+      <% for (let i = 0; i < cancelledTickets.dino_ins.length; i++) { %>
+        <div class="col greybox infobox text-center">
+          <span><strong>Patreon Insurance Request</strong></span><br />
+          Opened on: <%= cancelledTickets.dino_ins[i].submitted_on %><br />
+          <a href='/details/5/<%=cancelledTickets.dino_ins[i].id%>'>More details</a>
+        </div>
+      <% } %>
+      <% for (let i = 0; i < cancelledTickets.ban.length; i++) { %>
+        <div class="col greybox infobox text-center">
+          <span><strong>Ban Appeal</strong></span><br />
+          Opened on: <%= cancelledTickets.ban[i].submitted_on %><br />
+          <a href='/details/6/<%=cancelledTickets.ban[i].id%>'>More details</a>
+        </div>
+      <% } %>
+      <% for (let i = 0; i < cancelledTickets.bug.length; i++) { %>
+        <div class="col greybox infobox text-center">
+          <span><strong>Bug Report</strong></span><br />
+          Opened on: <%= cancelledTickets.bug[i].submitted_on %><br />
+          <a href='/details/7/<%=cancelledTickets.bug[i].id%>'>More details</a>
+        </div>
+      <% } %>
+      </div>
     </div>
   </div>
 </div> <!--Close of content-->

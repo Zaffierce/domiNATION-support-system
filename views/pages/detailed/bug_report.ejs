@@ -25,7 +25,28 @@
             </div>
             <br />
             <div class="text-center">
-              Buttons implemented soon.
+              <div class="row">
+              <% if (user.isAdmin && ticket.status === "NEW") { %>
+                <div class="col-sm-6">
+                  <form method="POST" action="/cancel/6/<%=ticket.id%>">
+                    <input type="submit" class="btn btn-danger btn-lg" value="Cancel ticket">
+                  </form>
+                </div>
+                  <form method="POST" action="/complete/6/<%=ticket.id%>">
+                    <input type="submit" class="btn btn-success btn-lg" value="Complete ticket">
+                  </form>
+                </div>
+              <% } else if (ticket.status === "NEW") { %>
+                <div class="col">
+                  <form method="POST" action="/cancel/6/<%=ticket.id%>">
+                    <input type="submit" class="btn btn-danger btn-lg" value="Cancel ticket">
+                  </form>
+                </div>
+              <% } else { %>
+                <div class="col">
+                  This ticket has been closed.
+                </div>
+              <% } %>
             </div>
           </div>
         </div>
