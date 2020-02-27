@@ -115,7 +115,7 @@ app.get('/admin', catchAsync(async(req, res) => {
       const openTickets = await findOpenTickets();
       res.render('./pages/adminPage', {user : validateUser, openTickets : openTickets});  
     } else {
-      res.render('./pages/unauthorized');
+      res.redirect('/');
     }
   }
 }));
@@ -278,7 +278,7 @@ app.post('/cancel/:ticket_type/:id', catchAsync(async(req, res) => {
         sqlQuery = `UPDATE bug_report set status='CANCELLED', closed_by=$1, closed_on=$2 where id=$3;`;
         sqlArr = [validateUser.username, timestamp, ticket_id];
       }
-    client.query(sqlQuery, sqlArr).then(res.redirect('/'));
+    client.query(sqlQuery, sqlArr).then(res.redirect('/admin'));
   }
 }));
 
@@ -334,7 +334,7 @@ app.post('/complete/:ticket_type/:id', catchAsync(async(req, res) => {
         sqlQuery = `UPDATE bug_report set status='CLOSED', closed_by=$1, closed_on=$2 where id=$3;`;
         sqlArr = [validateUser.username, timestamp, ticket_id];
       }
-    client.query(sqlQuery, sqlArr).then(res.redirect('/'));
+    client.query(sqlQuery, sqlArr).then(res.redirect('/admin'));
   }
 }));
 
