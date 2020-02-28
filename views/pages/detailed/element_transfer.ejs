@@ -52,7 +52,7 @@
                     <input type="submit" class="btn btn-success btn-lg" value="Complete ticket">
                   </form>
                 </div>
-              <% } else if (ticket.status === "NEW") { %>
+              <% } else if (ticket.status === "NEW" || ticket.status === "OPEN") { %>
                 <div class="col">
                   <form method="POST" action="/cancel/3/<%=ticket.id%>">
                     <input type="submit" class="btn btn-danger btn-lg" value="Cancel ticket">

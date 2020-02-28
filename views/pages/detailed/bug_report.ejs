@@ -48,7 +48,7 @@
                     <input type="submit" class="btn btn-success btn-lg" value="Complete ticket">
                   </form>
                 </div>
-              <% } else if (ticket.status === "NEW") { %>
+              <% } else if (ticket.status === "NEW" || ticket.status === "OPEN") { %>
                 <div class="col">
                   <form method="POST" action="/cancel/7/<%=ticket.id%>">
                     <input type="submit" class="btn btn-danger btn-lg" value="Cancel ticket">
@@ -58,7 +58,7 @@
                 <div class="col">
                   This ticket was completed by <%= ticket.closed_by %> on <%= ticket.closed_on %>.
                 </div>
-              <% } else { %>
+              <% } else if (ticket.status === "CANCELLED") { %>
                 <div class="col">
                   This ticked was cancelled by <%= ticket.closed_by %> on <%= ticket.closed_on %>.
                 </div>
