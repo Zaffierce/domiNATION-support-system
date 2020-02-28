@@ -30,6 +30,18 @@
                     <input type="submit" class="btn btn-danger btn-lg" value="Cancel ticket">
                   </form>
                 </div>
+                <div class="col-sm-6">
+                  <form method="POST" action="/open/2/<%=ticket.id%>">
+                    <input type="submit" class="btn btn-success btn-lg" value="Accept ticket">
+                  </form>
+                </div>
+              <% } else if (user.isAdmin && ticket.status === "OPEN") { %>
+                <div class="col-sm-6">
+                  <form method="POST" action="/cancel/2/<%=ticket.id%>">
+                    <input type="submit" class="btn btn-danger btn-lg" value="Cancel ticket">
+                  </form>
+                </div>
+                <div class="col-sm-6">
                   <form method="POST" action="/complete/2/<%=ticket.id%>">
                     <input type="submit" class="btn btn-success btn-lg" value="Complete ticket">
                   </form>
@@ -40,13 +52,17 @@
                     <input type="submit" class="btn btn-danger btn-lg" value="Cancel ticket">
                   </form>
                 </div>
+              <% } else if (ticket.status === "COMPLETE") { %>
+                <div class="col">
+                  This ticket was completed by <%= ticket.closed_by %> on <%= ticket.closed_on %>.
+                </div>
               <% } else { %>
                 <div class="col">
-                  This ticket has been closed.
+                  This ticked was cancelled by <%= ticket.closed_by %> on <%= ticket.closed_on %>.
                 </div>
               <% } %>
             </div>
-          </div>
+            </div>
         </div>
     </div>
 </div> <!--Close of content-->

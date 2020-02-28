@@ -51,8 +51,22 @@ app.get('/', catchAsync(async(req, res) => {
     res.redirect('/login');
   } else {
     const validateUser = await authenticateUser(req.cookies['Token']);
-    const usersOpenTickets = await findUserTickets(validateUser.id, "NEW");
-    res.render('./pages/index', {user : validateUser, openTickets : usersOpenTickets});
+    const usersNewTickets = await findUserTickets(validateUser.id, "NEW");
+    const usersOpenTickets = await findUserTickets(validateUser.id, "OPEN");
+    res.render('./pages/index', {
+      user : validateUser, 
+      newTickets : usersNewTickets,
+      openTickets : usersOpenTickets
+    });
+  }
+}));
+
+app.get('/submitted', catchAsync(async(req, res) => {
+  if (req.cookies['Token'] == null) {
+    res.redirect('/login');
+  } else {
+    const validateUser = await authenticateUser(req.cookies['Token']);
+    res.render('./pages/ticket_submitted', {user : validateUser});
     }
   }
 ));
@@ -222,15 +236,16 @@ app.post('/form_submit', catchAsync(async(req, res) =>{
       sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.issue, ticket.recreate, ticket.lost_items, timestamp];
     }
     client.query(sqlQueryInsert, sqlValueArr);
-    res.redirect('/');
+    res.redirect('/submitted');
   }
 }));
 
-app.post('/cancel/:ticket_type/:id', catchAsync(async(req, res) => {
+app.post('/:status/:ticket_type/:id', catchAsync(async(req, res) => {
   if (req.cookies['Token'] == null) {
     res.redirect('/login');
   } else {
     const validateUser = await authenticateUser(req.cookies['Token']);
+    let status = req.params.status.toUpperCase();
     let ticket_type = req.params.ticket_type;
     let ticket_id = req.params.id;
 
@@ -245,98 +260,51 @@ app.post('/cancel/:ticket_type/:id', catchAsync(async(req, res) => {
       let sqlArr;
       let sqlQuery;
       if (ticket_type === '1') {
-        sqlQuery = `UPDATE ticket_general set status='CANCELLED', closed_by=$1, closed_on=$2 where id=$3;`;
-        sqlArr = [validateUser.username, timestamp, ticket_id];
+        sqlQuery = `UPDATE ticket_general set status=$1, closed_by=$2, closed_on=$3 where id=$4;`;
+        sqlArr = [status, validateUser.username, timestamp, ticket_id];
       }
       //Element from Event
       if (ticket_type === '2') {
-        sqlQuery = `UPDATE element_event set status='CANCELLED', closed_by=$1, closed_on=$2 where id=$3;`;
-        sqlArr = [validateUser.username, timestamp, ticket_id];
+        sqlQuery = `UPDATE element_event set status=$1, closed_by=$2, closed_on=$3 where id=$4;`;
+        sqlArr = [status, validateUser.username, timestamp, ticket_id];
       }
       //Element Transfer
       if (ticket_type === '3') {
-        sqlQuery = `UPDATE element_transfer set status='CANCELLED', closed_by=$1, closed_on=$2 where id=$3;`;
-        sqlArr = [validateUser.username, timestamp, ticket_id];
+        console.log(`status is ${status}, ticket_type is ${ticket_type}, ticket_id is ${ticket_id}`);
+        sqlQuery = `UPDATE element_transfer set status=$1, closed_by=$2, closed_on=$3 where id=$4;`;
+        sqlArr = [status, validateUser.username, timestamp, ticket_id];
       }
       //Patreon Dino Request
       if (ticket_type === '4') {
-        sqlQuery = `UPDATE patreon_dino_request set status='CANCELLED', closed_by=$1, closed_on=$2 where id=$3;`;
-        sqlArr = [validateUser.username, timestamp, ticket_id];
+        sqlQuery = `UPDATE patreon_dino_request set status=$1, closed_by=$2, closed_on=$3 where id=$4;`;
+        sqlArr = [status, validateUser.username, timestamp, ticket_id];
       }
       //Patreon Dino Insurance
       if (ticket_type === '5') {
-        sqlQuery = `UPDATE patreon_dino_insurance set status='CANCELLED', closed_by=$1, closed_on=$2 where id=$3;`;
-        sqlArr = [validateUser.username, timestamp, ticket_id];
+        sqlQuery = `UPDATE patreon_dino_insurance set status=$1, closed_by=$2, closed_on=$3 where id=$4;`;
+        sqlArr = [status, validateUser.username, timestamp, ticket_id];
       }
       //Ban Appeal
       if (ticket_type === '6') {
-        sqlQuery = `UPDATE ban_appeal set status='CANCELLED', closed_by=$1, closed_on=$2 where id=$3;`;
-        sqlArr = [validateUser.username, timestamp, ticket_id];
+        sqlQuery = `UPDATE ban_appeal set status=$1, closed_by=$2, closed_on=$3 where id=$4;`;
+        sqlArr = [status, validateUser.username, timestamp, ticket_id];
       }
       //Bug Request
       if (ticket_type === '7') {
-        sqlQuery = `UPDATE bug_report set status='CANCELLED', closed_by=$1, closed_on=$2 where id=$3;`;
-        sqlArr = [validateUser.username, timestamp, ticket_id];
+        sqlQuery = `UPDATE bug_report set status=$1, closed_by=$2, closed_on=$3 where id=$4;`;
+        sqlArr = [status, validateUser.username, timestamp, ticket_id];
       }
-    client.query(sqlQuery, sqlArr).then(res.redirect('/admin'));
-  }
-}));
-
-app.post('/complete/:ticket_type/:id', catchAsync(async(req, res) => {
-  if (req.cookies['Token'] == null) {
-    res.redirect('/login');
-  } else {
-    const validateUser = await authenticateUser(req.cookies['Token']);
-    let ticket_type = req.params.ticket_type;
-    let ticket_id = req.params.id;
-
-    let date = new Date();
-    let timestamp = ("00" + (date.getMonth() + 1)).slice(-2) 
-    + "/" + ("00" + date.getDate()).slice(-2) 
-    + "/" + date.getFullYear() + " " 
-    + ("00" + date.getHours()).slice(-2) + ":" 
-    + ("00" + date.getMinutes()).slice(-2) 
-    + ":" + ("00" + date.getSeconds()).slice(-2);
-        //General
-      let sqlArr;
-      let sqlQuery;
-      if (ticket_type === '1') {
-        sqlQuery = `UPDATE ticket_general set status='CLOSED', closed_by=$1, closed_on=$2 where id=$3;`;
-        sqlArr = [validateUser.username, timestamp, ticket_id];
+    client.query(sqlQuery, sqlArr).then(sqlRes => {
+      console.log(sqlRes);
+      if (validateUser.isAdmin && status === "NEW") {
+        res.redirect(`${ticket_type}/${ticket_id}`);
+      } else if (validateUser.isAdmin) {
+        res.redirect('/admin');
+      } else {
+        res.redirect('/');
       }
-      //Element from Event
-      if (ticket_type === '2') {
-        sqlQuery = `UPDATE element_event set status='CLOSED', closed_by=$1, closed_on=$2 where id=$3;`;
-        sqlArr = [validateUser.username, timestamp, ticket_id];
-      }
-      //Element Transfer
-      if (ticket_type === '3') {
-        sqlQuery = `UPDATE element_transfer set status='CLOSED', closed_by=$1, closed_on=$2 where id=$3;`;
-        sqlArr = [validateUser.username, timestamp, ticket_id];
-      }
-      //Patreon Dino Request
-      if (ticket_type === '4') {
-        sqlQuery = `UPDATE patreon_dino_request set status='CLOSED', closed_by=$1, closed_on=$2 where id=$3;`;
-        sqlArr = [validateUser.username, timestamp, ticket_id];
-      }
-      //Patreon Dino Insurance
-      if (ticket_type === '5') {
-        sqlQuery = `UPDATE patreon_dino_insurance set status='CLOSED', closed_by=$1, closed_on=$2 where id=$3;`;
-        sqlArr = [validateUser.username, timestamp, ticket_id];
-      }
-      //Ban Appeal
-      if (ticket_type === '6') {
-        sqlQuery = `UPDATE ban_appeal set status='CLOSED', closed_by=$1, closed_on=$2 where id=$3;`;
-        sqlArr = [validateUser.username, timestamp, ticket_id];
-      }
-      //Bug Request
-      if (ticket_type === '7') {
-        sqlQuery = `UPDATE bug_report set status='CLOSED', closed_by=$1, closed_on=$2 where id=$3;`;
-        sqlArr = [validateUser.username, timestamp, ticket_id];
-      }
-    client.query(sqlQuery, sqlArr).then(res.redirect('/admin'));
-  }
-}));
+  });
+}}));
 
 app.get('/details/:ticket_type/:id', catchAsync(async(req, res) => {
   if (req.cookies['Token'] == null) {
@@ -406,13 +374,15 @@ app.get('/status', catchAsync(async(req, res) => {
     res.redirect('/login');
   } else {
     const validateUser = await authenticateUser(req.cookies['Token']);
-    const usersOpenTickets = await findUserTickets(validateUser.id, "NEW");
-    const usersClosedTickets = await findUserTickets(validateUser.id, "CLOSED");
+    const usersNewTickets = await findUserTickets(validateUser.id, "NEW");
+    const usersOpenTickets = await findUserTickets(validateUser.id, "OPEN");
+    const usersCompleteTickets = await findUserTickets(validateUser.id, "COMPLETE");
     const usersCancelledTickets = await findUserTickets(validateUser.id, "CANCELLED");
       res.render('./pages/status', {
         user : validateUser, 
+        newTickets : usersNewTickets,
         openTickets : usersOpenTickets,
-        closedTickets : usersClosedTickets,
+        closedTickets : usersCompleteTickets,
         cancelledTickets : usersCancelledTickets
       });
     }
@@ -478,13 +448,13 @@ async function authenticateUser(token) {
 async function findOpenTickets() {
   let openTickets = 0;
   try {
-    let count_gen = await checkDBAdmin('ticket_general', 'NEW');
-    let count_element = await checkDBAdmin('element_event', 'NEW');
-    let count_transfer = await checkDBAdmin('element_transfer', 'NEW');
-    let count_dino_req = await checkDBAdmin('patreon_dino_request', 'NEW');
-    let count_insurance = await checkDBAdmin('patreon_dino_insurance', 'NEW');
-    let count_ban = await checkDBAdmin('ban_appeal', 'NEW');
-    let count_bug = await checkDBAdmin('bug_report', 'NEW');
+    let count_gen = await checkDBAdmin('ticket_general');
+    let count_element = await checkDBAdmin('element_event');
+    let count_transfer = await checkDBAdmin('element_transfer');
+    let count_dino_req = await checkDBAdmin('patreon_dino_request');
+    let count_insurance = await checkDBAdmin('patreon_dino_insurance');
+    let count_ban = await checkDBAdmin('ban_appeal');
+    let count_bug = await checkDBAdmin('bug_report');
 
     openTickets += count_gen.rowCount += count_element.rowCount += count_transfer.rowCount
     += count_dino_req.rowCount += count_insurance.rowCount += count_ban.rowCount 
@@ -537,8 +507,8 @@ function checkDB(table, userID, status) {
   return client.query(`SELECT * FROM ${table} where discord_id = '${userID}' and status = '${status}';`);
 };
 
-function checkDBAdmin(table, status) {
-  return client.query(`SELECT * FROM ${table} WHERE status = '${status}';`);
+function checkDBAdmin(table) {
+  return client.query(`SELECT * FROM ${table} WHERE status='NEW' OR status='OPEN';`);
 }
 
 client.connect((err) => {
