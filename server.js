@@ -377,7 +377,7 @@ app.get('/status', catchAsync(async(req, res) => {
     const usersNewTickets = await findUserTickets(validateUser.id, "NEW");
     const usersOpenTickets = await findUserTickets(validateUser.id, "OPEN");
     const usersCompleteTickets = await findUserTickets(validateUser.id, "COMPLETE");
-    const usersCancelledTickets = await findUserTickets(validateUser.id, "CANCELLED");
+    const usersCancelledTickets = await findUserTickets(validateUser.id, "CANCEL");
       res.render('./pages/status', {
         user : validateUser, 
         newTickets : usersNewTickets,
