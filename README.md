@@ -60,6 +60,8 @@ DISCORD_PATREON_DOMINATOR=[ID of DomiNATOR]
   - Adjusted backend routes
 - Implemented error checking for tickets that do not exist within the DB
 - Implemented logic to query DB for server list
+- Implemented logic to validate if a user is not found in the Discord
+  - Currently only on index route, may implement to other routes?
 
 02/27/2020
 - Mass style and verbiage changes

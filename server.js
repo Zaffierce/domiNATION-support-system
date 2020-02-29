@@ -53,11 +53,17 @@ app.get('/', catchAsync(async(req, res) => {
     const validateUser = await authenticateUser(req.cookies['Token']);
     const usersNewTickets = await findUserTickets(validateUser.id, "NEW");
     const usersOpenTickets = await findUserTickets(validateUser.id, "OPEN");
-    res.render('./pages/index', {
-      user : validateUser, 
-      newTickets : usersNewTickets,
-      openTickets : usersOpenTickets
-    });
+    if (validateUser.status === 404) {
+      res.render('./pages/user_not_found', {
+        user : validateUser
+      });
+    } else {
+      res.render('./pages/index', {
+        user : validateUser, 
+        newTickets : usersNewTickets,
+        openTickets : usersOpenTickets
+      });
+    }
   }
 }));
 

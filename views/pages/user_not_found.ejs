@@ -1,0 +1,22 @@
+<%- include('../partials/head.ejs'); %>
+  <title>User: <%= user.username %> - DomiNATION Ark: Survival Evolved Community</title>
+<link rel="stylesheet" type="text/css" href="styles/forms.css">
+<script src="/js/app.js" type="text/javascript"></script>
+</head>
+<body>
+    <login-bar class="ng-scope">
+      <div class="login-bar">
+          Logged in as <%= user.username %> - <a target="_self" href="/logout">Log Out</a></div>
+      </login-bar>
+      <div id="content" class="ng-scope ng-view">
+  <div class="container text-center">
+    <br />
+    <h1>ERROR:  The signed-in account cannot be found within the DomiNATION Discord.</h1>
+    <span>Please logout and try again.  If you are positive that this is the correct account, please contact the Server Admins.</span><br />
+    <br />
+    <a href="/logout" class="btn btn-primary btn-lg">Logout</a>
+  </div>
+</div> <!--Close of content-->
+
+</body>
+</html>
