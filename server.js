@@ -313,7 +313,6 @@ app.post('/:status/:ticket_type/:id', catchAsync(async(req, res) => {
       }
       //Element Transfer
       if (ticket_type === '3') {
-        console.log(`status is ${status}, ticket_type is ${ticket_type}, ticket_id is ${ticket_id}`);
         sqlQuery = `UPDATE element_transfer set status=$1, closed_by=$2, closed_on=$3 where id=$4;`;
         sqlArr = [status, validateUser.username, timestamp, ticket_id];
       }
@@ -338,7 +337,6 @@ app.post('/:status/:ticket_type/:id', catchAsync(async(req, res) => {
         sqlArr = [status, validateUser.username, timestamp, ticket_id];
       }
     client.query(sqlQuery, sqlArr).then(sqlRes => {
-      console.log(sqlRes);
       if (validateUser.isAdmin && status === "NEW") {
         res.redirect(`${ticket_type}/${ticket_id}`);
       } else if (validateUser.isAdmin) {
