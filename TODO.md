@@ -2,6 +2,10 @@ TODO
 
 [] Error handling if a user is not found within our Discord channel
 
+[X] Error handling if when a user tries to query a ticket that does not exist in the DB
+
+[] Permission checks that if a user is querying a ticket, make sure it matches their ID.
+
 [X] General Request
 [X] Bug Request
 

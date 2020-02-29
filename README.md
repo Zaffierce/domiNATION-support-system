@@ -52,6 +52,15 @@ DISCORD_PATREON_DOMINATOR=[ID of DomiNATOR]
 * Allowing an admin to re-open a ticket
 
 # Change Log
+02/29/2020
+- Changed formatting on Manage page
+  - NEW, OPEN, and CLOSED tickets are now separate
+- Renamed nav links
+- Created Admin Panel
+  - Adjusted backend routes
+- Implemented error checking for tickets that do not exist within the DB
+- Implemented logic to query DB for server list
+
 02/27/2020
 - Mass style and verbiage changes
   - Corrected spacing between buttons on individual ticket pages

@@ -8,7 +8,7 @@
 <body>
   <%- include('../partials/nav.ejs'); %>
   <h1 class="ng-scope text-center">Ticket history for <%= user.username %></h1>
-  <div class="text-center">You current have <strong><%= openTickets.ticketCount + newTickets.ticketCount %></strong> ticket(s) open, <%= closedTickets.ticketCount %> closed ticket(s), and <%= cancelledTickets.ticketCount %> cancelled ticket(s).</div>
+  <div class="text-center">You currently have <strong><%= openTickets.ticketCount + newTickets.ticketCount %></strong> ticket(s) open, <%= closedTickets.ticketCount %> closed ticket(s), and <%= cancelledTickets.ticketCount %> cancelled ticket(s).</div>
   <br />
   <div class="container">
     <div class="row">

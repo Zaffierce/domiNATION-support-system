@@ -68,8 +68,7 @@ app.get('/submitted', catchAsync(async(req, res) => {
     const validateUser = await authenticateUser(req.cookies['Token']);
     res.render('./pages/ticket_submitted', {user : validateUser});
     }
-  }
-));
+}));
 
 
 app.get('/login', (req, res) => {
@@ -120,18 +119,37 @@ app.use((err, req, res, next) => {
   }
 });
 
-app.get('/admin', catchAsync(async(req, res) => {
+app.get('/alltickets', catchAsync(async(req, res) => {
   if (req.cookies['Token'] == null) {
     res.redirect('/login');
   } else {
     const validateUser = await authenticateUser(req.cookies['Token']);
     if (validateUser.isAdmin === true) {
-      const openTickets = await findOpenTickets();
-      res.render('./pages/adminPage', {user : validateUser, openTickets : openTickets});  
+      const newTickets = await findOpenTickets("NEW");
+      const openTickets = await findOpenTickets("OPEN");
+      res.render('./pages//admin/adminPage', {
+        user : validateUser,
+        newTickets : newTickets,
+        openTickets : openTickets});  
     } else {
       res.redirect('/');
     }
   }
+}));
+
+app.get('/admin', catchAsync(async(req, res) => {
+if (req.cookies['Token'] == null) {
+  res.redirect('/login');
+} else {
+  const validatedUser = await authenticateUser(req.cookies['Token']);
+  if (validatedUser.isAdmin === true) {
+    res.render('./pages/admin/adminPanel', {
+      user: validatedUser
+    });
+  } else {
+    res.redirect('/');
+  }
+}
 }));
 
 app.post('/form_initial', catchAsync(async(req, res) => {
@@ -141,20 +159,36 @@ app.post('/form_initial', catchAsync(async(req, res) => {
     const validateUser = await authenticateUser(req.cookies['Token']);
     let ticketType = req.body.ticketType;
     let initialInfo = req.body;
-    // console.log("Ticket type is:",ticketType);
-    // console.log(validateUser);
     //Change to switch
     if (ticketType === "ticketGeneral") {
       res.render('./pages/forms/ticketGeneral', {user : validateUser, generalInfo: initialInfo, ticketType});
     }
     if (ticketType === "ticketElementChoice") {
-      res.render('./pages/forms/elementRequestChoice', {user : validateUser, generalInfo: initialInfo, ticketType});
+      client.query('SELECT * FROM servers;').then(servers => {
+        res.render('./pages/forms/elementRequestChoice', {
+          user : validateUser, 
+          generalInfo: initialInfo, 
+          ticketType,
+          servers : servers.rows});
+      });
     }
     if (ticketType === "elementEvent") {
-      res.render('./pages/forms/ticketElement', {user : validateUser, generalInfo: initialInfo, ticketType});
+      client.query('SELECT * FROM servers;').then(servers => {
+        res.render('./pages/forms/ticketElement', {
+          user : validateUser, 
+          generalInfo: initialInfo, 
+          ticketType, 
+          servers : servers.rows});
+      });
     }
     if (ticketType === "elementTransfer") {
-      res.render('./pages/forms/ticketElementXfr', {user : validateUser, generalInfo: initialInfo, ticketType});
+      client.query('SELECT * FROM servers;').then(servers => {
+        res.render('./pages/forms/ticketElementXfr', {
+          user : validateUser, 
+          generalInfo: initialInfo, 
+          ticketType,
+          servers : servers.rows});
+      });
     }
     if (ticketType === "ticketPatreonChoice") {
       res.render('./pages/forms/patreonRequestChoice', {user : validateUser, generalInfo: initialInfo, ticketType});
@@ -162,12 +196,15 @@ app.post('/form_initial', catchAsync(async(req, res) => {
     if (ticketType === "patreonMonthlyDino") {
       client.query('select * from dinosaurs order by name asc;').then(sqlDinosaurs => {
         client.query('select * from dinocolors;').then(sqlDinoColors => {
-          res.render('./pages/forms/ticketPatreonDinoRequest', 
-          {user : validateUser, 
-          generalInfo: initialInfo, 
-          dino_names : sqlDinosaurs.rows,
-          dino_colors: sqlDinoColors.rows,
-          ticketType});
+          client.query('select * from servers;').then(servers => {
+            res.render('./pages/forms/ticketPatreonDinoRequest', 
+            {user : validateUser, 
+            generalInfo: initialInfo, 
+            dino_names : sqlDinosaurs.rows,
+            dino_colors: sqlDinoColors.rows,
+            ticketType,
+            servers : servers.rows});
+          });
         });
       });
     }
@@ -299,7 +336,7 @@ app.post('/:status/:ticket_type/:id', catchAsync(async(req, res) => {
       if (validateUser.isAdmin && status === "NEW") {
         res.redirect(`${ticket_type}/${ticket_id}`);
       } else if (validateUser.isAdmin) {
-        res.redirect('/admin');
+        res.redirect('/alltickets');
       } else {
         res.redirect('/');
       }
@@ -316,43 +353,71 @@ app.get('/details/:ticket_type/:id', catchAsync(async(req, res) => {
     //General
     if (ticket_type === '1') {
       client.query(`SELECT * FROM ticket_general where id = ${ticket_id};`).then(sqlRes => {
-        res.render('./pages/detailed/general', {user : validateUser, ticket : sqlRes.rows[0]});
+        if (sqlRes.rowCount > 0) {
+          res.render('./pages/detailed/general', {user : validateUser, ticket : sqlRes.rows[0]});
+        } else {
+          res.render('./pages/ticket_not_found', {user : validateUser});
+        }
       });
     } 
     //Element from Event
     if (ticket_type === '2') {
       client.query(`SELECT * FROM element_event where id = ${ticket_id};`).then(sqlRes => {
-        res.render('./pages/detailed/element_event', {user : validateUser, ticket : sqlRes.rows[0]});
+        if (sqlRes.rowCount > 0) {
+          res.render('./pages/detailed/element_event', {user : validateUser, ticket : sqlRes.rows[0]});
+        } else {
+          res.render('./pages/ticket_not_found', {user : validateUser});
+        }
       });
     }
     //Element Transfer
     if (ticket_type === '3') {
       client.query(`SELECT * FROM element_transfer where id = ${ticket_id};`).then(sqlRes => {
-        res.render('./pages/detailed/element_transfer', {user : validateUser, ticket : sqlRes.rows[0]});
+        if (sqlRes.rowCount > 0){
+          res.render('./pages/detailed/element_transfer', {user : validateUser, ticket : sqlRes.rows[0]});
+        } else {
+          res.render('./pages/ticket_not_found', {user : validateUser});
+        }
       });
     }
     //Patreon Dino Request
     if (ticket_type === '4') {
       client.query(`SELECT * FROM patreon_dino_request where id = ${ticket_id};`).then(sqlRes => {
-        res.render('./pages/detailed/dino_request', {user : validateUser, ticket : sqlRes.rows[0]});
+        if (sqlRes.rowCount > 0) {
+          res.render('./pages/detailed/dino_request', {user : validateUser, ticket : sqlRes.rows[0]});
+        } else {
+          res.render('./pages/ticket_not_found', {user : validateUser});
+        }
       });
     }
     //Patreon Dino Insurance
     if (ticket_type === '5') {
       client.query(`SELECT * FROM patreon_dino_insurance where id = ${ticket_id};`).then(sqlRes => {
-        res.render('./pages/detailed/dino_insurance', {user : validateUser, ticket : sqlRes.rows[0]});
+        if (sqlRes.rowCount > 0) {
+          res.render('./pages/detailed/dino_insurance', {user : validateUser, ticket : sqlRes.rows[0]});
+        } else {
+          res.render('./pages/ticket_not_found', {user : validateUser});
+        }
       });
     }
     //Ban Appeal
     if (ticket_type === '6') {
       client.query(`SELECT * FROM ban_appeal where id = ${ticket_id};`).then(sqlRes => {
-        res.render('./pages/detailed/ban_appeal', {user : validateUser, ticket : sqlRes.rows[0]});
+        if (sqlRes.rowCount > 0) {
+          res.render('./pages/detailed/ban_appeal', {user : validateUser, ticket : sqlRes.rows[0]});
+        } else {
+          res.render('./pages/ticket_not_found', {user : validateUser});
+        }
       });
     }
     //Bug Request
     if (ticket_type === '7') {
       client.query(`SELECT * FROM bug_report where id = ${ticket_id};`).then(sqlRes => {
-        res.render('./pages/detailed/bug_report', {user : validateUser, ticket : sqlRes.rows[0]});
+        if (sqlRes.rowCount > 0) {
+          res.render('./pages/detailed/bug_report', {user : validateUser, ticket : sqlRes.rows[0]});
+        } else {
+          res.render('./pages/ticket_not_found', {user : validateUser});
+        }
       });
     }
   }
@@ -364,8 +429,14 @@ app.get('/new', catchAsync(async(req, res) => {
     res.redirect('/login');
   } else {
     const validateUser = await authenticateUser(req.cookies['Token']);
-      res.render('./pages/forms/newTicket', {user : validateUser});
-    }
+    client.query('SELECT * FROM servers;').then(servers => {
+      res.render('./pages/forms/newTicket', {
+        user : validateUser,
+        servers : servers.rows
+      });
+
+    });
+  }
   }
 ));
 
@@ -445,16 +516,16 @@ async function authenticateUser(token) {
   }
 }
 
-async function findOpenTickets() {
+async function findOpenTickets(status) {
   let openTickets = 0;
   try {
-    let count_gen = await checkDBAdmin('ticket_general');
-    let count_element = await checkDBAdmin('element_event');
-    let count_transfer = await checkDBAdmin('element_transfer');
-    let count_dino_req = await checkDBAdmin('patreon_dino_request');
-    let count_insurance = await checkDBAdmin('patreon_dino_insurance');
-    let count_ban = await checkDBAdmin('ban_appeal');
-    let count_bug = await checkDBAdmin('bug_report');
+    let count_gen = await checkDBAdmin('ticket_general', status);
+    let count_element = await checkDBAdmin('element_event', status);
+    let count_transfer = await checkDBAdmin('element_transfer', status);
+    let count_dino_req = await checkDBAdmin('patreon_dino_request', status);
+    let count_insurance = await checkDBAdmin('patreon_dino_insurance', status);
+    let count_ban = await checkDBAdmin('ban_appeal', status);
+    let count_bug = await checkDBAdmin('bug_report', status);
 
     openTickets += count_gen.rowCount += count_element.rowCount += count_transfer.rowCount
     += count_dino_req.rowCount += count_insurance.rowCount += count_ban.rowCount 
@@ -507,8 +578,8 @@ function checkDB(table, userID, status) {
   return client.query(`SELECT * FROM ${table} where discord_id = '${userID}' and status = '${status}';`);
 };
 
-function checkDBAdmin(table) {
-  return client.query(`SELECT * FROM ${table} WHERE status='NEW' OR status='OPEN';`);
+function checkDBAdmin(table, status) {
+  return client.query(`SELECT * FROM ${table} WHERE status='${status}';`);
 }
 
 client.connect((err) => {

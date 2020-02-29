@@ -16,7 +16,19 @@
       <legend>Patreon Dino Insurace</legend>
       <div class="form-group col-md-6">
           <label for="link">Please provide the link from the website of the dead dino:</label>
-          <div><a href="https://ark.spectrumdominus.com/dinos/search" target="_blank">Click me!</a></div>
+          <label for="link">
+            Need help getting the link to your dinosaur?
+            <a tabindex="0" 
+            data-toggle="popover" 
+            data-trigger="focus"
+            data-html="true" 
+            title="Need help?" 
+            data-content="We require the link to your dead Dinosaur so we can update our records, and keep track of things!">
+            <i class="fas fa-info-circle"></i>
+            </a>
+          </label>
+          <a href='https://ark.spectrumdominus.com/dinos/search' target='_blank'>Search link!</a>
+          
           <input type="text" name="link" class="form-control" required>
 
           <label for="email_address">Please provide your Patreon email address:</label>
