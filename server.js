@@ -48,10 +48,10 @@ app.use(methodOverride((request, response) => {
 }));
 
 app.get('/', catchAsync(async(req, res) => {
-  if (req.cookies['Token'] == null) {
+  if (req.cookies['Domi-Support-Token'] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Token']);
+    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
     const usersNewTickets = await findUserTickets(validateUser.id, "NEW");
     const usersOpenTickets = await findUserTickets(validateUser.id, "OPEN");
     if (validateUser.status === 404) {
@@ -69,10 +69,10 @@ app.get('/', catchAsync(async(req, res) => {
 }));
 
 app.get('/submitted', catchAsync(async(req, res) => {
-  if (req.cookies['Token'] == null) {
+  if (req.cookies['Domi-Support-Token'] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Token']);
+    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
     res.render('./pages/ticket_submitted', {user : validateUser});
     }
 }));
@@ -83,7 +83,7 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-  res.clearCookie('Token');
+  res.clearCookie('Domi-Support-Token');
   res.redirect('/');
 });
 
@@ -101,7 +101,7 @@ app.get('/api/discord/callback', catchAsync(async (req, res) => {
   });
   const json = await response.json();
   const cookieExpirationInMS = 2592000000; // 30 days 
-  res.cookie('Token', json.access_token, {maxAge: cookieExpirationInMS, httpOnly: false});
+  res.cookie('Domi-Support-Token', json.access_token, {maxAge: cookieExpirationInMS, httpOnly: false});
   res.redirect('/');
 }));
 
@@ -127,10 +127,10 @@ app.use((err, req, res, next) => {
 });
 
 app.get('/alltickets', catchAsync(async(req, res) => {
-  if (req.cookies['Token'] == null) {
+  if (req.cookies['Domi-Support-Token'] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Token']);
+    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
     if (validateUser.isAdmin === true) {
       const newTickets = await findOpenTickets("NEW");
       const openTickets = await findOpenTickets("OPEN");
@@ -145,10 +145,10 @@ app.get('/alltickets', catchAsync(async(req, res) => {
 }));
 
 app.get('/admin', catchAsync(async(req, res) => {
-if (req.cookies['Token'] == null) {
+if (req.cookies['Domi-Support-Token'] == null) {
   res.redirect('/login');
 } else {
-  const validatedUser = await authenticateUser(req.cookies['Token']);
+  const validatedUser = await authenticateUser(req.cookies['Domi-Support-Token']);
   if (validatedUser.isAdmin === true) {
     res.render('./pages/admin/adminPanel', {
       user: validatedUser
@@ -160,10 +160,10 @@ if (req.cookies['Token'] == null) {
 }));
 
 app.post('/form_initial', catchAsync(async(req, res) => {
-  if (req.cookies['Token'] == null) {
+  if (req.cookies['Domi-Support-Token'] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Token']);
+    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
     let ticketType = req.body.ticketType;
     let initialInfo = req.body;
     //Change to switch
@@ -228,10 +228,10 @@ app.post('/form_initial', catchAsync(async(req, res) => {
 }));
 
 app.post('/form_submit', catchAsync(async(req, res) =>{
-  if (req.cookies['Token'] == null) {
+  if (req.cookies['Domi-Support-Token'] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Token']);
+    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
     let sqlQueryInsert;
     let sqlValueArr = [];
 
@@ -297,10 +297,10 @@ app.post('/form_submit', catchAsync(async(req, res) =>{
 }));
 
 app.post('/:status/:ticket_type/:id', catchAsync(async(req, res) => {
-  if (req.cookies['Token'] == null) {
+  if (req.cookies['Domi-Support-Token'] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Token']);
+    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
     let status = req.params.status.toUpperCase();
     let ticket_type = req.params.ticket_type;
     let ticket_id = req.params.id;
@@ -361,10 +361,10 @@ app.post('/:status/:ticket_type/:id', catchAsync(async(req, res) => {
 }}));
 
 app.get('/details/:ticket_type/:id', catchAsync(async(req, res) => {
-  if (req.cookies['Token'] == null) {
+  if (req.cookies['Domi-Support-Token'] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Token']);
+    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
     let ticket_type = req.params.ticket_type;
     let ticket_id = req.params.id;
     //General
@@ -442,10 +442,10 @@ app.get('/details/:ticket_type/:id', catchAsync(async(req, res) => {
 
 //Just pass validatedUser.isAdmin and do something based off of that.
 app.get('/new', catchAsync(async(req, res) => {
-  if (req.cookies['Token'] == null) {
+  if (req.cookies['Domi-Support-Token'] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Token']);
+    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
     client.query('SELECT * FROM servers;').then(servers => {
       res.render('./pages/forms/newTicket', {
         user : validateUser,
@@ -458,10 +458,10 @@ app.get('/new', catchAsync(async(req, res) => {
 ));
 
 app.get('/status', catchAsync(async(req, res) => {
-  if (req.cookies['Token'] == null) {
+  if (req.cookies['Domi-Support-Token'] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Token']);
+    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
     const usersNewTickets = await findUserTickets(validateUser.id, "NEW");
     const usersOpenTickets = await findUserTickets(validateUser.id, "OPEN");
     const usersCompleteTickets = await findUserTickets(validateUser.id, "COMPLETE");
