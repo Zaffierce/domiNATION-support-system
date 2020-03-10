@@ -1,4 +1,6 @@
   <option value="">Please choose a server...</option>
   <% for (let i = 0; i < servers.length; i++) { %>
-    <option value="<%=servers[i].server_id%>"><%=servers[i].server_name%></option>
+    <option value="<%=servers[i].server_id%>">
+      DomiNATION #<%=servers[i].server_id%> - <%=servers[i].server_name%>
+    </option>
   <% }; %>

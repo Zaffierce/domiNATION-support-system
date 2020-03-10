@@ -27,14 +27,17 @@
               <div class="pb-1">
                 <form action="/edit" method="POST" class="edit-server-form" hidden>
                   <button class="fas fa-save save-server"></button>
-                  <input name="server_id" type="number" />
-                  <input name="server_name" type="text" />
-                  </form>
+                  <label for="server_id">Server Number:</label>
+                  <input name="server_id" type="number" value="<%=servers[i].server_id%>"/>
+                  <input name="server_id_old" type="number" value="<%=servers[i].server_id%>" hidden/>
+                  <label for="server_name">Server Name:</label>
+                  <input name="server_name" type="text" value="<%=servers[i].server_name%>"/>
+                </form>
                 <form action="/remove" method="POST" class="delete-server-form">
                   <input name="server_id" type="hidden" value="<%=servers[i].server_id%>" />
                   <button class="fas fa-edit edit-server"></button>
                   <button class="fas fa-trash delete-server"></button>
-                  <%= servers[i].server_name %>
+                  DomiNATION #<%=servers[i].server_id%> - <%=servers[i].server_name%>
                 </form>
               </div>
             <% } %>
@@ -43,9 +46,16 @@
             <!--Dinosaur Listing-->
             <% for (let i = 0; i < dino_names.length; i++) { %>
             <div class="pb-1">
+              <form action="/edit" method="POST" class="edit-dinosaur-form" hidden>
+                <button class="fas fa-save save-dinosaur"></button>
+                <label for="dino_name">Dino Name:</label>
+                <input name="dino_id" type="hidden" value="<%=dino_names[i].id%>" />
+                <input name="dino_name" type="text" value="<%=dino_names[i].name%>" />
+              </form>
               <form action="/remove" method="POST">
                 <input name="dino_id" type="hidden" value="<%=dino_names[i].id%>" />
-                <button class="fas fa-trash delete-server"></button>
+                <button class="fas fa-edit edit-dinosaur"></button>
+                <button class="fas fa-trash delete-dinosaur"></button>
                 <%= dino_names[i].name %>
               </form>
             </div>

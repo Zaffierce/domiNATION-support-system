@@ -41,18 +41,35 @@ $(() => {
     trigger: 'focus'
   });
 
-  $('.delete-server').on('click', (event) => {
+  $('.delete-server').on('click', () => {
     return confirmDeletion();
   });
 
+  $('.delete-dinosaur').on('click', () => {
+    return confirmDeletion();
+  })
+
   $('.edit-server').on('click', function(event) {
     event.preventDefault();
-    console.log($(this).parent().parent().find('.edit-server-form').removeAttr("hidden"));
-    // $('.edit-server-form').removeAttr("hidden");
-    $($(this).parent().attr("hidden", "hidden"));
-    // $('.edit-server').attr("hidden", "hidden");
-    // $('.delete-server').attr("hidden", "hidden");
+    $(this).parent().parent().find('.edit-server-form').removeAttr("hidden");
+    $(this).parent().attr("hidden", "hidden");
   });
+
+  $('.edit-dinosaur').on('click', function(event) {
+    event.preventDefault();//?
+    $(this).parent().parent().find('.edit-dinosaur-form').removeAttr("hidden");
+    $(this).parent().attr("hidden", "hidden");
+  });
+
+  $('.save-server').on('click', () => {
+    return confirmSave();
+  });
+
+  $('.save-dinosaur').on('click', () => {
+    return confirmSave();
+  });
+
+  
 
   $('#serverList').on('click', () => {
     $('#dinosaurListing').attr("hidden", "hidden");
@@ -73,6 +90,14 @@ $(() => {
   });
   
 });
+
+function confirmSave() {
+  if (confirm("Are you sure you want to save this?\nThis will update this across the website!")) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 function confirmDeletion() {
   if (confirm("Are you sure you want to remove this?")) {

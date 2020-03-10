@@ -149,8 +149,8 @@ if (req.cookies['Domi-Support-Token'] == null) {
   res.redirect('/login');
 } else {
   const validatedUser = await authenticateUser(req.cookies['Domi-Support-Token']);
-  const servers = await client.query('SELECT * FROM servers;');
-  const dinos = await client.query('SELECT * FROM dinosaurs;');
+  const servers = await queryServerList();
+  const dinos = await queryDinosaurList();
   const dino_colors = await client.query('SELECT * FROM dinocolors;');
   if (validatedUser.isAdmin === true) {
     res.render('./pages/admin/adminPanel', {
@@ -177,49 +177,43 @@ app.post('/form_initial', catchAsync(async(req, res) => {
       res.render('./pages/forms/ticketGeneral', {user : validateUser, generalInfo: initialInfo, ticketType});
     }
     if (ticketType === "ticketElementChoice") {
-      client.query('SELECT * FROM servers;').then(servers => {
+      const servers = await queryServerList();
         res.render('./pages/forms/elementRequestChoice', {
           user : validateUser, 
           generalInfo: initialInfo, 
           ticketType,
           servers : servers.rows});
-      });
     }
     if (ticketType === "elementEvent") {
-      client.query('SELECT * FROM servers;').then(servers => {
+      const servers = await queryServerList();
         res.render('./pages/forms/ticketElement', {
           user : validateUser, 
           generalInfo: initialInfo, 
           ticketType, 
           servers : servers.rows});
-      });
     }
     if (ticketType === "elementTransfer") {
-      client.query('SELECT * FROM servers;').then(servers => {
+      const servers = await queryServerList();
         res.render('./pages/forms/ticketElementXfr', {
           user : validateUser, 
           generalInfo: initialInfo, 
           ticketType,
           servers : servers.rows});
-      });
     }
     if (ticketType === "ticketPatreonChoice") {
       res.render('./pages/forms/patreonRequestChoice', {user : validateUser, generalInfo: initialInfo, ticketType});
     }
     if (ticketType === "patreonMonthlyDino") {
-      client.query('select * from dinosaurs order by name asc;').then(sqlDinosaurs => {
-        client.query('select * from dinocolors;').then(sqlDinoColors => {
-          client.query('select * from servers;').then(servers => {
-            res.render('./pages/forms/ticketPatreonDinoRequest', 
-            {user : validateUser, 
-            generalInfo: initialInfo, 
-            dino_names : sqlDinosaurs.rows,
-            dino_colors: sqlDinoColors.rows,
-            ticketType,
-            servers : servers.rows});
-          });
-        });
-      });
+      const dinos = await queryDinosaurList();
+      const dino_colors = await client.query('SELECT * FROM dinocolors;');
+      const servers = await queryServerList();
+      res.render('./pages/forms/ticketPatreonDinoRequest', 
+      {user : validateUser, 
+      generalInfo: initialInfo, 
+      dino_names : dinos.rows,
+      dino_colors: dino_colors.rows,
+      ticketType,
+      servers : servers.rows});
     }
     if (ticketType === "patreonDinoInsurance") {
       res.render('./pages/forms/ticketPatreonDinoInsurance', {user : validateUser, generalInfo: initialInfo, ticketType});
@@ -452,12 +446,10 @@ app.get('/new', catchAsync(async(req, res) => {
     res.redirect('/login');
   } else {
     const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
-    client.query('SELECT * FROM servers;').then(servers => {
-      res.render('./pages/forms/newTicket', {
-        user : validateUser,
-        servers : servers.rows
-      });
-
+    const servers = await queryServerList();
+    res.render('./pages/forms/newTicket', {
+      user : validateUser,
+      servers : servers.rows
     });
   }
 }));
@@ -482,7 +474,6 @@ app.get('/status', catchAsync(async(req, res) => {
 }));
 
 app.post('/remove', catchAsync(async(req, res) => {
-  console.log(req.body);
   let option = req.body;
   let sqlQuery;
   if (option.server_id) {
@@ -494,11 +485,38 @@ app.post('/remove', catchAsync(async(req, res) => {
   if (option.color_id) {
     sqlQuery = `DELETE FROM dinocolors WHERE id = '${option.color_id}';`;
   }
-  console.log(sqlQuery);
   client.query(sqlQuery).then(res.redirect('/admin'));
 }));
 
+app.post('/edit', catchAsync(async(req, res) => {
+  //TODO:Add validation that this is a unique server_id
+  //? Add incrementing ID to servers and just keep track of it that way?
+  let option = req.body;
+  let sqlQuery;
+  let sqlValues = [];
+  if (option.server_id) {
+    sqlQuery = 'UPDATE servers SET server_id=$1, server_name=$2 where server_id=$3;';
+    sqlValues = [req.body.server_id, req.body.server_name, req.body.server_id_old];
+  }
+  if (option.dino_id) {
+    sqlQuery = 'UPDATE dinosaurs SET name=$1 where id=$2;';
+    sqlValues = [req.body.dino_name, req.body.dino_id];
+  }
+  if (option.color_id) {
+    console.log('colors');
+  }
+  client.query(sqlQuery, sqlValues).then(res.redirect('/admin'));
+}));
+
 app.get('*', (req, res) => {res.status(404).render('pages/error')});
+
+async function queryServerList() {
+  return client.query('SELECT * FROM servers ORDER BY server_id ASC;');
+};
+
+async function queryDinosaurList() {
+  return client.query('SELECT * FROM dinosaurs ORDER BY name ASC;');
+}
 
 async function sendNotification(ticketType, ticket_id) {
 
@@ -531,7 +549,7 @@ async function sendNotification(ticketType, ticket_id) {
   }).catch(e => {
     console.log(e);
   })
-}
+};
 
 async function authenticateUser(token) {
   let result = {
@@ -585,7 +603,7 @@ async function authenticateUser(token) {
       return e;
     }
   }
-}
+};
 
 async function findOpenTickets(status) {
   let openTickets = 0;
@@ -614,7 +632,7 @@ async function findOpenTickets(status) {
     };
 
   } catch(e) {return e;}
-}
+};
 
 async function findUserTickets(userID, status) {
   let openTickets = 0;
@@ -651,7 +669,7 @@ function checkDB(table, userID, status) {
 
 function checkDBAdmin(table, status) {
   return client.query(`SELECT * FROM ${table} WHERE status='${status}';`);
-}
+};
 
 client.connect((err) => {
   if (err) {console.log(err) 
