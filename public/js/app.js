@@ -40,8 +40,47 @@ $(() => {
   $('.popover-dismiss').popover({
     trigger: 'focus'
   });
+
+  $('.delete-server').on('click', (event) => {
+    return confirmDeletion();
+  });
+
+  $('.edit-server').on('click', function(event) {
+    event.preventDefault();
+    console.log($(this).parent().parent().find('.edit-server-form').removeAttr("hidden"));
+    // $('.edit-server-form').removeAttr("hidden");
+    $($(this).parent().attr("hidden", "hidden"));
+    // $('.edit-server').attr("hidden", "hidden");
+    // $('.delete-server').attr("hidden", "hidden");
+  });
+
+  $('#serverList').on('click', () => {
+    $('#dinosaurListing').attr("hidden", "hidden");
+    $('#dinosaurColorListing').attr("hidden", "hidden");
+    $('#serverListing').removeAttr("hidden");
+  });
+
+  $('#dinosaurList').on('click', () => {
+    $('#dinosaurListing').removeAttr("hidden");
+    $('#dinosaurColorListing').attr("hidden", "hidden");
+    $('#serverListing').attr("hidden", "hidden");
+  });
+
+  $('#dinosaurColors').on('click', () => {
+    $('#dinosaurListing').attr("hidden", "hidden");
+    $('#dinosaurColorListing').removeAttr("hidden");
+    $('#serverListing').attr("hidden", "hidden");
+  });
   
 });
+
+function confirmDeletion() {
+  if (confirm("Are you sure you want to remove this?")) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 
 

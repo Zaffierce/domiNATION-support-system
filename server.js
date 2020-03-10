@@ -149,9 +149,15 @@ if (req.cookies['Domi-Support-Token'] == null) {
   res.redirect('/login');
 } else {
   const validatedUser = await authenticateUser(req.cookies['Domi-Support-Token']);
+  const servers = await client.query('SELECT * FROM servers;');
+  const dinos = await client.query('SELECT * FROM dinosaurs;');
+  const dino_colors = await client.query('SELECT * FROM dinocolors;');
   if (validatedUser.isAdmin === true) {
     res.render('./pages/admin/adminPanel', {
-      user: validatedUser
+      user: validatedUser,
+      servers : servers.rows,
+      dino_names : dinos.rows,
+      dino_colors : dino_colors.rows
     });
   } else {
     res.redirect('/');
@@ -289,7 +295,7 @@ app.post('/form_submit', catchAsync(async(req, res) =>{
     }
     client.query(sqlQueryInsert, sqlValueArr).then(() => {
       client.query(`SELECT id from ${table} ORDER BY id DESC LIMIT 1;`).then(sqlRes => {
-        sendNotification(ticketType, sqlRes.rows);
+        //sendNotification(ticketType, sqlRes.rows);
         res.redirect('/submitted');
       })
     });
@@ -454,8 +460,7 @@ app.get('/new', catchAsync(async(req, res) => {
 
     });
   }
-  }
-));
+}));
 
 app.get('/status', catchAsync(async(req, res) => {
   if (req.cookies['Domi-Support-Token'] == null) {
@@ -474,8 +479,24 @@ app.get('/status', catchAsync(async(req, res) => {
         cancelledTickets : usersCancelledTickets
       });
     }
+}));
+
+app.post('/remove', catchAsync(async(req, res) => {
+  console.log(req.body);
+  let option = req.body;
+  let sqlQuery;
+  if (option.server_id) {
+    sqlQuery = `DELETE FROM servers WHERE server_id = '${option.server_id}';`;
   }
-));
+  if (option.dino_id) {
+    sqlQuery = `DELETE FROM dinosaurs WHERE id = '${option.dino_id}';`;
+  }
+  if (option.color_id) {
+    sqlQuery = `DELETE FROM dinocolors WHERE id = '${option.color_id}';`;
+  }
+  console.log(sqlQuery);
+  client.query(sqlQuery).then(res.redirect('/admin'));
+}));
 
 app.get('*', (req, res) => {res.status(404).render('pages/error')});
 

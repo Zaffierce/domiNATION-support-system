@@ -9,8 +9,62 @@
   <br />
   <br />
   <div class="container">
-    <div class="infobox greybox text-center">
-      <span>This page will contain the tools required to update the Server List, Dino Types, and Dino Colors</span>
+    <div class="infobox greybox">
+      <div class="row">
+        <div class="col-sm-3">
+          <span class="border-bottom border-dark"><strong>Admin Panel</strong></span>
+          <br />
+          <div>
+            <div id="serverList">Server Listing</div>
+            <div id="dinosaurList">Dinosaur Listing</div>
+            <div id="dinosaurColors">Dinosaur Colors</div>
+          </div>
+        </div>
+        <div class="col-sm-9 admincontainer">
+          <div id="serverListing" hidden>
+            <!--Server Listing-->
+            <% for (let i = 0; i < servers.length; i++) { %>
+              <div class="pb-1">
+                <form action="/edit" method="POST" class="edit-server-form" hidden>
+                  <button class="fas fa-save save-server"></button>
+                  <input name="server_id" type="number" />
+                  <input name="server_name" type="text" />
+                  </form>
+                <form action="/remove" method="POST" class="delete-server-form">
+                  <input name="server_id" type="hidden" value="<%=servers[i].server_id%>" />
+                  <button class="fas fa-edit edit-server"></button>
+                  <button class="fas fa-trash delete-server"></button>
+                  <%= servers[i].server_name %>
+                </form>
+              </div>
+            <% } %>
+          </div>
+          <div id="dinosaurListing" hidden>
+            <!--Dinosaur Listing-->
+            <% for (let i = 0; i < dino_names.length; i++) { %>
+            <div class="pb-1">
+              <form action="/remove" method="POST">
+                <input name="dino_id" type="hidden" value="<%=dino_names[i].id%>" />
+                <button class="fas fa-trash delete-server"></button>
+                <%= dino_names[i].name %>
+              </form>
+            </div>
+            <% } %>
+          </div>
+          <div id="dinosaurColorListing" hidden>
+            <!--Dinosaur Colors-->
+            <% for (let i = 0; i < dino_colors.length; i++) { %>
+              <div class="pb-1">
+                <form action="/remove" method="POST">
+                  <input name="color_id" type="hidden" value="<%=dino_colors[i].id%>" />
+                  <button class="fas fa-trash delete-server"></button>
+                  <%= dino_colors[i].color_name %>
+                </form>
+              </div>
+              <% } %>
+          </div>
+        </div>
+      </div>
     </div>    
   </div> <!--End of container-->
       
