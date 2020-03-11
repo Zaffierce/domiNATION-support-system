@@ -489,14 +489,12 @@ app.post('/remove', catchAsync(async(req, res) => {
 }));
 
 app.post('/edit', catchAsync(async(req, res) => {
-  //TODO:Add validation that this is a unique server_id
-  //? Add incrementing ID to servers and just keep track of it that way?
   let option = req.body;
   let sqlQuery;
   let sqlValues = [];
   if (option.server_id) {
-    sqlQuery = 'UPDATE servers SET server_id=$1, server_name=$2 where server_id=$3;';
-    sqlValues = [req.body.server_id, req.body.server_name, req.body.server_id_old];
+    sqlQuery = 'UPDATE servers SET server_id=$1, server_name=$2 where id=$3;';
+    sqlValues = [req.body.server_id, req.body.server_name, req.body.id];
   }
   if (option.dino_id) {
     sqlQuery = 'UPDATE dinosaurs SET name=$1 where id=$2;';
