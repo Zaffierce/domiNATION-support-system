@@ -49,6 +49,10 @@ $(() => {
     return confirmDeletion();
   });
 
+  $('.delete-dinosaur-color').on('click', () => {
+    return confirmDeletion();
+  });
+
   $('.edit-server').on('click', function(event) {
     event.preventDefault();
     $(this).parent().parent().find('.edit-server-form').removeAttr("hidden");
@@ -61,11 +65,21 @@ $(() => {
     $(this).parent().attr("hidden", "hidden");
   });
 
+  $('.edit-dinosaur-color').on('click', function(event) {
+    event.preventDefault();
+    $(this).parent().parent().find('.edit-dinosaur-color-form').removeAttr("hidden");
+    $(this).parent().attr("hidden", "hidden");
+  });
+
   $('.save-server').on('click', () => {
     return confirmSave();
   });
 
   $('.save-dinosaur').on('click', () => {
+    return confirmSave();
+  });
+
+  $('.save-dinosaur-color').on('click', () => {
     return confirmSave();
   });
 
@@ -81,6 +95,11 @@ $(() => {
     $(this).parent().attr("hidden", "hidden");
   });
   
+  $('.cancel-dinosaur-color').on('click', function(event) {
+    event.preventDefault();
+    $(this).parent().parent().find('.delete-dinosaur-color-form').removeAttr("hidden");
+    $(this).parent().attr("hidden", "hidden");
+  });
 
   $('#serverList').on('click', () => {
     $('#dinosaurListing').attr("hidden", "hidden");

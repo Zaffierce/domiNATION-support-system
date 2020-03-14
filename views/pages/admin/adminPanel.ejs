@@ -67,11 +67,20 @@
             <!--Dinosaur Colors-->
             <% for (let i = 0; i < dino_colors.length; i++) { %>
               <div class="pb-1">
-                <form action="/edit" method="POST" class="edit-dinosaur-color-form">
+                <form action="/edit" method="POST" class="edit-dinosaur-color-form" hidden>
+                  <button class="fas fa-save save-dinosaur-color"></button>
+                  <button class="fas fa-ban cancel-dinosaur-color"></button>
+                  <label for="dino_color_id">Color #:</label>
+                  <input name="dino_color_id" type="number" value="<%=dino_colors[i].color_id%>" style="width:3em" />
+                  <label for="dino_color_name">Color Name:</label>
+                  <input name="dino_color_name" type="text" value="<%=dino_colors[i].color_name%>" />
+                  <label for="dino_color_hex">Hex Code:</label>
+                  <input name="dino_color_hex" type="text" value="<%=dino_colors[i].color_hex%>" style="width:3.5em" />
                 </form>
                 <form action="/remove" method="POST" class="delete-dinosaur-color-form">
                   <input name="color_id" type="hidden" value="<%=dino_colors[i].id%>" />
-                  <button class="fas fa-trash delete-server"></button>
+                  <button class="fas fa-edit edit-dinosaur-color"></button>
+                  <button class="fas fa-trash delete-dinosaur-color"></button>
                   <%= dino_colors[i].color_name %>
                 </form>
               </div>
