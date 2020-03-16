@@ -519,6 +519,10 @@ app.post('/add', catchAsync(async(req, res) => {
     sqlQuery = 'INSERT INTO dinosaurs (name) values ($1);';
     sqlValues = [req.body.dino_name];
   }
+  if (option.dino_color_id) {
+    sqlQuery = 'INSERT INTO dinocolors (color_id, color_name, color_hex) values ($1, $2, $3);';
+    sqlValues = [req.body.dino_color_id, req.body.dino_color_name, req.body.dino_color_hex];
+  }
   client.query(sqlQuery, sqlValues).then(res.redirect('/admin'));
   
 }));
