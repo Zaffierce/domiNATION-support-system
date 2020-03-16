@@ -52,10 +52,12 @@ DISCORD_PATREON_DOMINATOR=[ID of DomiNATOR]
 * Allowing an admin to re-open a ticket
 
 # Change Log
-03/04/2020
+03/04/2020 - 03/16/2020
 - Started progress on Admin Panel
-  - Items rendered via the database to the screen
-  - 
+  - Ability to Add/Update/Remove Servers, Dinosaurs, and Dinosaur Colors
+- Restructured some database parts
+  - Added id to servers and dinosaurs colors
+- Changed formatting of how some text is displayed across the site
 
 02/29/2020
 - Changed formatting on Manage page
