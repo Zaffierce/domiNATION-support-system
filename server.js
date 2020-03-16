@@ -151,7 +151,7 @@ if (req.cookies['Domi-Support-Token'] == null) {
   const validatedUser = await authenticateUser(req.cookies['Domi-Support-Token']);
   const servers = await queryServerList();
   const dinos = await queryDinosaurList();
-  const dino_colors = await client.query('SELECT * FROM dinocolors;');
+  const dino_colors = await queryDinosaurColors();
   if (validatedUser.isAdmin === true) {
     res.render('./pages/admin/adminPanel', {
       user: validatedUser,
@@ -205,7 +205,7 @@ app.post('/form_initial', catchAsync(async(req, res) => {
     }
     if (ticketType === "patreonMonthlyDino") {
       const dinos = await queryDinosaurList();
-      const dino_colors = await client.query('SELECT * FROM dinocolors;');
+      const dino_colors = await queryDinosaurColors();
       const servers = await queryServerList();
       res.render('./pages/forms/ticketPatreonDinoRequest', 
       {user : validateUser, 
@@ -500,10 +500,27 @@ app.post('/edit', catchAsync(async(req, res) => {
     sqlQuery = 'UPDATE dinosaurs SET name=$1 where id=$2;';
     sqlValues = [req.body.dino_name, req.body.dino_id];
   }
-  if (option.color_id) {
-    console.log('colors');
+  if (option.dino_color_id) {
+    sqlQuery = 'UPDATE dinocolors SET color_id=$1, color_name=$2, color_hex=$3 where id=$4;';
+    sqlValues = [req.body.dino_color_id, req.body.dino_color_name, req.body.dino_color_hex, req.body.id];
   }
   client.query(sqlQuery, sqlValues).then(res.redirect('/admin'));
+}));
+
+app.post('/add', catchAsync(async(req, res) => {
+  let option = req.body;
+  let sqlQuery;
+  let sqlValues = [];
+  if (option.server_id) {
+    sqlQuery = 'INSERT INTO servers (server_id, server_name) values ($1, $2);';
+    sqlValues = [req.body.server_id, req.body.server_name];
+  }
+  if (option.dino_name) {
+    sqlQuery = 'INSERT INTO dinosaurs (name) values ($1);';
+    sqlValues = [req.body.dino_name];
+  }
+  client.query(sqlQuery, sqlValues).then(res.redirect('/admin'));
+  
 }));
 
 app.get('*', (req, res) => {res.status(404).render('pages/error')});
@@ -514,7 +531,11 @@ async function queryServerList() {
 
 async function queryDinosaurList() {
   return client.query('SELECT * FROM dinosaurs ORDER BY name ASC;');
-}
+};
+
+async function queryDinosaurColors() {
+  return client.query('SELECT * FROM dinocolors ORDER BY id ASC');
+};
 
 async function sendNotification(ticketType, ticket_id) {
 
@@ -668,6 +689,11 @@ function checkDB(table, userID, status) {
 function checkDBAdmin(table, status) {
   return client.query(`SELECT * FROM ${table} WHERE status='${status}';`);
 };
+
+// function Ticket(type, status) {
+//   this.type = type;
+//   this.status = status;
+// };
 
 client.connect((err) => {
   if (err) {console.log(err) 

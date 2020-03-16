@@ -53,6 +53,54 @@ $(() => {
     return confirmDeletion();
   });
 
+  $('.confirm-add-server').on('click', () => {
+    return confirmAdd();
+  });
+
+  $('.confirm-add-dinosaur').on('click', () => {
+    return confirmAdd();
+  });
+
+  $('.confirm-add-dinosaur-color').on('click', () => {
+    return confirmAdd();
+  });
+
+  $('.add-server').on('click', function(event) {
+    event.preventDefault();
+    $(this).parent().parent().find('.add-server-form').removeAttr("hidden");
+    $(this).parent().attr("hidden", "hidden");
+  });
+
+  $('.add-dinosaur').on('click', function(event) {
+    event.preventDefault();
+    $(this).parent().parent().find('.add-dinosaur-form').removeAttr("hidden");
+    $(this).parent().attr("hidden", "hidden");
+  });
+
+  $('.add-dinosaur-color').on('click', function(event) {
+    event.preventDefault();
+    $(this).parent().parent().find('.add-dinosaur-color-form').removeAttr("hidden");
+    $(this).parent().attr("hidden", "hidden");
+  });
+
+  $('.cancel-add-dinosaur-color').on('click', function(event) {
+    event.preventDefault();
+    $(this).parent().parent().find('.add-dinosaur-color-div').removeAttr("hidden");
+    $(this).parent().attr("hidden", "hidden");
+  });
+
+  $('.cancel-add-dinosaur').on('click', function(event) {
+    event.preventDefault();
+    $(this).parent().parent().find('.add-dinosaur-div').removeAttr("hidden");
+    $(this).parent().attr("hidden", "hidden");
+  });
+
+  $('.cancel-add-server').on('click', function(event) {
+    event.preventDefault();
+    $(this).parent().parent().find('.add-server-div').removeAttr("hidden");
+    $(this).parent().attr("hidden", "hidden");
+  });
+
   $('.edit-server').on('click', function(event) {
     event.preventDefault();
     $(this).parent().parent().find('.edit-server-form').removeAttr("hidden");
@@ -122,7 +170,15 @@ $(() => {
 });
 
 function confirmSave() {
-  if (confirm("Are you sure you want to save this?\nThis will update this across the website!")) {
+  if (confirm("Are you sure you want to save this?\nThis will update across the entire website!")) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function confirmAdd() {
+  if (confirm("Are you sure you want to add this?\nThis will update across the entire website!")) {
     return true;
   } else {
     return false;
@@ -130,7 +186,7 @@ function confirmSave() {
 }
 
 function confirmDeletion() {
-  if (confirm("Are you sure you want to remove this?")) {
+  if (confirm("Are you sure you want to remove this?\nThis will update across the entire website!")) {
     return true;
   } else {
     return false;

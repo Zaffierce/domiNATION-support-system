@@ -44,14 +44,6 @@
   border-left: 5px black solid;
 }
 
-
-
-/* .dinoText {
-  color: #FFFFFF;
-  text-shadow: 1px 1px 4px black, 0 0 1em black, 0 0 0.2em black;
-  text-align: center;
-} */
-
 .warning {
   font-size: 12px;
   color: red;
@@ -59,4 +51,8 @@
 
 .admincontainer {
   font-size: 16px;
+}
+
+.ap_nav:hover {
+  background-color: #d9d9d9;
 }

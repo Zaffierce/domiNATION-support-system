@@ -15,21 +15,36 @@
           <span class="border-bottom border-dark"><strong>Admin Panel</strong></span>
           <br />
           <div>
-            <div id="serverList">Server Listing</div>
-            <div id="dinosaurList">Dinosaur Listing</div>
-            <div id="dinosaurColors">Dinosaur Colors</div>
+            <div class="ap_nav" id="serverList">Server Listing</div>
+            <div class="ap_nav" id="dinosaurList">Dinosaur Listing</div>
+            <div class="ap_nav" id="dinosaurColors">Dinosaur Colors</div>
           </div>
         </div>
         <div class="col-sm-9 admincontainer">
+          <div id="about" text-center>
+            <p>This page is still under construction, so things may changed a bit as we go on.</p>
+          </div>
           <div id="serverListing" hidden>
             <!--Server Listing-->
+            <div class="add-server-div">
+              <button class="fas fa-plus add-server"></button>
+              Add a server
+            </div>
+            <form action="/add" method="POST" class="add-server-form" hidden>
+              <button class="fas fa-save confirm-add-server"></button>
+              <button class="fas fa-ban cancel-add-server"></button>
+              <label for="server_id">Server Number:</label>
+              <input name="server_id" type="number"  style="width:2.5em" />
+              <label for="server_name">Server Name:</label>
+              <input name="server_name" type="text"/>
+            </form>
             <% for (let i = 0; i < servers.length; i++) { %>
               <div class="pb-1">
                 <form action="/edit" method="POST" class="edit-server-form" hidden>
                   <button class="fas fa-save save-server"></button>
                   <button class="fas fa-ban cancel-server"></button>
                   <label for="server_id">Server Number:</label>
-                  <input name="server_id" type="number" value="<%=servers[i].server_id%>"/>
+                  <input name="server_id" type="number" value="<%=servers[i].server_id%>" style="width:2.5em" />
                   <input name="id" type="number" value="<%=servers[i].id%>" hidden/>
                   <label for="server_name">Server Name:</label>
                   <input name="server_name" type="text" value="<%=servers[i].server_name%>"/>
@@ -45,6 +60,16 @@
           </div>
           <div id="dinosaurListing" hidden>
             <!--Dinosaur Listing-->
+            <div class="add-dinosaur-div">
+              <button class="fas fa-plus add-dinosaur"></button>
+              Add a new dinosaur
+            </div>
+            <form action="/add" method="POST" class="add-dinosaur-form" hidden>
+              <button class="fas fa-save confirm-add-dinosaur"></button>
+              <button class="fas fa-ban cancel-add-dinosaur"></button>
+              <label for="dino_name">Dino Name:</label>
+              <input name="dino_name" type="text"/>
+            </form>
             <% for (let i = 0; i < dino_names.length; i++) { %>
             <div class="pb-1">
               <form action="/edit" method="POST" class="edit-dinosaur-form" hidden>
@@ -65,6 +90,20 @@
           </div>
           <div id="dinosaurColorListing" hidden>
             <!--Dinosaur Colors-->
+            <div class="add-dinosaur-color-div">
+              <button class="fas fa-plus add-dinosaur-color"></button>
+              Add a new dinosaur color
+            </div>
+            <form action="/add" method="POST" class="add-dinosaur-color-form" hidden>
+              <button class="fas fa-save confirm-add-dinosaur-color"></button>
+              <button class="fas fa-ban cancel-add-dinosaur-color"></button>
+              <label for="dino_color_id">Color #:</label>
+              <input name="dino_color_id" type="number" style="width:3em" />
+              <label for="dino_color_name">Color Name:</label>
+              <input name="dino_color_name" type="text"/>
+              <label for="dino_color_hex">Hex Code:</label>
+              <input name="dino_color_hex" type="text" style="width:3.5em"/>
+            </form>
             <% for (let i = 0; i < dino_colors.length; i++) { %>
               <div class="pb-1">
                 <form action="/edit" method="POST" class="edit-dinosaur-color-form" hidden>
@@ -76,6 +115,7 @@
                   <input name="dino_color_name" type="text" value="<%=dino_colors[i].color_name%>" />
                   <label for="dino_color_hex">Hex Code:</label>
                   <input name="dino_color_hex" type="text" value="<%=dino_colors[i].color_hex%>" style="width:3.5em" />
+                  <input name="id" value="<%=dino_colors[i].id%>" hidden>
                 </form>
                 <form action="/remove" method="POST" class="delete-dinosaur-color-form">
                   <input name="color_id" type="hidden" value="<%=dino_colors[i].id%>" />
