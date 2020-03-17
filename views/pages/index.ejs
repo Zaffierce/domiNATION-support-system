@@ -61,7 +61,7 @@
         <div class="col-sm-9 infobox">
           <span><strong>Details: </strong>
             <%= newTickets.element[i].event_name %><br />
-            Deliver to Server #: <%= newTickets.element[i].serverid_dropoff %><br />
+            Deliver to Server: <%= newTickets.element[i].serverid_dropoff %><br />
             CCC: <%= newTickets.element[i].element_dropoff_location %><br />
             <a href='/details/2/<%=newTickets.element[i].id%>'>More details</a></span>
         </div>
@@ -77,7 +77,7 @@
         <div class="col-sm-9 infobox">
           <span><strong>Details: </strong>
             <%= openTickets.element[i].event_name %><br />
-            Deliver to Server #: <%= openTickets.element[i].serverid_dropoff %><br />
+            Deliver to Server: <%= openTickets.element[i].serverid_dropoff %><br />
             CCC: <%= openTickets.element[i].element_dropoff_location %><br />
             <a href='/details/2/<%=openTickets.element[i].id%>'>More details</a></span>
         </div>
@@ -94,8 +94,8 @@
         <div class="col-sm-9 infobox">
           <span><strong>Details: </strong>
             Element Amount: <%= newTickets.transfer[i].transfer_amount%><br />
-            From Server #: <%= newTickets.transfer[i].serverid_pickup %><br />
-            To Server #: <%= newTickets.transfer[i].serverid_dropoff %><br />
+            From Server: <%= newTickets.transfer[i].serverid_pickup %><br />
+            To Server: <%= newTickets.transfer[i].serverid_dropoff %><br />
             <a href='/details/3/<%=newTickets.transfer[i].id%>'>More details</a></span>
         </div>
       </div>  
@@ -110,8 +110,8 @@
         <div class="col-sm-9 infobox">
           <span><strong>Details: </strong>
             Element Amount: <%= openTickets.transfer[i].transfer_amount%><br />
-            From Server #: <%= openTickets.transfer[i].serverid_pickup %><br />
-            To Server #: <%= openTickets.transfer[i].serverid_dropoff %><br />
+            From Server: <%= openTickets.transfer[i].serverid_pickup %><br />
+            To Server: <%= openTickets.transfer[i].serverid_dropoff %><br />
             <a href='/details/3/<%=openTickets.transfer[i].id%>'>More details</a></span>
         </div>
       </div>  
@@ -129,7 +129,7 @@
         <div class="col-sm-9 infobox">
           <span><strong>Details: </strong>
             Dinosaur Choice: <%= newTickets.dino_req[i].dino_name%><br />
-            To Server #: <%= newTickets.dino_req[i].serverid_dropoff %><br />
+            To Server: <%= newTickets.dino_req[i].serverid_dropoff %><br />
             <a href='/details/4/<%=newTickets.dino_req[i].id%>'>More details</a></span>
         </div>
       </div>  
@@ -144,7 +144,7 @@
         <div class="col-sm-9 infobox">
           <span><strong>Details: </strong>
             Dinosaur Choice: <%= openTickets.dino_req[i].dino_name%><br />
-            To Server #: <%= openTickets.dino_req[i].serverid_dropoff %><br />
+            To Server: <%= openTickets.dino_req[i].serverid_dropoff %><br />
             <a href='/details/4/<%=openTickets.dino_req[i].id%>'>More details</a></span>
         </div>
       </div>  

@@ -4,6 +4,8 @@
 $(() => {
 
 
+  console.log($('#generalServerSelect option:selected').text())
+
   var forms = document.getElementsByClassName('needs-validation');
 
   var validation = Array.prototype.filter.call(forms, function(form) {
