@@ -289,7 +289,7 @@ app.post('/form_submit', catchAsync(async(req, res) =>{
     }
     client.query(sqlQueryInsert, sqlValueArr).then(() => {
       client.query(`SELECT id from ${table} ORDER BY id DESC LIMIT 1;`).then(sqlRes => {
-        //sendNotification(ticketType, sqlRes.rows);
+        sendNotification(ticketType, sqlRes.rows);
         res.redirect('/submitted');
       })
     });

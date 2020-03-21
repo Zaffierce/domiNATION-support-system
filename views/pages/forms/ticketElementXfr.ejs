@@ -24,7 +24,7 @@
       <legend>Transfer Element:</legend>
       <div class="form-group col-md-6">
           <label for="transfer_amount">How much element do you wish to transfer?</label>
-          <input type="number" name="transfer_amount" class="form-control" required>
+          <input type="number" name="transfer_amount" class="form-control" min="200" max="9999" required>
 
           <label for="serverid_pickup">Which server do you wish to transfer FROM?</label>
           <select name="serverid_pickup" class="form-control" id="serverid_pickup" required>
