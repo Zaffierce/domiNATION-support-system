@@ -1,0 +1,144 @@
+<%- include('../../partials/head.ejs'); %>
+  <title>User: <%= user.username %> - DomiNATION Ark: Survival Evolved Community</title>
+<link rel="stylesheet" type="text/css" href="../../styles/forms.css">
+<script src="/js/app.js" type="text/javascript"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/css/bootstrapValidator.min.css" integrity="sha256-gBxd65TVOCRCDC48+AXN6hhg3I/fZqE/BnwgKwdzJG4=" crossorigin="anonymous" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js" integrity="sha256-PbFF1Mdg86urwOYXWNJPP4z5Ge9KLp6KXX1NURQY8Ho=" crossorigin="anonymous"></script>
+</head>
+<body>
+  <%- include('../../partials/nav.ejs'); %>
+  <div class="container">
+    <div class="row greybox">
+      <div class="col-md-3 infobox darkgreybox">      
+        <% if (ticket.status === "NEW") { %>
+          <div class="statusbox new">NEW</div>
+          <div class="statusdate"><%=ticket.submitted_on%> - <%=ticket.discord_name%></div>
+        <% } %>
+        <% if (ticket.status === "OPEN") { %>
+          <div class="statusbox open">OPEN</div>
+          <div class="statusdate"><%=ticket.accepted_on%> - <%=ticket.accepted_by%></div>
+        <% } %>
+        <% if (ticket.status === "CANCELLED") { %>
+          <div class="statusbox cancelled">CANCELLED</div>
+          <div class="statusdate"><%=ticket.closed_on%> - <%=ticket.closed_by%></div>
+        <% } %>
+        <% if (ticket.status === "COMPLETE") { %>
+          <div class="statusbox completed">COMPLETE</div>
+          <div class="statusdate"><%=ticket.closed_on%> - <%=ticket.closed_by%></div>
+        <% } %>
+        <hr>
+        <div><strong>User: </strong><%=ticket.discord_name%></div>
+        <div><strong>IGN: </strong><%=ticket.ign%></div>
+        <div><strong>Submitted: </strong><%=ticket.submitted_on%></div>
+        <div><strong>Timezone: </strong><%=ticket.time_to_contact%></div>
+      </div>
+      <div class="col-md-9 infobox">
+        <h1 class="ng-scope text-center"><%=ticket.type_of_ticket%></h1>
+        <hr>
+        <% if (ticket.type_of_ticket === 'General Support Ticket') { %>
+          <div><strong>Tribe Name: </strong><%=ticket.gen_tribe_name%></div>
+          <div><strong>CCC: </strong><%=ticket.gen_coordinates%></div>
+          <div><strong>Issue: </strong><%=ticket.gen_issue%></div>
+          <div><strong>Resolution: </strong><%=ticket.gen_resolution%></div>
+        <% } %>
+
+        <% if (ticket.type_of_ticket === 'Element from Event') { %>
+          <div><strong>Event name: </strong><%=ticket.event_name%></div>
+          <div><strong>Server: </strong><%=ticket.event_serverid_dropoff%></div>
+          <div><strong>Patreon: </strong><%=ticket.event_patreon_status%></div>
+          <div><strong>CCC: </strong><%=ticket.event_element_dropoff_location%></div>
+        <% } %>
+
+        <% if (ticket.type_of_ticket === 'Transfer Element') { %>
+          <div><strong>Transferring from: </strong><%=ticket.transfer_serverid_pickup%></div>
+          <div><strong>CCC Pickup: </strong><%=ticket.transfer_server_pickup_location%></div>
+          <div><strong>Amount: </strong><%=ticket.transfer_amount%></div>
+          <div><strong>Transferring to: </strong><%=ticket.transfer_serverid_dropoff%></div>
+          <div><strong>CCC Dropoff: </strong><%=ticket.transfer_server_dropoff_location%></div>
+        <% } %>
+
+        <% if (ticket.type_of_ticket === 'Patreon Monthly Dino') { %>
+          <div><strong>Email Address: </strong><%=ticket.request_email_address%></div>
+          <div><strong>Server: </strong><%=ticket.request_serverid_dropoff%></div>
+          <div><strong>CCC: </strong><%=ticket.request_server_dropoff_location%></div>
+          <div><strong>Dino: </strong><%=ticket.request_dino_name%></div>
+          <div><strong>Color option: </strong><%=ticket.request_colored%></div>
+            <% if (ticket.request_colored === "yes") { %>
+              <div><strong>Region 0: </strong><%=ticket.request_region0%></div>
+              <div><strong>Region 1: </strong><%=ticket.request_region1%></div>
+              <div><strong>Region 2: </strong><%=ticket.request_region2%></div>
+              <div><strong>Region 3: </strong><%=ticket.request_region3%></div>
+              <div><strong>Region 4: </strong><%=ticket.request_region4%></div>
+              <div><strong>Region 5: </strong><%=ticket.request_region5%></div>
+            <% } %>
+          <div><strong>Sex: </strong><%=ticket.request_sex%></div>
+        <% } %>
+
+        <% if (ticket.type_of_ticket === 'Patreon Insurance Request') { %>
+          <div><strong>Email Address: </strong><%=ticket.insurance_email_address%></div>
+          <div><strong>Dinosaur Link: </strong><a href="<%=ticket.insurance_dino_link%>"><%=ticket.insurance_dino_link%></a></div>
+          <div><strong>Month claimed: </strong><%=ticket.insurance_month_claimed%></div>
+          <div><strong>How it died: </strong><%=ticket.insurance_explanation%></div>
+        <% } %>
+
+        <% if (ticket.type_of_ticket === 'Ban Appeal') { %>
+          <div><strong>Email Address: </strong><%=ticket.ban_email_address%></div>
+          <div><strong>Steam ID: </strong><%=ticket.ban_steam_id%></div>
+          <div><strong>Ban Reason: </strong><%=ticket.ban_banned_reason%></div>
+          <div><strong>Unban Reason: </strong><%=ticket.ban_unban_reason%></div>
+        <% } %>
+
+        <% if (ticket.type_of_ticket === 'Bug Report') { %>
+          <div><strong>Server: </strong><%=ticket.server_assistance%></div>
+          <div><strong>Details: </strong><%=ticket.bug_issue%></div>
+          <div><strong>Are you able to re-create? </strong><%=ticket.bug_recreate%></div>
+          <div><strong>Any items lost? </strong><%=ticket.bug_lost_items%></div>
+        <% } %>
+
+        <% if (ticket.type_of_ticket === 'Anonymous') { %>
+          <div><strong>Details: </strong><%=ticket.anonymous_description%></div>
+        <% } %>
+
+      </div>
+    </div>
+
+    <!--Buttons-->
+    <% if (ticket.status === "NEW" || ticket.status === "OPEN") { %>
+      <div class="row greybox text-center">
+        <% if (user.isAdmin && ticket.status == "NEW") { %>
+          <div class="col-sm-6">
+            <form method="POST" action="/cancel/<%=ticket.id%>">
+              <input type="submit" class="btn btn-danger btn-md" value="Cancel ticket">
+            </form>
+          </div>
+          <div class="col-sm-6">
+            <form method="POST" action="/accept/<%=ticket.id%>">
+              <input type="submit" class="btn btn-success btn-md" value="Accept ticket">
+            </form>
+          </div>
+        <% } else if (user.isAdmin && ticket.status == "OPEN") { %>
+          <div class="col-sm-6">
+            <form method="POST" action="/cancel/<%=ticket.id%>">
+              <input type="submit" class="btn btn-danger btn-md" value="Cancel ticket">
+            </form>
+          </div>
+          <div class="col-sm-6">
+            <form method="POST" action="/complete/<%=ticket.id%>">
+              <input type="submit" class="btn btn-success btn-md" value="Complete ticket">
+            </form>
+          </div>
+        <% } %>
+        <% if (!user.isAdmin && ticket.status === "NEW" || !user.isAdmin && ticket.status === "OPEN") { %>
+          <div class="col-sm-12">
+            <form method="POST" action="/cancel/<%=ticket.id%>">
+              <input type="submit" class="btn btn-danger btn-md" value="Cancel ticket">
+            </form>
+          </div>
+        <% } %>
+      </div>
+    <% } %>
+  </div>
+</div> <!--Close of content-->
+
+</body>
+</html>

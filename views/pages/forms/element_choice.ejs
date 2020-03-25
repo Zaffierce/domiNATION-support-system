@@ -1,0 +1,32 @@
+<%- include('../../partials/head.ejs'); %>
+  <title>User: <%= user.username %> - DomiNATION Ark: Survival Evolved Community</title>
+<link rel="stylesheet" type="text/css" href="styles/forms.css">
+<script src="/js/app.js" type="text/javascript"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/css/bootstrapValidator.min.css" integrity="sha256-gBxd65TVOCRCDC48+AXN6hhg3I/fZqE/BnwgKwdzJG4=" crossorigin="anonymous" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js" integrity="sha256-PbFF1Mdg86urwOYXWNJPP4z5Ge9KLp6KXX1NURQY8Ho=" crossorigin="anonymous"></script>
+</head>
+<body>
+  <%- include('../../partials/nav.ejs'); %>
+  <br />
+  <div class="container">
+    <h1 class="ng-scope text-center">Please choose an option</h1>
+    <form class="needs-validation" action="creating-ticket" method="POST">
+      <%- include('../../partials/completedGeneralTicket.ejs'); %>
+      <div class="form-row">
+        <div class="form-group col-md-3"></div>
+        <div class="form-group col-md-6">
+          <label for="ticketType">Which option are you requesting?</label>
+          <select name="ticketType" class="form-control" id="generalTicketSelect" required>
+            <option value="Element from Event">Element from an Event</option>
+            <option value="Transfer Element">Transfer Element to another server</option>
+          </select>
+        </div>
+        <div class="form-group col-md-3"></div>
+      </div>
+      <div class="text-center">
+        <input type="submit" value="Continue">
+      </div>
+    </form>
+  </div>
+</body>
+</html>

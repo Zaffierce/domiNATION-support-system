@@ -1,0 +1,45 @@
+<%- include('../../partials/head.ejs'); %>
+  <title>User: <%= user.username %> - DomiNATION Ark: Survival Evolved Community</title>
+<link rel="stylesheet" type="text/css" href="styles/forms.css">
+<script src="/js/app.js" type="text/javascript"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/css/bootstrapValidator.min.css" integrity="sha256-gBxd65TVOCRCDC48+AXN6hhg3I/fZqE/BnwgKwdzJG4=" crossorigin="anonymous" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js" integrity="sha256-PbFF1Mdg86urwOYXWNJPP4z5Ge9KLp6KXX1NURQY8Ho=" crossorigin="anonymous"></script>
+</head>
+<body>
+  <%- include('../../partials/nav.ejs'); %>
+  <br />
+  <div class="container">
+    <h1 class="ng-scope text-center">Patreon Dino Insurance</h1>
+    <form class="needs-validation" novalidate action="ticket-submit" method="POST">
+      <%- include('../../partials/completedGeneralTicket.ejs'); %>
+      <div class="form-row">
+        <div class="form-group col-md-3"></div>
+        <div class="form-group col-md-6">
+            <label for="link">Please provide the link from the website of the dead dino:</label>
+            <div class="note">
+              Need help getting the link to your dinosaur?
+              <a href='https://ark.spectrumdominus.com/dinos/search' target='_blank'>Search link!</a>
+            </div>
+            
+            <input type="text" name="link" class="form-control" required>
+  
+            <label for="email_address">Please provide your Patreon email address:</label>
+            <input type="text" name="email_address" class="form-control" required>
+  
+            <label for="month_claimed">If you know it, please provide the month in which you originally claimed this dino:</label>
+            <input type="text" name="month_claimed" class="form-control">
+  
+            <label for="explanation">Please give a brief explanation as to how the dino died:</label>
+            <input type="text" name="explanation" class="form-control" required>
+  
+          </fieldset>
+        </div>
+        <div class="form-group col-md-3"></div>
+      </div>
+      <div class="text-center">
+        <input type="submit" value="Submit Ticket">
+      </div>
+    </form>
+  </div>
+</body>
+</html>
