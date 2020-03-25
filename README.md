@@ -52,6 +52,13 @@ DISCORD_PATREON_DOMINATOR=[ID of DomiNATOR]
 * Allowing an admin to re-open a ticket
 
 # Change Log
+03/23/2020 - 03/24/2020
+- Basically rewrote the entire site
+- Completely rewrote database structure
+- Implemented switches
+- Cleaned up styling
+- Lots of backend cleaning
+
 03/17/2020
 - Altered the value of the servers to reference the full name vice the server number
   - Slight tweaks to the data types inside the database

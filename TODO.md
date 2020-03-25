@@ -1,6 +1,10 @@
 TODO
 
-[] Error handling if a user is not found within our Discord channel
+[] Redesign of Users Page
+    - Change / to users tickets
+    - CANX /?
+
+[X] Error handling if a user is not found within our Discord channel
 
 [X] Error handling if when a user tries to query a ticket that does not exist in the DB
 
@@ -16,7 +20,7 @@ TODO
 [] Transfer Element:  Transfer amounts
     - Make minimum amount 200
 
-[] Patreon Dino Request: Color boxes
+[X] Patreon Dino Request: Color boxes
     - If no color exists, put a box stating so?
 
 [X] Patreon Dino Request:  Specific Sex?

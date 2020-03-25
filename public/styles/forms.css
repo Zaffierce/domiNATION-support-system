@@ -15,9 +15,20 @@
 
 .greybox {
   min-height: 20px;
-  padding: 19px;
+  padding: 20px;
   margin-bottom: 20px;
   background-color: #f5f5f5;
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+}
+
+.darkgreybox {
+  min-height: 20px;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: #dbdbdb;
   border: 1px solid #e3e3e3;
   border-radius: 4px;
   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
@@ -28,25 +39,14 @@
   font-size: 14px;
 }
 
-.open {
-  border-left: 5px green solid;
-}
-
-.inwork {
-  border-left: 5px #FFE600 solid;
-}
-
-.closed {
-  border-left: 5px red solid;
-}
-
-.cancelled {
-  border-left: 5px black solid;
-}
-
 .warning {
   font-size: 12px;
   color: red;
+}
+
+.note {
+  font-size: 12px;
+  font-style: italic;
 }
 
 .admincontainer {
@@ -55,4 +55,37 @@
 
 .ap_nav:hover {
   background-color: #d9d9d9;
+}
+
+.statusdate {
+  text-align: center;
+  font-size: 10px;
+}
+
+.statusbox {
+  width: 65%;
+  margin: auto;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+  display: block;
+  padding: 2px;
+  border-radius: 6px;
+  text-shadow: 2px 2px #000000;
+}
+
+.new {
+  background-color: #ffb93d;
+}
+
+.open {
+  background-color: #3763fb;
+}
+
+.cancelled {
+  background-color: #ff0000;
+}
+
+.completed {
+  background-color: #bdbdbd;
 }
