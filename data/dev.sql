@@ -60,5 +60,7 @@ CREATE TABLE tickets (
     bug_recreate TEXT,
     bug_lost_items TEXT,
     -- anonymous
-    anonymous_description TEXT
+    anonymous_description TEXT,
+    --random
+    cancelled_description TEXT
 )

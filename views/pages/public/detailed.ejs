@@ -102,14 +102,26 @@
       </div>
     </div>
 
+    <!--Cancelled Box-->
+    <% if (ticket.status === "CANCELLED") { %>
+      <div class="row greybox text-center">
+        <div class="col-sm-12">
+          <p><u>This ticket was cancelled</u></p>
+          <% if (ticket.cancelled_description === '') { %>
+            <span><i>Reason not provided</i> - <%=ticket.closed_by%>, <%=ticket.closed_on%></span>
+          <% } else { %>
+            <span><%=ticket.cancelled_description%> - <%=ticket.closed_by%>, <%=ticket.closed_on%></span>
+          <% } %>
+        </div>
+      </div>
+    <% } %>
+
     <!--Buttons-->
     <% if (ticket.status === "NEW" || ticket.status === "OPEN") { %>
       <div class="row greybox text-center">
         <% if (user.isAdmin && ticket.status == "NEW") { %>
           <div class="col-sm-6">
-            <form method="POST" action="/cancel/<%=ticket.id%>">
-              <input type="submit" class="btn btn-danger btn-md" value="Cancel ticket">
-            </form>
+            <button class="cancel-ticket btn btn-danger btn-md" data-toggle="modal" data-target="#cancelModal">Cancel ticket</button>
           </div>
           <div class="col-sm-6">
             <form method="POST" action="/accept/<%=ticket.id%>">
@@ -118,9 +130,7 @@
           </div>
         <% } else if (user.isAdmin && ticket.status == "OPEN") { %>
           <div class="col-sm-6">
-            <form method="POST" action="/cancel/<%=ticket.id%>">
-              <input type="submit" class="btn btn-danger btn-md" value="Cancel ticket">
-            </form>
+            <button class="cancel-ticket btn btn-danger btn-md" data-toggle="modal" data-target="#cancelModal">Cancel ticket</button>
           </div>
           <div class="col-sm-6">
             <form method="POST" action="/complete/<%=ticket.id%>">
@@ -130,13 +140,40 @@
         <% } %>
         <% if (!user.isAdmin && ticket.status === "NEW" || !user.isAdmin && ticket.status === "OPEN") { %>
           <div class="col-sm-12">
-            <form method="POST" action="/cancel/<%=ticket.id%>">
-              <input type="submit" class="btn btn-danger btn-md" value="Cancel ticket">
-            </form>
+            <button class="cancel-ticket btn btn-danger btn-md" data-toggle="modal" data-target="#cancelModal">Cancel ticket</button>
           </div>
         <% } %>
       </div>
     <% } %>
+  </div>
+  <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Cancel this ticket?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="POST" action="/cancel/<%=ticket.id%>">
+          <div class="modal-body">
+            <div class="form-row">
+              <div class="form-group col-md-12">
+                <label for="description" id="cancel_desc">
+                  Please include a cancellation reason:
+                  <div class="note">This is optional</div>
+                </label>
+                <textarea class="form-control" id="cancel_desc" name="cancel_desc" rows="4"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input type="submit" class="btn btn-danger" value="Cancel ticket">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </div> <!--Close of content-->
 

@@ -52,8 +52,6 @@ app.get('/', catchAsync(async(req, res) => {
     res.redirect('/login');
   } else {
     const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
-    const usersNewTickets = await findUserTickets(validateUser.id, "NEW");
-    const usersOpenTickets = await findUserTickets(validateUser.id, "OPEN");
     if (validateUser.status === 404) {
       res.render('./pages/user_not_found', {
         user : validateUser
@@ -73,7 +71,6 @@ app.get('/submitted', catchAsync(async(req, res) => {
     res.render('./pages/ticket_submitted', {user : validateUser});
     }
 }));
-
 
 app.get('/login', (req, res) => {
   res.redirect(`https://discordapp.com/api/oauth2/authorize?client_id=${CLIENT_ID}&scope=identify&response_type=code&redirect_uri=${redirect}`);
@@ -129,12 +126,18 @@ app.get('/all', catchAsync(async(req, res) => {
   } else {
     const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
     if (validateUser.isAdmin === true) {
-      client.query('SELECT * FROM tickets ORDER BY submitted_on DESC;').then(sqlRes => {
+
+      let allTickets = [];
+      const status = ['NEW', 'OPEN', 'COMPLETE', 'CANCELLED'];
+
+      for (const i in status) {
+        let ticket = await queryDatabaseByStatus(status[i]);
+        ticket.forEach(ticket => allTickets.push(ticket));
+      }
         res.render('./pages/admin/adminPage', {
           user : validateUser,
-          tickets : sqlRes.rows
+          tickets : allTickets
         });
-      });
     } else {
       res.redirect('/');
     }
@@ -271,43 +274,36 @@ app.post('/ticket-submit', catchAsync(async(req, res) =>{
       case 'General Support Ticket':
         sqlQueryInsert = 'INSERT INTO tickets (id, ign, discord_name, discord_id, server_assistance, status, time_to_contact, type_of_ticket, submitted_on, gen_tribe_name, gen_coordinates, gen_issue, gen_resolution) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);';
         sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.timeToContact, ticket.typeOfRequest, timestamp, ticket.tribe_name, ticket.coordinates, ticket.issue, ticket.resolution];
-        console.log(`A new General Support ticket has been submitted by ${validateUser.username}`);
         break;
 
       case 'Element from Event':
         sqlQueryInsert = 'INSERT INTO tickets (id, ign, discord_name, discord_id, server_assistance, status, time_to_contact, type_of_ticket, submitted_on, event_name, event_serverid_dropoff, event_patreon_status, event_element_dropoff_location) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);';
         sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.timeToContact, ticket.typeOfRequest, timestamp, ticket.event_name, ticket.serverid_dropoff, ticket.patreon, ticket.element_dropoff_location];
-        console.log(`A new Element from Event ticket has been submitted by ${validateUser.username}`);
         break;
 
       case 'Transfer Element':
         sqlQueryInsert = 'INSERT INTO tickets (id, ign, discord_name, discord_id, server_assistance, status, time_to_contact, type_of_ticket, submitted_on, transfer_amount, transfer_serverid_pickup, transfer_server_pickup_location, transfer_serverid_dropoff, transfer_server_dropoff_location) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);';
         sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.timeToContact, ticket.typeOfRequest, timestamp, ticket.transfer_amount, ticket.serverid_pickup, ticket.server_pickup_location, ticket.serverid_dropoff, ticket.server_dropoff_location];
-        console.log(`A new Element Transfer ticket has been submitted by ${validateUser.username}`);
         break;
 
       case 'Patreon Monthly Dino':
         sqlQueryInsert = 'INSERT INTO tickets (id, ign, discord_name, discord_id, server_assistance, status, time_to_contact, type_of_ticket, submitted_on, request_serverid_dropoff, request_dino_name, request_colored, request_region0, request_region1, request_region2, request_region3, request_region4, request_region5, request_sex, request_server_dropoff_location, request_email_address) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20);';
         sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.timeToContact, ticket.typeOfRequest, timestamp, ticket.serverid_dropoff, ticket.dino_choice, ticket.dino_color, ticket.region0, ticket.region1, ticket.region2, ticket.region3, ticket.region4, ticket.region5, ticket.sex, ticket.server_dropoff_location, ticket.email_address];
-        console.log(`A new Patreon Dino ticket has been submitted by ${validateUser.username}`);
         break;
 
       case 'Patreon Insurance Request':
         sqlQueryInsert = 'INSERT INTO tickets (id, ign, discord_name, discord_id, server_assistance, status, time_to_contact, type_of_ticket, submitted_on, insurance_dino_link, insurance_email_address, insurance_month_claimed, insurance_explanation) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);';
         sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.timeToContact, ticket.typeOfRequest, timestamp, ticket.link, ticket.email_address, ticket.month_claimed, ticket.explanation];
-        console.log(`A new Patreon Dino ticket has been submitted by ${validateUser.username}`);
         break;
 
       case 'Ban Appeal':
         sqlQueryInsert = 'INSERT INTO tickets (id, ign, discord_name, discord_id, server_assistance, status, time_to_contact, type_of_ticket, submitted_on, ban_steam_id, ban_email_address, ban_banned_reason, ban_unban_reason) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);';
         sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.timeToContact, ticket.typeOfRequest, timestamp, ticket.steam_id, ticket.email_address, ticket.reason, ticket.unbanned_explanation];
-        console.log(`A new Ban Appeal has been submitted by ${validateUser.username}`);
         break;
 
       case 'Bug Report':
         sqlQueryInsert = 'INSERT INTO tickets (id, ign, discord_name, discord_id, server_assistance, status, time_to_contact, type_of_ticket, submitted_on, bug_issue, bug_recreate, bug_lost_items) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);';
         sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.timeToContact, ticket.typeOfRequest, timestamp, ticket.issue, ticket.recreate, ticket.lost_items];
-        console.log(`A new Bug Report has been submitted by ${validateUser.username}`);
         break;
 
       case 'Anonymous':
@@ -343,8 +339,8 @@ app.post('/cancel/:id', catchAsync(async(req, res) => {
     const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
     let ticket_id = req.params.id;
     let timestamp = currentDateAndTime();
-    let sqlQuery = 'UPDATE tickets SET status=$1, closed_by=$2, closed_on=$3 where id=$4;'
-    let sqlArr = ["CANCELLED", validateUser.username, timestamp, ticket_id];
+    let sqlQuery = 'UPDATE tickets SET status=$1, closed_by=$2, closed_on=$3, cancelled_description=$4 where id=$5;'
+    let sqlArr = ["CANCELLED", validateUser.username, timestamp, req.body.cancel_desc, ticket_id];
     client.query(sqlQuery, sqlArr).then(res.redirect(`/details/${ticket_id}`));
   }
 }));
@@ -396,16 +392,18 @@ app.get('/status', catchAsync(async(req, res) => {
   if (req.cookies['Domi-Support-Token'] == null) {
     res.redirect('/login');
   } else {
-  const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
-  client.query(`SELECT * FROM tickets where discord_id ='${validateUser.id}' ORDER BY submitted_on DESC;`).then(sqlRes => {
-    const myTickets = sqlRes.rows.map(ticket => {
-      return new Ticket(ticket);
-    });
+    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
+    let myTickets = [];
+    const status = ['NEW', 'OPEN', 'COMPLETE', 'CANCELLED'];
+
+    for (const i in status) {
+      let ticket = await queryDatabaseByStatusAndUserID(status[i], validateUser.id);
+      ticket.forEach(ticket => myTickets.push(ticket));
+    }
     res.render('./pages/public/status', {
       user : validateUser,
       myTickets      
     });
-  });
   }
 }));
 
@@ -477,6 +475,14 @@ async function queryDinosaurColors() {
   return client.query('SELECT * FROM dinocolors ORDER BY id ASC');
 };
 
+async function queryDatabaseByStatus(status) {
+  return client.query(`SELECT * FROM tickets WHERE status = '${status}' ORDER BY submitted_on DESC;`).then(sqlRes => sqlRes.rows.map(ticket => { return new Ticket(ticket)}));
+};
+
+async function queryDatabaseByStatusAndUserID(status, userID) {
+  return client.query(`SELECT * FROM tickets WHERE status = '${status}' AND discord_id = '${userID}' ORDER BY submitted_on DESC;`).then(sqlRes => sqlRes.rows.map(ticket => { return new Ticket(ticket)}));
+};
+
 async function sendNotification(ticketID) {
 
   const Webhook = new Discord.WebhookClient(process.env.WEBHOOK_ID, process.env.WEBHOOK_TOKEN);
@@ -543,72 +549,6 @@ async function authenticateUser(token) {
   }
 };
 
-async function findOpenTickets(status) {
-  let openTickets = 0;
-  try {
-    let count_gen = await checkDBAdmin('ticket_general', status);
-    let count_element = await checkDBAdmin('element_event', status);
-    let count_transfer = await checkDBAdmin('element_transfer', status);
-    let count_dino_req = await checkDBAdmin('patreon_dino_request', status);
-    let count_insurance = await checkDBAdmin('patreon_dino_insurance', status);
-    let count_ban = await checkDBAdmin('ban_appeal', status);
-    let count_bug = await checkDBAdmin('bug_report', status);
-
-    openTickets += count_gen.rowCount += count_element.rowCount += count_transfer.rowCount
-    += count_dino_req.rowCount += count_insurance.rowCount += count_ban.rowCount 
-    += count_bug.rowCount;
-
-    return {
-      ticketCount : openTickets,
-      general: count_gen.rows, 
-      element: count_element.rows, 
-      transfer: count_transfer.rows, 
-      dino_req: count_dino_req.rows, 
-      dino_ins: count_insurance.rows, 
-      ban: count_ban.rows, 
-      bug: count_bug.rows
-    };
-
-  } catch(e) {return e;}
-};
-
-async function findUserTickets(userID, status) {
-  let openTickets = 0;
-  try {
-    let count_gen = await checkDB('ticket_general', userID, status);
-    let count_element = await checkDB('element_event', userID, status);
-    let count_transfer = await checkDB('element_transfer', userID, status);
-    let count_dino_req = await checkDB('patreon_dino_request', userID, status);
-    let count_insurance = await checkDB('patreon_dino_insurance', userID, status);
-    let count_ban = await checkDB('ban_appeal', userID, status);
-    let count_bug = await checkDB('bug_report', userID, status);
-
-    //Silly thing is silly.
-    openTickets += count_gen.rowCount += count_element.rowCount += count_transfer.rowCount
-    += count_dino_req.rowCount += count_insurance.rowCount += count_ban.rowCount 
-    += count_bug.rowCount;
-
-    return {
-      ticketCount : openTickets,
-      general: count_gen.rows, 
-      element: count_element.rows, 
-      transfer: count_transfer.rows, 
-      dino_req: count_dino_req.rows, 
-      dino_ins: count_insurance.rows, 
-      ban: count_ban.rows, 
-      bug: count_bug.rows
-    };
-} catch(e){ return e; }
-};
-
-function checkDB(table, userID, status) {
-  return client.query(`SELECT * FROM ${table} where discord_id = '${userID}' and status = '${status}';`);
-};
-
-function checkDBAdmin(table, status) {
-  return client.query(`SELECT * FROM ${table} WHERE status='${status}';`);
-};
-
 function currentDateAndTime() {
     let date = new Date();
     return ("00" + (date.getMonth() + 1)).slice(-2) 
@@ -621,6 +561,7 @@ function currentDateAndTime() {
 function Ticket(ticket) {
   this.id = ticket.id;
   this.status = ticket.status;
+  this.ign = ticket.ign;
   this.type_of_ticket = ticket.type_of_ticket;
   this.submitted_on = ticket.submitted_on;
   this.closed_on = ticket.closed_on ? ticket.closed_on : '-';

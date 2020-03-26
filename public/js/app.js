@@ -18,6 +18,11 @@ $(() => {
     }, false);
   });
 
+  $('.cancel-ticket').on('click', function(event) {
+    event.preventDefault();
+    // console.log("Clicked");
+  });
+
   $('#dino_color').change(function(event) {
     if ($(this).val() === 'yes') {
       $('.regions').removeAttr("hidden");

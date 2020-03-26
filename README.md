@@ -52,6 +52,23 @@ DISCORD_PATREON_DOMINATOR=[ID of DomiNATOR]
 * Allowing an admin to re-open a ticket
 
 # Change Log
+03/25/2020
+- Tickets are now displayed on the screen based on the following order
+  - NEW -> Date Submitted DESC
+  - OPEN -> Date Submitted DESC
+  - COMPLETE -> Date Submitted DESC
+  - CANCELLED -> Date Submitted DESC
+- Added Date Completed onto All Tickets
+- Renamed 'All Open Tickets' to 'All Tickets'
+- Implemented cancel ticket modal
+  - User is able to submit a reason why they are cancelling ticket
+- Changed various inputs on the following pages to textareas
+  - Cancel modal
+  - Bug Report
+  - Ban Appeal
+  - Patreon Insurance Request
+- Removed unused detailed pages
+
 03/23/2020 - 03/24/2020
 - Basically rewrote the entire site
 - Completely rewrote database structure

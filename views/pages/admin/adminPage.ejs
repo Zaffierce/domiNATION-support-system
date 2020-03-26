@@ -14,6 +14,7 @@
           <th class="ng-scope">Ticket Type</th>
           <th class="ng-scope">User</th>
           <th class="ng-scope">Status</th>
+          <th class="ng-scope">Date Completed</th>
           <th class="ng-scope">ID</th>
         </tr>
         <% for (let i = 0; i < tickets.length; i++) { %>
@@ -22,6 +23,7 @@
             <td class="ng-scope"><%=tickets[i].type_of_ticket%></td>
             <td class="ng-scope"><%=tickets[i].ign%></td>
             <td class="ng-scope"><%=tickets[i].status%></td>
+            <td class="ng-scope"><%=tickets[i].closed_on%></td>
             <td class="ng-scope"><a href="/details/<%=tickets[i].id%>">View ticket</a></td>
           </tr>
         <% } %>
