@@ -9,12 +9,11 @@
   <%- include('../../partials/nav.ejs'); %>
   <h1 class="ng-scope text-center">Submit an anonymous ticket</h1>
   <div class="container">
-    <!--Form to submit anonymous shiz-->
     <form action="ticket-submit" method="POST">
       <input type="text" class="form-control" name="typeOfRequest" value="Anonymous" hidden>
       <label for="description">Please enter into the box below:</label>
       <div class="note">Note:  Despite being logged into this website, this is 100% anonymous and cannot be traced back to you.  Please use this ticket as an option to improve our community.</div>
-      <input type="text" class="form-control" name="description">
+      <textarea class="form-control" id="description" name="description" rows="10"></textarea>
       <div class="text-center">
         <input type="submit" value="Submit Ticket">
       </div>
