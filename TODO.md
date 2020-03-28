@@ -16,6 +16,8 @@ TODO
 
 [] If a token exists, but the users ID is currently null, have them logout and back in.
 
+[] Remove react files
+
 [X] Ban Appeal: Reason for banned & unbans
     - Increase size of boxes for sad story time.
 [X] Sort tickets by status
