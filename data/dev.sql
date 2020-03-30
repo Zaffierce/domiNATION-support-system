@@ -63,4 +63,12 @@ CREATE TABLE tickets (
     anonymous_description TEXT,
     --random
     cancelled_description TEXT
-)
+);
+
+CREATE TABLE notes (
+  note_id SERIAL PRIMARY KEY,
+  ticket_id VARCHAR(255),
+  description TEXT,
+  date VARCHAR(255),
+  discord_name VARCHAR(255)
+);

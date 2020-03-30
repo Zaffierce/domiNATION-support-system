@@ -8,7 +8,7 @@ const methodOverride = require('method-override');
 const fetch = require('node-fetch');
 const btoa = require('btoa');
 const Discord  = require('discord.js');
-const { catchAsync } = require('./my-app/src/util/utils');
+const { catchAsync } = require('./util/utils');
 const router = express.Router();
 // const log = require('simple-node-logger').createSimpleLogger('./logs/project.log');
 
