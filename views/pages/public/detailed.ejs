@@ -35,87 +35,134 @@
       <div class="col-md-9 infobox">
         <h1 class="ng-scope text-center"><%=ticket.type_of_ticket%></h1>
         <hr>
-        <% if (ticket.type_of_ticket === 'General Support Ticket') { %>
-          <div><strong>Tribe Name: </strong><%=ticket.gen_tribe_name%></div>
-          <div><strong>Server: </strong><%=ticket.server_assistance%></div>
-          <div><strong>CCC: </strong><%=ticket.gen_coordinates%></div>
-          <div><strong>Issue: </strong><%=ticket.gen_issue%></div>
-          <div><strong>Resolution: </strong><%=ticket.gen_resolution%></div>
-        <% } %>
-
-        <% if (ticket.type_of_ticket === 'Element from Event') { %>
-          <div><strong>Event name: </strong><%=ticket.event_name%></div>
-          <div><strong>Server: </strong><%=ticket.event_serverid_dropoff%></div>
-          <div><strong>Patreon: </strong><%=ticket.event_patreon_status%></div>
-          <div><strong>CCC: </strong><%=ticket.event_element_dropoff_location%></div>
-        <% } %>
-
-        <% if (ticket.type_of_ticket === 'Transfer Element') { %>
-          <div><strong>Transferring from: </strong><%=ticket.transfer_serverid_pickup%></div>
-          <div><strong>CCC Pickup: </strong><%=ticket.transfer_server_pickup_location%></div>
-          <div><strong>Amount: </strong><%=ticket.transfer_amount%></div>
-          <div><strong>Transferring to: </strong><%=ticket.transfer_serverid_dropoff%></div>
-          <div><strong>CCC Dropoff: </strong><%=ticket.transfer_server_dropoff_location%></div>
-        <% } %>
-
-        <% if (ticket.type_of_ticket === 'Patreon Monthly Dino') { %>
-          <div><strong>Email Address: </strong><%=ticket.request_email_address%></div>
-          <div><strong>Server: </strong><%=ticket.request_serverid_dropoff%></div>
-          <div><strong>CCC: </strong><%=ticket.request_server_dropoff_location%></div>
-          <div><strong>Dino: </strong><%=ticket.request_dino_name%></div>
-          <div><strong>Color option: </strong><%=ticket.request_colored%></div>
-            <% if (ticket.request_colored === "yes") { %>
-              <div><strong>Region 0: </strong><%=ticket.request_region0%></div>
-              <div><strong>Region 1: </strong><%=ticket.request_region1%></div>
-              <div><strong>Region 2: </strong><%=ticket.request_region2%></div>
-              <div><strong>Region 3: </strong><%=ticket.request_region3%></div>
-              <div><strong>Region 4: </strong><%=ticket.request_region4%></div>
-              <div><strong>Region 5: </strong><%=ticket.request_region5%></div>
+				<!-- Tabs section -->
+        <div class="tabs">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+							<span class="nav-link active" id="ticketTab">Ticket</span>
+						</li>
+						<li class="nav-item">
+							<span class="nav-link" id="notesTab">Notes (<%=notesSize%>)</span>
+						</li>
+          </ul>
+          <div id="ticket">
+            <!-- Ticket info -->
+            <% if (ticket.type_of_ticket === 'General Support Ticket') { %>
+              <div><strong>Tribe Name: </strong><%=ticket.gen_tribe_name%></div>
+              <div><strong>Server: </strong><%=ticket.server_assistance%></div>
+              <div><strong>CCC: </strong><%=ticket.gen_coordinates%></div>
+              <div><strong>Issue: </strong><%=ticket.gen_issue%></div>
+              <div><strong>Resolution: </strong><%=ticket.gen_resolution%></div>
             <% } %>
-          <div><strong>Sex: </strong><%=ticket.request_sex%></div>
-        <% } %>
-
-        <% if (ticket.type_of_ticket === 'Patreon Insurance Request') { %>
-          <div><strong>Email Address: </strong><%=ticket.insurance_email_address%></div>
-          <div><strong>Dinosaur Link: </strong><a href="<%=ticket.insurance_dino_link%>"><%=ticket.insurance_dino_link%></a></div>
-          <div><strong>Month claimed: </strong><%=ticket.insurance_month_claimed%></div>
-          <div><strong>How it died: </strong><%=ticket.insurance_explanation%></div>
-        <% } %>
-
-        <% if (ticket.type_of_ticket === 'Ban Appeal') { %>
-          <div><strong>Email Address: </strong><%=ticket.ban_email_address%></div>
-          <div><strong>Steam ID: </strong><%=ticket.ban_steam_id%></div>
-          <div><strong>Ban Reason: </strong><%=ticket.ban_banned_reason%></div>
-          <div><strong>Unban Reason: </strong><%=ticket.ban_unban_reason%></div>
-        <% } %>
-
-        <% if (ticket.type_of_ticket === 'Bug Report') { %>
-          <div><strong>Server: </strong><%=ticket.server_assistance%></div>
-          <div><strong>Details: </strong><%=ticket.bug_issue%></div>
-          <div><strong>Are you able to re-create? </strong><%=ticket.bug_recreate%></div>
-          <div><strong>Any items lost? </strong><%=ticket.bug_lost_items%></div>
-        <% } %>
-
-        <% if (ticket.type_of_ticket === 'Anonymous') { %>
-          <div><strong>Details: </strong><%=ticket.anonymous_description%></div>
-        <% } %>
-
-      </div>
-    </div>
-
-    <!--Cancelled Box-->
-    <% if (ticket.status === "CANCELLED") { %>
-      <div class="row greybox text-center">
-        <div class="col-sm-12">
-          <p><u>This ticket was cancelled</u></p>
-          <% if (ticket.cancelled_description === '') { %>
-            <span><i>Reason not provided</i> - <%=ticket.closed_by%>, <%=ticket.closed_on%></span>
-          <% } else { %>
-            <span><%=ticket.cancelled_description%> - <%=ticket.closed_by%>, <%=ticket.closed_on%></span>
-          <% } %>
+    
+            <% if (ticket.type_of_ticket === 'Element from Event') { %>
+              <div><strong>Event name: </strong><%=ticket.event_name%></div>
+              <div><strong>Server: </strong><%=ticket.event_serverid_dropoff%></div>
+              <div><strong>Patreon: </strong><%=ticket.event_patreon_status%></div>
+              <div><strong>CCC: </strong><%=ticket.event_element_dropoff_location%></div>
+            <% } %>
+    
+            <% if (ticket.type_of_ticket === 'Transfer Element') { %>
+              <div><strong>Transferring from: </strong><%=ticket.transfer_serverid_pickup%></div>
+              <div><strong>CCC Pickup: </strong><%=ticket.transfer_server_pickup_location%></div>
+              <div><strong>Amount: </strong><%=ticket.transfer_amount%></div>
+              <div><strong>Transferring to: </strong><%=ticket.transfer_serverid_dropoff%></div>
+              <div><strong>CCC Dropoff: </strong><%=ticket.transfer_server_dropoff_location%></div>
+            <% } %>
+    
+            <% if (ticket.type_of_ticket === 'Patreon Monthly Dino') { %>
+              <div><strong>Email Address: </strong><%=ticket.request_email_address%></div>
+              <div><strong>Server: </strong><%=ticket.request_serverid_dropoff%></div>
+              <div><strong>CCC: </strong><%=ticket.request_server_dropoff_location%></div>
+              <div><strong>Dino: </strong><%=ticket.request_dino_name%></div>
+              <div><strong>Color option: </strong><%=ticket.request_colored%></div>
+                <% if (ticket.request_colored === "yes") { %>
+                  <div><strong>Region 0: </strong><%=ticket.request_region0%></div>
+                  <div><strong>Region 1: </strong><%=ticket.request_region1%></div>
+                  <div><strong>Region 2: </strong><%=ticket.request_region2%></div>
+                  <div><strong>Region 3: </strong><%=ticket.request_region3%></div>
+                  <div><strong>Region 4: </strong><%=ticket.request_region4%></div>
+                  <div><strong>Region 5: </strong><%=ticket.request_region5%></div>
+                <% } %>
+              <div><strong>Sex: </strong><%=ticket.request_sex%></div>
+            <% } %>
+    
+            <% if (ticket.type_of_ticket === 'Patreon Insurance Request') { %>
+              <div><strong>Email Address: </strong><%=ticket.insurance_email_address%></div>
+              <div><strong>Dinosaur Link: </strong><a href="<%=ticket.insurance_dino_link%>"><%=ticket.insurance_dino_link%></a></div>
+              <div><strong>Month claimed: </strong><%=ticket.insurance_month_claimed%></div>
+              <div><strong>How it died: </strong><%=ticket.insurance_explanation%></div>
+            <% } %>
+    
+            <% if (ticket.type_of_ticket === 'Ban Appeal') { %>
+              <div><strong>Email Address: </strong><%=ticket.ban_email_address%></div>
+              <div><strong>Steam ID: </strong><%=ticket.ban_steam_id%></div>
+              <div><strong>Ban Reason: </strong><%=ticket.ban_banned_reason%></div>
+              <div><strong>Unban Reason: </strong><%=ticket.ban_unban_reason%></div>
+            <% } %>
+    
+            <% if (ticket.type_of_ticket === 'Bug Report') { %>
+              <div><strong>Server: </strong><%=ticket.server_assistance%></div>
+              <div><strong>Details: </strong><%=ticket.bug_issue%></div>
+              <div><strong>Are you able to re-create? </strong><%=ticket.bug_recreate%></div>
+              <div><strong>Any items lost? </strong><%=ticket.bug_lost_items%></div>
+            <% } %>
+    
+            <% if (ticket.type_of_ticket === 'Anonymous') { %>
+              <div><strong>Details: </strong><%=ticket.anonymous_description%></div>
+            <% } %>
+          </div>
+          <div id="notes" hidden>
+						<!-- Notes info -->
+						<br />
+						<% for (let i = 0; i < notes.length; i++) { %>
+							<div>
+								<div id="notes-user"><%=notes[i].discord_name%> - <%=notes[i].date%></div>
+								<div class="ml-2 notes-desc">
+									<%=notes[i].description%>
+									<% if (notes[i].edited) { %>
+										<div class="edited m-1">(edited)</div>
+									<% } %>
+								</div>
+								<div class="ml-2 notes-desc-form" hidden>
+									<form method="POST" action="/notes-edit/<%=notes[i].note_id%>" class="notes-edit-form">
+									<div class="form-row">
+										<div class="form-group col-md-12">
+											<textarea class="form-control" name="description" rows="2"><%=notes[i].description%></textarea>
+											<input type="text" name="id" value="<%=ticket.id%>" hidden>
+											<div class="notes-options notes-save-cancel-buttons">
+												<a class="notes-save" href="#" tabindex="-1" role="button" type="submit">Save</a>
+												<a class="notes-cancel" href="#" tabindex="-1" role="button">Cancel</a>
+											</div>
+										</div>
+									</div>
+									</form>
+								</div>
+								<div class="notes-options notes-edit-delete-buttons ml-2">
+                  <% if (notes[i].discord_id === user.id) { %>
+                    <a class="notes-edit" href="#" tabindex="-1" role="button">Edit</a>
+                  <% } %>
+                  <% if (notes[i].discord_id === user.id || user.isAdmin === true) { %>
+                    <a class="notes-delete" href="#" tabindex="-1" role="button" data-toggle="modal" data-target="#deleteModal" data-note_id="<%=notes[i].note_id%>" >Delete</a>
+                  <% } %>
+								</div>
+							</div>
+							<hr />
+						<% } %>
+						<div>
+							<form method="POST" action="/notes-add/<%=ticket.id%>">
+								<div class="form-row">
+									<div class="form-group col-md-12">
+										<textarea class="form-control" name="description" rows="2"></textarea>
+										<input type="submit" class="btn btn-outline-dark pull-right mt-1" value="Add a new note">
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+          </div>
         </div>
       </div>
-    <% } %>
 
     <!--Buttons-->
     <% if (ticket.status === "NEW" || ticket.status === "OPEN") { %>
@@ -171,6 +218,26 @@
           <div class="modal-footer">
             <input type="submit" class="btn btn-danger" value="Cancel ticket">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
+	</div>
+
+	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete this note?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="POST" action="/notes-delete/" id="notes-delete-form">
+          <div class="modal-footer">
+						<input type="submit" class="btn btn-danger" value="Confirm Delete">
+						<input type="text" value="<%=ticket.id%>" name="id" hidden>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="notes-delete-close-btn">Close</button>
           </div>
         </form>
       </div>

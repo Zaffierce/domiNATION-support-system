@@ -1,5 +1,7 @@
 TODO
 
+[] Scrub README
+
 [] Redesign of Users Page
     - Change / to users tickets
     - CANX /?

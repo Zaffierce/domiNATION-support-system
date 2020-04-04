@@ -298,7 +298,7 @@ app.post('/ticket-submit', catchAsync(async(req, res) =>{
 
       case 'Ban Appeal':
         sqlQueryInsert = 'INSERT INTO tickets (id, ign, discord_name, discord_id, server_assistance, status, time_to_contact, type_of_ticket, submitted_on, ban_steam_id, ban_email_address, ban_banned_reason, ban_unban_reason) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);';
-        sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.timeToContact, ticket.typeOfRequest, timestamp, ticket.steam_id, ticket.email_address, ticket.reason, ticket.unbanned_explanation];
+        sqlValueArr = [ticket.ign, ticket.discordName, validateUser.id, ticket.serverAssistance, "NEW", ticket.timeToContact, ticket.typeOfRequest, timestamp, ticket.steam_id, ticket.email_address, ticket.banned_reason, ticket.unbanned_explanation];
         break;
 
       case 'Bug Report':
@@ -313,6 +313,7 @@ app.post('/ticket-submit', catchAsync(async(req, res) =>{
     client.query(sqlQueryInsert, sqlValueArr).then(() => {
       client.query('SELECT id from tickets ORDER BY incrementer DESC LIMIT 1;').then(sqlRes => {
         sendNotification(sqlRes.rows);
+        createNote(sqlRes.rows[0].id, 'NEW', timestamp, validateUser.username);
         res.redirect('/submitted');
       });
     });
@@ -328,6 +329,7 @@ app.post('/accept/:id', catchAsync(async(req, res) => {
     let timestamp = currentDateAndTime();
     let sqlQuery = 'UPDATE tickets SET status=$1, accepted_by=$2, accepted_on=$3 where id=$4;'
     let sqlArr = ["OPEN", validateUser.username, timestamp, ticket_id];
+    createNote(ticket_id, 'OPEN', timestamp, validateUser.username);
     client.query(sqlQuery, sqlArr).then(res.redirect(`/details/${ticket_id}`));
   }
 }));
@@ -339,8 +341,9 @@ app.post('/cancel/:id', catchAsync(async(req, res) => {
     const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
     let ticket_id = req.params.id;
     let timestamp = currentDateAndTime();
-    let sqlQuery = 'UPDATE tickets SET status=$1, closed_by=$2, closed_on=$3, cancelled_description=$4 where id=$5;'
-    let sqlArr = ["CANCELLED", validateUser.username, timestamp, req.body.cancel_desc, ticket_id];
+    let sqlQuery = 'UPDATE tickets SET status=$1, closed_by=$2, closed_on=$3 where id=$4;'
+    let sqlArr = ["CANCELLED", validateUser.username, timestamp, ticket_id];
+    createNote(ticket_id, `Ticket cancelled for reason:  ${req.body.cancel_desc} - ${validateUser.username}`, timestamp, validateUser.username);
     client.query(sqlQuery, sqlArr).then(res.redirect(`/details/${ticket_id}`));
   }
 }));
@@ -354,9 +357,45 @@ app.post('/complete/:id', catchAsync(async(req, res) => {
     let timestamp = currentDateAndTime();
     let sqlQuery = 'UPDATE tickets SET status=$1, closed_by=$2, closed_on=$3 where id=$4;'
     let sqlArr = ["COMPLETE", validateUser.username, timestamp, ticket_id];
-    client.query(sqlQuery, sqlArr).then(res.redirect(
-      //TODO:  Change redirect to all tickets
-      `/details/${ticket_id}`));
+    createNote(ticket_id, `COMPLETE`, timestamp, validateUser.username);
+    client.query(sqlQuery, sqlArr).then(res.redirect('/all'));
+  }
+}));
+
+app.post('/notes-add/:id', catchAsync(async(req, res) => {
+  if (req.cookies['Domi-Support-Token'] == null) {
+    res.redirect('/login');
+  } else {
+    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
+    let ticket_id = req.params.id;
+    let timestamp = currentDateAndTime();
+    let sqlQuery = 'INSERT INTO notes (note_id, ticket_id, description, date, discord_name, discord_id) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5);';
+    let sqlArr = [ticket_id, req.body.description, timestamp, validateUser.username, validateUser.id];
+    client.query(sqlQuery, sqlArr).then(res.redirect(`/details/${ticket_id}`));
+  }
+}));
+
+app.post('/notes-delete/:note_id', catchAsync(async(req, res) => {
+  if (req.cookies['Domi-Support-Token'] == null) {
+    res.redirect('/login');
+  } else {
+    let ticket_id = req.body.id;
+    let notes_id = req.params.note_id;
+    let sqlQuery = 'DELETE FROM notes WHERE note_id = $1;';
+    let sqlArr = [notes_id];
+    client.query(sqlQuery, sqlArr).then(res.redirect(`/details/${ticket_id}`));
+  }
+}));
+
+app.post('/notes-edit/:note_id', catchAsync(async(req, res) => {
+  if (req.cookies['Domi-Support-Token'] == null) {
+    res.redirect('/login');
+  } else {
+    let ticket_id = req.body.id;
+    let notes_id = req.params.note_id;
+    let sqlQuery = 'UPDATE NOTES set description=$1, edited=$2 WHERE note_id=$3;';
+    let sqlArr = [req.body.description, true, notes_id];
+    client.query(sqlQuery, sqlArr).then(res.redirect(`/details/${ticket_id}`));
   }
 }));
 
@@ -366,10 +405,13 @@ app.get('/details/:id', catchAsync(async(req, res) => {
   } else {
     const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
     let ticket_id = req.params.id;
-    client.query(`SELECT * FROM tickets where id ='${ticket_id}';`).then(sqlRes => {
+    const queryNotes = await client.query(`SELECT * FROM notes WHERE ticket_id = '${ticket_id}' ORDER BY date ASC;`);
+    client.query(`SELECT * FROM tickets WHERE id ='${ticket_id}';`).then(sqlRes => {
       res.render('./pages/public/detailed', {
         user : validateUser,
-        ticket : sqlRes.rows[0]
+        ticket : sqlRes.rows[0],
+        notes : queryNotes.rows,
+        notesSize : queryNotes.rowCount
       });
     });   
   }
@@ -483,6 +525,26 @@ async function queryDatabaseByStatusAndUserID(status, userID) {
   return client.query(`SELECT * FROM tickets WHERE status = '${status}' AND discord_id = '${userID}' ORDER BY submitted_on DESC;`).then(sqlRes => sqlRes.rows.map(ticket => { return new Ticket(ticket)}));
 };
 
+async function createNote(ticket_id, status, timestamp, user_name) {
+  switch(status) {
+    case 'NEW' :
+      status = `Ticket submitted - ${user_name}`;
+      break;
+    
+    case 'OPEN' :
+      status = `Ticket approved - ${user_name}`;
+      break;
+
+    case 'COMPLETE' :
+      status = `Ticket completed - ${user_name}`;
+      break;
+  }
+
+  let sqlQuery = 'INSERT INTO notes (note_id, ticket_id, description, date, discord_name, discord_id) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5);'
+  let sqlArr = [ticket_id, status, timestamp, 'SYSTEM', null];
+  client.query(sqlQuery, sqlArr);
+}
+
 async function sendNotification(ticketID) {
 
   const Webhook = new Discord.WebhookClient(process.env.WEBHOOK_ID, process.env.WEBHOOK_TOKEN);
@@ -556,7 +618,7 @@ function currentDateAndTime() {
     + "/" + date.getFullYear() + " " 
     + ("00" + date.getHours()).slice(-2) + ":" 
     + ("00" + date.getMinutes()).slice(-2) 
-}
+};
 
 function Ticket(ticket) {
   this.id = ticket.id;

@@ -42,7 +42,7 @@ CREATE TABLE tickets (
     request_region3 VARCHAR(5),
     request_region4 VARCHAR(5),
     request_region5 VARCHAR(5),
-    request_sex VARCHAR(7),
+    request_sex VARCHAR(20),
     request_server_dropoff_location VARCHAR(255),
     request_email_address VARCHAR(255),
     -- patreon insurance request
@@ -66,9 +66,11 @@ CREATE TABLE tickets (
 );
 
 CREATE TABLE notes (
-  note_id SERIAL PRIMARY KEY,
+  note_id uuid,
   ticket_id VARCHAR(255),
   description TEXT,
   date VARCHAR(255),
-  discord_name VARCHAR(255)
+  discord_name VARCHAR(255),
+  discord_id VARCHAR(255),
+  edited boolean
 );

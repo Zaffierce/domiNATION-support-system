@@ -52,6 +52,15 @@ DISCORD_PATREON_DOMINATOR=[ID of DomiNATOR]
 * Allowing an admin to re-open a ticket
 
 # Change Log
+04/04/2020
+- Removed react files
+- Implemented Notes system
+  - Implemented EDIT & DELETE ability for notes
+  - Users can edit & delete their own comment
+  - Administrators can delete others comments
+- Corrected bug with datatype request_sex
+- Corrected bug with event listener on patreon form
+
 03/25/2020
 - Tickets are now displayed on the screen based on the following order
   - NEW -> Date Submitted DESC

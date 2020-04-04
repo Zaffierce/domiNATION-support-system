@@ -3,9 +3,6 @@
 
 $(() => {
 
-
-  console.log($('#generalServerSelect option:selected').text())
-
   var forms = document.getElementsByClassName('needs-validation');
 
   var validation = Array.prototype.filter.call(forms, function(form) {
@@ -18,15 +15,66 @@ $(() => {
     }, false);
   });
 
+  $('.notes-edit').on('click', function(event) {
+    event.preventDefault();
+    $(this).parent().parent().find('.notes-desc').attr("hidden", "hidden");
+    $(this).parent().parent().find('.notes-desc-form').removeAttr("hidden");
+    $(this).parent().parent().find('.notes-edit-delete-buttons').attr("hidden", "hidden");
+  });
+
+  $('.notes-cancel').on('click', function(event) {
+    event.preventDefault();
+    console.log("Clicked")
+    $(this).parent().parent().parent().parent().parent().parent().find('.notes-desc').removeAttr("hidden");
+    $(this).parent().parent().parent().parent().parent().parent().find('.notes-desc-form').attr("hidden", "hidden");
+    $(this).parent().parent().parent().parent().parent().parent().find('.notes-edit-delete-buttons').removeAttr("hidden");
+  });
+
+  $('.notes-delete').on('click', function(event) {
+    event.preventDefault();
+    let id = $(this).attr('data-note_id');
+    let url = $('#notes-delete-form').attr("action");
+    $('#notes-delete-form').attr("action", url+id);
+    console.log(url);
+  });
+
+  $('.notes-save').on('click', function(event) {
+    console.log("clicked")
+    $(this).parent().parent().parent().parent().parent().find('.notes-edit-form').submit();
+  });
+
+  // $('#notes-delete-close-btn').on('click', function(event) {
+  //   event.preventDefault();
+  //   $('#notes-delete-form').attr("action", "/notes-delete/");
+  // });
+
+  $('#deleteModal').on('hidden.bs.modal', () => {
+    $('#notes-delete-form').attr("action", "/notes-delete/");
+  });
+
+  $('#ticketTab').on('click', () => {
+    $('#notes').attr("hidden", "hidden");
+    $('#notesTab').removeClass("active");
+    $('#ticket').removeAttr("hidden");
+    $('#ticketTab').addClass("active");
+  }); 
+
+  $('#notesTab').on('click', function(event) {
+    $('#ticket').attr("hidden", "hidden");
+    $('#ticketTab').removeClass("active");
+    $('#notes').removeAttr("hidden");
+    $('#notesTab').addClass("active");
+  });
+
   $('.cancel-ticket').on('click', function(event) {
     event.preventDefault();
-    // console.log("Clicked");
   });
 
   $('#dino_color').change(function(event) {
-    if ($(this).val() === 'yes') {
+    console.log("Changed")
+    if ($(this).val() === 'Yes') {
       $('.regions').removeAttr("hidden");
-    } else if ($(this).val() === 'no') {
+    } else if ($(this).val() === 'No') {
       $('.regions').attr("hidden", "hidden");
     }
   });
