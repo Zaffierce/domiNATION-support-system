@@ -7,8 +7,12 @@
     <%- include('../../partials/nav.ejs'); %>
   <h1 class="ng-scope text-center">Administrative Panel</h1>
   <div class="container">
+    <div>
+      <input id="searchName" type="text">
+    </div>
+
     <table class="table table-striped">
-      <tbody>
+      <tbody class="tickets-table">
         <tr>
           <th class="ng-scope">Date Submitted</th>
           <th class="ng-scope">Ticket Type</th>
@@ -18,7 +22,7 @@
           <th class="ng-scope">ID</th>
         </tr>
         <% for (let i = 0; i < tickets.length; i++) { %>
-          <tr class="ng-scope">
+          <tr class="ng-scope tickets">
             <td class="ng-scope"><%=tickets[i].submitted_on%></td>
             <td class="ng-scope"><%=tickets[i].type_of_ticket%></td>
             <td class="ng-scope"><%=tickets[i].ign%></td>

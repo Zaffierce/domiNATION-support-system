@@ -94,7 +94,7 @@ app.get('/api/discord/callback', catchAsync(async (req, res) => {
     },
   });
   const json = await response.json();
-  const cookieExpirationInMS = 2592000000; // 30 days 
+  const cookieExpirationInMS = 604800000; // 7 days 
   res.cookie('Domi-Support-Token', json.access_token, {maxAge: cookieExpirationInMS, httpOnly: false});
   res.redirect('/');
 }));
@@ -371,6 +371,7 @@ app.post('/notes-add/:id', catchAsync(async(req, res) => {
     let timestamp = currentDateAndTime();
     let sqlQuery = 'INSERT INTO notes (note_id, ticket_id, description, date, discord_name, discord_id) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5);';
     let sqlArr = [ticket_id, req.body.description, timestamp, validateUser.username, validateUser.id];
+    sendNoteNotification(ticket_id);
     client.query(sqlQuery, sqlArr).then(res.redirect(`/details/${ticket_id}`));
   }
 }));
@@ -503,6 +504,12 @@ app.post('/add', catchAsync(async(req, res) => {
   
 }));
 
+app.get('/search', catchAsync(async(req, res) => {
+  console.log("Hit the url", req.query.data);
+  const tickets = await queryDatabaseSearchStatus(req.query.data);
+  res.send(tickets);
+}));
+
 app.get('*', (req, res) => {res.status(404).render('pages/error')});
 
 async function queryServerList() {
@@ -519,6 +526,10 @@ async function queryDinosaurColors() {
 
 async function queryDatabaseByStatus(status) {
   return client.query(`SELECT * FROM tickets WHERE status = '${status}' ORDER BY submitted_on DESC;`).then(sqlRes => sqlRes.rows.map(ticket => { return new Ticket(ticket)}));
+};
+
+async function queryDatabaseSearchStatus(name) {
+  return client.query(`SELECT * FROM tickets WHERE lower(discord_name) LIKE '%${name}%';`).then(sqlRes => sqlRes.rows.map(ticket => { return new Ticket(ticket)}));
 };
 
 async function queryDatabaseByStatusAndUserID(status, userID) {
@@ -557,7 +568,18 @@ async function sendNotification(ticketID) {
   })
 };
 
+// async function sendNoteNotification(ticketID) {
+// const Webhook = new Discord.WebhookClient(process.env.WEBHOOK_NOTE_ID, process.env.WEBHOOK_NOTE_TOKEN);
+// client.query(`SELECT discord_id from tickets where id = '${ticketID}';`).then(sqlRes => {
+//   let userID = sqlRes.rows[0].discord_id;
+//   Webhook.send(`<@${userID}>, a new note has been added to your ticket!  Please check the website.`);
+// });
+// };
+
+
 async function authenticateUser(token) {
+  //TODO:  Issue - token is failing to grab users information?
+  //Needs more troubleshooting
   let result = {
     isAdmin: false,
     isPatreon: false,

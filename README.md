@@ -1,14 +1,26 @@
 # DomiNATION Support System
 
-This full stack express and js project built with postgres and ejs, designed to be the support system for the DomiNATION Gaming Community.
+This is the support system for the DomiNATION Gaming Community.
+
+# How it works
+- All users are required to sign into the website using Discord's oAuth.
+- After signing in, we now check what user groups are assigned to your account in the DomiNATION Discord.
+  - This is performed by making an API call using the token we just obtained to grab your users specific ID
+  - A second API call is made after we have your ID, which reads off what user groups you have assigned
+- Once we have the response from Discord, things are now rendered to the screen based on your access.
+
 
 # Setup
-  * PostgreSQL Database
-  * Node
-    * npm -i
-  * .env (see .env example)
+You may use this project how you see fit, but keep in mind that this was created specifically for the DomiNATION Gaming Community.  Here are the steps for setting this project up.
+
+  - PostgreSQL Database
+    - Use the `schema.sql` file for the Database
+  - Node
+    - npm -i
+  - .env (see .env example)
 
 # .env example
+This is the example for the .env file, most of this you must obtain yourself.
 ```
 PORT=3001
 DATABASE_URL=postgres://username:password@localhost:5432/domi_support
@@ -25,33 +37,53 @@ DISCORD_PATREON_SUPPORTER=[ID of Supporter]
 DISCORD_PATREON_SUPPORTERPLUS=[ID of Supporter+]
 DISCORD_PATREON_SUPPORTERPLUSPLUS=[ID of Supporter++]
 DISCORD_PATREON_DOMINATOR=[ID of DomiNATOR]
+
+WEBHOOK_ID=[ID of Webhook]
+WEBHOOK_TOKEN=[Token]
 ```
 
 
 # Current Features
-* A user is able to login via Discord's OAuth
-  * Upon OAuth completion, user groups are checked by checking the Discord Roles for that user
-* A user is able to submit a trouble ticket
-  * General Support Ticket
-  * Element from Event Ticket
-  * Element Transfer Ticket
-  * Patreon Dino Request Ticket
-  * Patreon Dino Insurance Ticket
-  * Ban Appeal
-  * Bug Report
-* A user is able to view their open tickets on the home page, and see the details for each individual ticket
-* A user is able to view all tickets (open or closed) on the Status page
-* A user is able to cancel their own ticket
-* An admin is able to view all open tickets from all users
-* An admin is able to cancel a ticket
-* An admin is able to complete a ticket
 
+### General
+- Login via Discord oAuth
+- Permission based content
+  - Patreon & Administrative locked content
+- Webhook message to Discord informing Admins when a ticket was submitted
+
+### Users
+- Able to submit tickets
+  - General
+  - Element from event
+  - Element transfer
+  - Patreon dino request
+  - Patreon insurance request
+  - Ban appeal
+  - Bug report
+  - Anonymous reports
+- View all tickets on their home page
+- View detailed information about a ticket
+- Able to cancel their own ticket
+- Able to leave notes on their own tickets
+  - Able to edit & delete their own notes
+
+### Administrators
+- Able to see all tickets
+- Able to change the status of a ticket
+  - Approve, Complete, or Cancel
+- Able to leave notes on any users tickets
+  - Able to delete anyones notes
+- Able to leave a comment as to why the ticket was cancelled
+- Able to update Servers, Dinosaurs & Dinosaurs colors
 
 # Upcoming Features
-* Adding notes to a ticket
-* Allowing an admin to re-open a ticket
+
+- Allowing an admin to re-open a ticket
 
 # Change Log
+04/05/2020
+- Made changes to README
+
 04/04/2020
 - Removed react files
 - Implemented Notes system
@@ -89,7 +121,6 @@ DISCORD_PATREON_DOMINATOR=[ID of DomiNATOR]
 - Altered the value of the servers to reference the full name vice the server number
   - Slight tweaks to the data types inside the database
 
-
 03/04/2020 - 03/16/2020
 - Started progress on Admin Panel
   - Ability to Add/Update/Remove Servers, Dinosaurs, and Dinosaur Colors
@@ -124,7 +155,6 @@ DISCORD_PATREON_DOMINATOR=[ID of DomiNATOR]
   - Changed render for Index, Status, Admin pages
   - Changed much backend logic.  :(
 
-
 02/26/2020
 - Added more informational boxes
   - Element from an Event:
@@ -153,7 +183,6 @@ DISCORD_PATREON_DOMINATOR=[ID of DomiNATOR]
 - Routes & logic established to pull detailed information about each task.
 - Each ticket has it's own detailed page now
   - Dino request form will render additional details based on if they want the dinosaur colored or not
-
 
 02/22/2020
 - Added information box to General Request - will add it to the others soon.

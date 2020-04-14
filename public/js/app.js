@@ -43,11 +43,6 @@ $(() => {
     $(this).parent().parent().parent().parent().parent().find('.notes-edit-form').submit();
   });
 
-  // $('#notes-delete-close-btn').on('click', function(event) {
-  //   event.preventDefault();
-  //   $('#notes-delete-form').attr("action", "/notes-delete/");
-  // });
-
   $('#deleteModal').on('hidden.bs.modal', () => {
     $('#notes-delete-form').attr("action", "/notes-delete/");
   });
@@ -221,6 +216,18 @@ $(() => {
     $('#dinosaurColorListing').removeAttr("hidden");
     $('#serverListing').attr("hidden", "hidden");
   });
+
+  $('#searchName').on('keyup', function(event) {
+    event.preventDefault();
+    let searchQuery = $(this).val().toLowerCase();
+    // fetchSearchResults()
+    $('.tickets').remove();
+    fetchSearchResults(searchQuery);
+    // test.forEach(result => {
+    //   console.log(result);
+    // })
+    // console.log(test);
+  });
   
 });
 
@@ -248,3 +255,27 @@ function confirmDeletion() {
   }
 }
 
+async function fetchSearchResults(searchQuery) {
+  $.ajax({
+    url: `http://localhost:3001/search`,
+    method: 'GET',
+    data: { data : searchQuery }
+  }).then(response => {
+    console.log(response)
+    for (let i = 0; i < response.length; i++) {
+      $('.tickets-table').append('<td class="ng-scope tickets">');
+      for (let j = 0; j < response[j].length; j++) {
+        console.log(j);
+      }
+
+      // $('.tickets').text(response[i].id);
+    }
+    // console.log(response.length);
+    // response.forEach((element) => {
+    //   $('.tickets').append('<td class="ng-scope">Banana');
+    //   // $('.tickets').createElement('td');
+    //   // console.log(element);
+    // })
+    console.log(response.length);
+  });
+}
