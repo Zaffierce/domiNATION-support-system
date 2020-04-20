@@ -222,7 +222,7 @@ $(() => {
     let searchQuery = $(this).val().toLowerCase();
     let html = '<tr> <th class="ng-scope">Date Submitted</th> <th class="ng-scope">Ticket Type</th> <th class="ng-scope">User</th> <th class="ng-scope">Discord ID</th> <th class="ng-scope">Status</th> <th class="ng-scope">Date Completed</th> <th class="ng-scope">ID</th> </tr>'
     $.ajax({
-      url: `http://localhost:3001/search`,
+      url: `https://support.domination-gaming.com/search`,
       method: 'GET',
       data: { data : searchQuery,
               type : queryOpt },
