@@ -94,7 +94,7 @@ app.get('/api/discord/callback', catchAsync(async (req, res) => {
     },
   });
   const json = await response.json();
-  const cookieExpirationInMS = 604800000; // 7 days 
+  const cookieExpirationInMS = 604800000; // 7 days, since that's when the Discord Token expires
   res.cookie('Domi-Support-Token', json.access_token, {maxAge: cookieExpirationInMS, httpOnly: false});
   res.redirect('/');
 }));
