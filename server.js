@@ -368,7 +368,7 @@ app.post('/notes-add/:id', catchAsync(async(req, res) => {
     let timestamp = currentDateAndTime();
     let sqlQuery = 'INSERT INTO notes (note_id, ticket_id, description, date, discord_name, discord_id) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5);';
     let sqlArr = [ticket_id, req.body.description, timestamp, validateUser.username, validateUser.id];
-    sendNoteNotification(ticket_id);
+    // sendNoteNotification(ticket_id);
     client.query(sqlQuery, sqlArr).then(res.redirect(`/details/${ticket_id}`));
   }
 }));
