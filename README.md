@@ -81,6 +81,15 @@ WEBHOOK_TOKEN=[Token]
 - Allowing an admin to re-open a ticket
 
 # Change Log
+04/19/2020
+  - Implemented search functionality to admin panel
+    - Able to search for the following types:
+      - Discord ID
+      - Username
+      - Completed Before
+      - Completed After
+      - Completed By
+
 04/05/2020
 - Made changes to README
 
