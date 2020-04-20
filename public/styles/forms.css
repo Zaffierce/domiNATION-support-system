@@ -105,3 +105,26 @@
 .edited {
   font-size:10px;
 }
+
+.search-panel-heading {
+  padding: 10px 15px;
+  border-bottom: 1px solid transparent;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+label {
+  font-weight: 700;
+}
+
+.search-panel label {
+  font-size: 14px;
+  color: #000;
+}
+
+.search-panel{
+  background: #2d353c;
+  color: #fff;
+  border: 0;
+  font-weight: bold;
+}

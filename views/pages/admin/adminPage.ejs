@@ -1,34 +1,105 @@
 <%- include('../../partials/head.ejs'); %>
   <title>User: <%= user.username %> - DomiNATION Ark: Survival Evolved Community</title>
+
 <link rel="stylesheet" type="text/css" href="styles/forms.css">
 <script src="/js/app.js" type="text/javascript"></script>
 </head>
 <body>
     <%- include('../../partials/nav.ejs'); %>
   <h1 class="ng-scope text-center">Administrative Panel</h1>
+  <h3 class="ng-scope text-center">Open Tickets</h3>
   <div class="container">
-    <div>
-      <input id="searchName" type="text">
-    </div>
+    <table class="table table-striped">
+      <tbody>
+        <tr>
+          <th class="ng-scope">Date Submitted</th>
+          <th class="ng-scope">Ticket Type</th>
+          <th class="ng-scope">User</th>
+          <th class="ng-scope">Discord ID</th>
+          <th class="ng-scope">Status</th>
+          <th class="ng-scope">Date Completed</th>
+          <th class="ng-scope">ID</th>
+        </tr>
+        <% for (let i = 0; i < openTickets.length; i++) { %>
+          <tr class="ng-scope tickets">
+            <td class="ng-scope"><%=openTickets[i].submitted_on%></td>
+            <td class="ng-scope"><%=openTickets[i].type_of_ticket%></td>
+            <td class="ng-scope"><%=openTickets[i].ign%></td>
+            <td class="ng-scope"><%=openTickets[i].discord_name%></td>
+            <td class="ng-scope"><%=openTickets[i].status%></td>
+            <td class="ng-scope"><%=openTickets[i].closed_on%></td>
+            <td class="ng-scope"><a href="/details/<%=openTickets[i].id%>">View ticket</a></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+    <br />
+    <h3 class="ng-scope text-center">Closed Tickets</h3>
+    <div class="text-center">Currently, these do not chain together.  Each option is its own query</div>
 
+    <div class="search-panel">
+      <div class="search-panel-heading">Search Options</div>
+      <div class="panel-body">
+        <div class="form-row">
+          <div class="form-group col-md-2 px-3">
+            <label for="discordID">Discord ID</label>
+            <input id="discordID" class="search form-control" type="text">
+          </div>
+          <div class="form-group col-md-2 px-3">
+            <label for="ign">Username</label>
+            <input id="ign" class="search form-control" type="text">
+          </div>
+          <!-- <div class="form-group col-md-3 px-3">
+            <label for="type">Type</label>
+            <select name="type" class="search form-control" id="type">
+              <option value="">Please choose...</option>
+            <option value="General Support Ticket">General assistance</option>
+            <option value="Element from Event">Element from Event</option>
+            <option value="Transfer Element">Transfer Element</option>
+            <option value="Patreon Monthly Dino">Patreon Monthly Dino</option>
+            <option value="Patreon Insurance Request">Patreon Insurance Request</option>
+            <option value="Ban Appeal">Ban Appeal</option>
+            <option value="Bug Report">Report a Bug</option>
+            </select>
+          </div> -->
+          <div class="form-group col-md-2 px-3">
+            <label for="closed_on_or_before">Completed Before</label>
+            <input id="closed_on_or_before" class="search_date form-control" type="date">
+          </div>
+          <div class="form-group col-md-2 px-3">
+            <label for="closed_on_or_after">Completed After</label>
+            <input id="closed_on_or_after" class="search_date form-control" type="date">
+          </div>
+          <div class="form-group col-md-2 px-3">
+            <label for="closed_by">Completed By</label>
+            <input id="closed_by" class="search form-control" type="text">
+          </div>
+        </div>
+        
+      </div>
+    </div>    
+    
+    <br />
     <table class="table table-striped">
       <tbody class="tickets-table">
         <tr>
           <th class="ng-scope">Date Submitted</th>
           <th class="ng-scope">Ticket Type</th>
           <th class="ng-scope">User</th>
+          <th class="ng-scope">Discord ID</th>
           <th class="ng-scope">Status</th>
           <th class="ng-scope">Date Completed</th>
           <th class="ng-scope">ID</th>
         </tr>
-        <% for (let i = 0; i < tickets.length; i++) { %>
+        <% for (let i = 0; i < closedTickets.length; i++) { %>
           <tr class="ng-scope tickets">
-            <td class="ng-scope"><%=tickets[i].submitted_on%></td>
-            <td class="ng-scope"><%=tickets[i].type_of_ticket%></td>
-            <td class="ng-scope"><%=tickets[i].ign%></td>
-            <td class="ng-scope"><%=tickets[i].status%></td>
-            <td class="ng-scope"><%=tickets[i].closed_on%></td>
-            <td class="ng-scope"><a href="/details/<%=tickets[i].id%>">View ticket</a></td>
+            <td class="ng-scope"><%=closedTickets[i].submitted_on%></td>
+            <td class="ng-scope"><%=closedTickets[i].type_of_ticket%></td>
+            <td class="ng-scope"><%=closedTickets[i].ign%></td>
+            <td class="ng-scope"><%=closedTickets[i].discord_name%></td>
+            <td class="ng-scope"><%=closedTickets[i].status%></td>
+            <td class="ng-scope"><%=closedTickets[i].closed_on%></td>
+            <td class="ng-scope"><a href="/details/<%=closedTickets[i].id%>">View ticket</a></td>
           </tr>
         <% } %>
       </tbody>

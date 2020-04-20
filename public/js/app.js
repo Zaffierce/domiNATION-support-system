@@ -217,18 +217,66 @@ $(() => {
     $('#serverListing').attr("hidden", "hidden");
   });
 
-  $('#searchName').on('keyup', function(event) {
-    event.preventDefault();
+  $('.search').on('keyup', delay(function() {
+    let queryOpt = $(this)[0].id;
     let searchQuery = $(this).val().toLowerCase();
-    // fetchSearchResults()
-    $('.tickets').remove();
-    fetchSearchResults(searchQuery);
-    // test.forEach(result => {
-    //   console.log(result);
-    // })
-    // console.log(test);
-  });
-  
+    let html = '<tr> <th class="ng-scope">Date Submitted</th> <th class="ng-scope">Ticket Type</th> <th class="ng-scope">User</th> <th class="ng-scope">Discord ID</th> <th class="ng-scope">Status</th> <th class="ng-scope">Date Completed</th> <th class="ng-scope">ID</th> </tr>'
+    $.ajax({
+      url: `http://localhost:3001/search`,
+      method: 'GET',
+      data: { data : searchQuery,
+              type : queryOpt },
+      success: function(data) {
+        $('.tickets-table').empty();
+        $('.tickets-table').append(html);
+        if (data.length === 0) {
+          $('.tickets-table').append('<tr class="ng-scope tickets"><td class="ng-scope">No data found</td></tr>');
+        } else {
+        for (let i = 0; i < data.length; i++) {
+          let submitted = `<tr class="ng-scope tickets"> <td class="ng-scope">${data[i].submitted_on}</td>`;
+          let type = `<td class="ng-scope">${data[i].type_of_ticket}</td>`;
+          let ign = `<td class="ng-scope">${data[i].ign}</td>`;
+          let discord = `<td class="ng-scope">${data[i].discord_name}</td>`;
+          let status = `<td class="ng-scope">${data[i].status}</td>`;
+          let closed = `<td class="ng-scope">${data[i].closed_on}</td>`;
+          let id = `<td class="ng-scope"><a href="/details/${data[i].id}">View ticket</a></td></tr>`;
+          $('.tickets-table').append(submitted+type+ign+discord+status+closed+id);
+        }
+      }
+    }
+    });
+  }, 500));
+
+  $('.search_date').on('change', delay(function() {
+    let queryOpt = $(this)[0].id;
+    let searchQuery = $(this).val().toLowerCase();
+    let html = '<tr> <th class="ng-scope">Date Submitted</th> <th class="ng-scope">Ticket Type</th> <th class="ng-scope">User</th> <th class="ng-scope">Discord ID</th> <th class="ng-scope">Status</th> <th class="ng-scope">Date Completed</th> <th class="ng-scope">ID</th> </tr>'
+    $.ajax({
+      url: `http://localhost:3001/search`,
+      method: 'GET',
+      data: { data : searchQuery,
+              type : queryOpt },
+      success: function(data) {
+        $('.tickets-table').empty();
+        $('.tickets-table').append(html);
+        if (data.length === 0) {
+          $('.tickets-table').append('<tr class="ng-scope tickets"><td class="ng-scope">No data found</td></tr>');
+        } else {
+        for (let i = 0; i < data.length; i++) {
+          let submitted = `<tr class="ng-scope tickets"> <td class="ng-scope">${data[i].submitted_on}</td>`;
+          let type = `<td class="ng-scope">${data[i].type_of_ticket}</td>`;
+          let ign = `<td class="ng-scope">${data[i].ign}</td>`;
+          let discord = `<td class="ng-scope">${data[i].discord_name}</td>`;
+          let status = `<td class="ng-scope">${data[i].status}</td>`;
+          let closed = `<td class="ng-scope">${data[i].closed_on}</td>`;
+          let id = `<td class="ng-scope"><a href="/details/${data[i].id}">View ticket</a></td></tr>`;
+          $('.tickets-table').append(submitted+type+ign+discord+status+closed+id);
+        }
+      }
+    }
+    });
+  }, 500));
+
 });
 
 function confirmSave() {
@@ -255,27 +303,13 @@ function confirmDeletion() {
   }
 }
 
-async function fetchSearchResults(searchQuery) {
-  $.ajax({
-    url: `http://localhost:3001/search`,
-    method: 'GET',
-    data: { data : searchQuery }
-  }).then(response => {
-    console.log(response)
-    for (let i = 0; i < response.length; i++) {
-      $('.tickets-table').append('<td class="ng-scope tickets">');
-      for (let j = 0; j < response[j].length; j++) {
-        console.log(j);
-      }
-
-      // $('.tickets').text(response[i].id);
-    }
-    // console.log(response.length);
-    // response.forEach((element) => {
-    //   $('.tickets').append('<td class="ng-scope">Banana');
-    //   // $('.tickets').createElement('td');
-    //   // console.log(element);
-    // })
-    console.log(response.length);
-  });
+function delay(callback, ms) {
+  let timer = 0;
+  return function() {
+    let context = this, args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(function() {
+      callback.apply(context, args);
+    }, ms || 0);
+  };
 }

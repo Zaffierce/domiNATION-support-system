@@ -127,17 +127,14 @@ app.get('/all', catchAsync(async(req, res) => {
     const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
     if (validateUser.isAdmin === true) {
 
-      let allTickets = [];
-      const status = ['NEW', 'OPEN', 'COMPLETE', 'CANCELLED'];
+      let openTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'NEW' OR status = 'OPEN') ORDER BY submitted_on DESC;");
+      let closedTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY closed_on DESC LIMIT 20;");
 
-      for (const i in status) {
-        let ticket = await queryDatabaseByStatus(status[i]);
-        ticket.forEach(ticket => allTickets.push(ticket));
-      }
-        res.render('./pages/admin/adminPage', {
-          user : validateUser,
-          tickets : allTickets
-        });
+      res.render('./pages/admin/adminPage', {
+        user : validateUser,
+        openTickets : openTickets,
+        closedTickets : closedTickets
+      });
     } else {
       res.redirect('/');
     }
@@ -436,13 +433,7 @@ app.get('/status', catchAsync(async(req, res) => {
     res.redirect('/login');
   } else {
     const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
-    let myTickets = [];
-    const status = ['NEW', 'OPEN', 'COMPLETE', 'CANCELLED'];
-
-    for (const i in status) {
-      let ticket = await queryDatabaseByStatusAndUserID(status[i], validateUser.id);
-      ticket.forEach(ticket => myTickets.push(ticket));
-    }
+    let myTickets = await queryDatabaseCustom(`SELECT * FROM tickets WHERE discord_id = '${validateUser.id}' ORDER BY submitted_on DESC;`);
     res.render('./pages/public/status', {
       user : validateUser,
       myTickets      
@@ -453,6 +444,7 @@ app.get('/status', catchAsync(async(req, res) => {
 app.post('/remove', catchAsync(async(req, res) => {
   let option = req.body;
   let sqlQuery;
+  //TODO:  Change to switch
   if (option.server_id) {
     sqlQuery = `DELETE FROM servers WHERE server_id = '${option.server_id}';`;
   }
@@ -469,6 +461,7 @@ app.post('/edit', catchAsync(async(req, res) => {
   let option = req.body;
   let sqlQuery;
   let sqlValues = [];
+  //TODO:  Change to switch
   if (option.server_id) {
     sqlQuery = 'UPDATE servers SET server_id=$1, server_name=$2 where id=$3;';
     sqlValues = [req.body.server_id, req.body.server_name, req.body.id];
@@ -488,6 +481,7 @@ app.post('/add', catchAsync(async(req, res) => {
   let option = req.body;
   let sqlQuery;
   let sqlValues = [];
+  //TODO:  Change to switch
   if (option.server_id) {
     sqlQuery = 'INSERT INTO servers (server_id, server_name) values ($1, $2);';
     sqlValues = [req.body.server_id, req.body.server_name];
@@ -505,8 +499,32 @@ app.post('/add', catchAsync(async(req, res) => {
 }));
 
 app.get('/search', catchAsync(async(req, res) => {
-  console.log("Hit the url", req.query.data);
-  const tickets = await queryDatabaseSearchStatus(req.query.data);
+  let tickets;
+  if (!req.query.data) {
+    tickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY closed_on DESC LIMIT 20;");
+  } else {
+    switch(req.query.type) {
+      case 'discordID':
+        tickets = await queryDatabaseSearchStatusByDiscordName(req.query.data);
+        break;
+      
+      case 'ign':
+        tickets = await queryDatabaseCustom(`SELECT * FROM tickets WHERE lower(ign) LIKE '%${req.query.data}%' AND (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY closed_on DESC;`);
+        break;
+
+      case 'closed_on_or_before':
+        tickets = await queryDatabaseCustom(`SELECT * FROM tickets WHERE closed_on::date <= '${req.query.data}' ORDER BY closed_on DESC;`);
+        break;
+        
+      case 'closed_on_or_after':
+        tickets = await queryDatabaseCustom(`SELECT * FROM tickets WHERE closed_on::date >= '${req.query.data}' ORDER BY closed_on DESC;`);
+        break;
+
+      case 'closed_by':
+        tickets = await queryDatabaseCustom(`SELECT * from tickets WHERE lower(closed_by) LIKE '%${req.query.data}%' AND (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY closed_on DESC;`);
+        break;
+    }
+  }
   res.send(tickets);
 }));
 
@@ -524,12 +542,16 @@ async function queryDinosaurColors() {
   return client.query('SELECT * FROM dinocolors ORDER BY id ASC');
 };
 
+async function queryDatabaseCustom(query) {
+  return client.query(query).then(sqlRes => sqlRes.rows.map(ticket => { return new Ticket(ticket)}));
+}
+
 async function queryDatabaseByStatus(status) {
   return client.query(`SELECT * FROM tickets WHERE status = '${status}' ORDER BY submitted_on DESC;`).then(sqlRes => sqlRes.rows.map(ticket => { return new Ticket(ticket)}));
 };
 
-async function queryDatabaseSearchStatus(name) {
-  return client.query(`SELECT * FROM tickets WHERE lower(discord_name) LIKE '%${name}%';`).then(sqlRes => sqlRes.rows.map(ticket => { return new Ticket(ticket)}));
+async function queryDatabaseSearchStatusByDiscordName(name) {
+  return client.query(`SELECT * FROM tickets WHERE lower(discord_name) LIKE '%${name}%' and (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY closed_on DESC;`).then(sqlRes => sqlRes.rows.map(ticket => { return new Ticket(ticket)}));
 };
 
 async function queryDatabaseByStatusAndUserID(status, userID) {
@@ -646,14 +668,13 @@ function Ticket(ticket) {
   this.id = ticket.id;
   this.status = ticket.status;
   this.ign = ticket.ign;
+  this.discord_name = ticket.discord_name;
   this.type_of_ticket = ticket.type_of_ticket;
   this.submitted_on = ticket.submitted_on;
   this.closed_on = ticket.closed_on ? ticket.closed_on : '-';
 };
 
 client.connect((err) => {
-  if (err) {console.log(err) 
-  } else {
-    app.listen(PORT, () => console.log(`Server is live on port ${PORT}`));
-  }
+  if (err) console.log(err) 
+  else app.listen(PORT, () => console.log(`Server is live on port ${PORT}`));
 });
