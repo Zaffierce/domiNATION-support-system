@@ -151,10 +151,10 @@ $(() => {
     $(this).parent().attr("hidden", "hidden");
   });
 
-  $('.edit-server').on('click', function(event) {
-    event.preventDefault();
-    $(this).parent().parent().find('.edit-server-form').removeAttr("hidden");
-    $(this).parent().attr("hidden", "hidden");
+  $('.edit-server').on('click', function() {
+    $('#editServerModal-server_id').val($(this).data("serverid"));
+    $('#editServerModal-id').val($(this).data("id"));
+    $('#editServerModal-server_name').val($(this).data("servername"));
   });
 
   $('.edit-dinosaur').on('click', function(event) {
@@ -199,22 +199,31 @@ $(() => {
     $(this).parent().attr("hidden", "hidden");
   });
 
-  $('#serverList').on('click', () => {
+  $('#serverTab').on('click', () => {
     $('#dinosaurListing').attr("hidden", "hidden");
     $('#dinosaurColorListing').attr("hidden", "hidden");
     $('#serverListing').removeAttr("hidden");
+    $('#serverTab').addClass("active");
+    $('#dinoTab').removeClass("active");
+    $('#dinoColorTab').removeClass("active");
   });
 
-  $('#dinosaurList').on('click', () => {
+  $('#dinoTab').on('click', () => {
     $('#dinosaurListing').removeAttr("hidden");
     $('#dinosaurColorListing').attr("hidden", "hidden");
     $('#serverListing').attr("hidden", "hidden");
+    $('#dinoTab').addClass("active");
+    $('#serverTab').removeClass("active");
+    $('#dinoColorTab').removeClass("active");
   });
 
-  $('#dinosaurColors').on('click', () => {
+  $('#dinoColorTab').on('click', () => {
     $('#dinosaurListing').attr("hidden", "hidden");
     $('#dinosaurColorListing').removeAttr("hidden");
     $('#serverListing').attr("hidden", "hidden");
+    $('#dinoColorTab').addClass("active");
+    $('#dinoTab').removeClass("active");
+    $('#serverTab').removeClass("active");
   });
 
   $('.search').on('keyup', delay(function() {
