@@ -1,9 +1,11 @@
 'use strict';
 
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const superagent = require('superagent');
 const pg = require('pg');
 const app = express();
+app.use(cookieParser());
 const methodOverride = require('method-override');
 const fetch = require('node-fetch');
 const btoa = require('btoa');
@@ -28,7 +30,6 @@ const CALLBACK = process.env.CALLBACK_URL;
 
 const redirect = encodeURIComponent(`${CALLBACK}`);
 
-const cookieParser = require('cookie-parser');
 
 app.set('view engine', 'ejs');
 
@@ -37,34 +38,39 @@ const client = new pg.Client(process.env.DATABASE_URL);
 app.use(express.urlencoded({extended: true}));
 app.use(express.static('./public'));
 
-app.use(cookieParser());
+app.get('/', (req, res) => {
+  //   res.cookie('Domi-Support-Token', json.access_token, {maxAge: cookieExpirationInMS, httpOnly: false});
+  console.log(req.cookies['domination-test-id']);
+  res.send(200);
+});
 
-app.use(methodOverride((request, response) => {
-  if (request.body && typeof request.body === 'object' && '_method' in request.body) {
-    let method = request.body._method;
-    delete request.body._method;
-    return method;
-  }
-}));
 
-app.get('/', catchAsync(async(req, res) => {
-  if (req.cookies['Domi-Support-Token'] == null) {
-    res.redirect('/login');
-  } else {
-    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
-    if (validateUser.status === 404) {
-      res.render('./pages/user_not_found', {
-        user : validateUser
-      });
-    } else {
-      //TODO:  Make status the home page, and clean the routes up.
-      res.redirect('/status');
-    }
-  }
-}));
+app.get('/cookie', (req, res) => {
+  res.cookie('domination-test-id', '1234', {maxAge: 60000, httpOnly: false});
+  res.redirect('/');
+})
+
+// app.get('/', catchAsync(async(req, res) => {
+//   // if (req.cookies['domination-gaming.com'] == null) {
+//   //   res.redirect('/login');
+//   // } else {
+//     console.log(req.cookies);
+//     console.log('domination-session-id', req.cookies);
+//     console.log(req.cookies['domination-session-id']);
+//     // const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
+//     // if (validateUser.status === 404) {
+//     //   res.render('./pages/user_not_found', {
+//     //     user : validateUser
+//     //   });
+//     // } else {
+//     //   //TODO:  Make status the home page, and clean the routes up.
+//     //   res.redirect('/status');
+//     // }
+//   // }
+// }));
 
 app.get('/submitted', catchAsync(async(req, res) => {
-  if (req.cookies['Domi-Support-Token'] == null) {
+  if (req.cookies['domination-session-id'] == null) {
     res.redirect('/login');
   } else {
     const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
@@ -73,52 +79,53 @@ app.get('/submitted', catchAsync(async(req, res) => {
 }));
 
 app.get('/login', (req, res) => {
-  res.redirect(`https://discordapp.com/api/oauth2/authorize?client_id=${CLIENT_ID}&scope=identify&response_type=code&redirect_uri=${redirect}`);
+  // res.redirect(`https://auth.domination-gaming.com/oauth/discord?redirect_uri=http://localhost:3001`);
+  res.redirect(`https://auth.domination-gaming.com/oauth/discord?redirect_uri=https://support.domination-gaming.com/`);
 });
 
 app.get('/logout', (req, res) => {
-  res.clearCookie('Domi-Support-Token');
-  res.redirect('/');
+  res.clearCookie('domination-session-id');
+  res.redirect('https://domination-gaming.com/');
 });
 
-app.get('/api/discord/callback', catchAsync(async (req, res) => {
-  if (!req.query.code) throw new Error('NoCodeProvided');
+// app.get('/api/discord/callback', catchAsync(async (req, res) => {
+//   if (!req.query.code) throw new Error('NoCodeProvided');
 
-  const code = req.query.code;
-  const creds = btoa(`${CLIENT_ID}:${CLIENT_SECRET}`);
-  const response = await fetch(`https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${redirect}`,
-  {
-    method: 'POST',
-    headers: {
-      Authorization: `Basic ${creds}`,
-    },
-  });
-  const json = await response.json();
-  const cookieExpirationInMS = 604800000; // 7 days, since that's when the Discord Token expires
-  res.cookie('Domi-Support-Token', json.access_token, {maxAge: cookieExpirationInMS, httpOnly: false});
-  res.redirect('/');
-}));
+//   const code = req.query.code;
+//   const creds = btoa(`${CLIENT_ID}:${CLIENT_SECRET}`);
+//   const response = await fetch(`https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${redirect}`,
+//   {
+//     method: 'POST',
+//     headers: {
+//       Authorization: `Basic ${creds}`,
+//     },
+//   });
+//   const json = await response.json();
+//   const cookieExpirationInMS = 604800000; // 7 days, since that's when the Discord Token expires
+//   res.cookie('Domi-Support-Token', json.access_token, {maxAge: cookieExpirationInMS, httpOnly: false});
+//   res.redirect('/');
+// }));
 
-app.use('/api/discord', router);
-app.use((err, req, res, next) => {
-  switch (err.message) {
-    case 'NoCodeProvided':
-      return res.status(400).send({
-        status: 'PLEASE LOG IN',
-        error: err.message,
-      });
-    case 'InvalidCode':
-      return res.status(401).send({
-        status: 'REVOKED TOKEN',
-        error: err.message,
-      });  
-    default:
-      return res.status(500).send({
-        status: 'ERROR',
-        error: err.message,
-      });
-  }
-});
+// app.use('/api/discord', router);
+// app.use((err, req, res, next) => {
+//   switch (err.message) {
+//     case 'NoCodeProvided':
+//       return res.status(400).send({
+//         status: 'PLEASE LOG IN',
+//         error: err.message,
+//       });
+//     case 'InvalidCode':
+//       return res.status(401).send({
+//         status: 'REVOKED TOKEN',
+//         error: err.message,
+//       });  
+//     default:
+//       return res.status(500).send({
+//         status: 'ERROR',
+//         error: err.message,
+//       });
+//   }
+// });
 
 app.get('/all', catchAsync(async(req, res) => {
   if (req.cookies['Domi-Support-Token'] == null) {
