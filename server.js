@@ -10,6 +10,7 @@ const Discord  = require('discord.js');
 const { catchAsync } = require('./util/utils');
 require('dotenv').config();
 
+const DISCORD_STUDENT_ADMIN_GROUP_ID = process.env.DISCORD_STUDENT_ADMIN_GROUP_ID;
 const DISCORD_ADMIN_GROUP_ID = process.env.DISCORD_ADMIN_GROUP_ID;
 const DISCORD_PATREON_SUPPORTER = process.env.DISCORD_PATREON_SUPPORTER;
 const DISCORD_PATREON_SUPPORTERPLUS = process.env.DISCORD_PATREON_SUPPORTERPLUS;
@@ -63,7 +64,7 @@ app.get('/all', catchAsync(async(req, res) => {
     res.redirect('/login');
   } else {
     const validateUser = await authenticateUser(req.cookies[TOKEN]);
-    if (validateUser.isAdmin === true) {
+    if (validateUser.isAdmin === true || validateUser.isStudent) {
 
       let openTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'NEW' OR status = 'OPEN') ORDER BY submitted_on DESC;");
       let closedTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY closed_on DESC LIMIT 20;");
@@ -539,6 +540,7 @@ async function sendNotification(ticketID) {
 
 async function authenticateUser(token) {
   let result = {
+    isStudent: false,
     isAdmin: false,
     isPatreon: false,
     username: null,
@@ -551,6 +553,7 @@ async function authenticateUser(token) {
 
   if (user.roles == null) {
     return result = {
+      isStudent: false,
       isAdmin: false,
       isPatreon: false,
       username: user.user.username,
@@ -568,8 +571,12 @@ async function authenticateUser(token) {
             role === DISCORD_PATREON_SUPPORTERPLUSPLUS || role === DISCORD_PATREON_DOMINATOR) {
           result.isPatreon = true;
         }
+        if (role === DISCORD_STUDENT_ADMIN_GROUP_ID) {
+          result.isStudent = true;
+        }
         });
         return result = {
+          isStudent: result.isStudent,
           isAdmin: result.isAdmin,
           isPatreon: result.isPatreon,
           username: user.user.username,
