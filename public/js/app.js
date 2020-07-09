@@ -79,6 +79,7 @@ $(() => {
     }
   });
 
+
   $(function () {
     $('[data-toggle="popover"]').popover()
   });
@@ -111,7 +112,6 @@ $(() => {
     $('#editDinosaurColorModal-color_hex').val($(this).data("dinocolorhex"));
     $('#editDinosaurColorModal-remove_id').val($(this).data("colorid"));
   })
-
 
   $('#serverTab').on('click', () => {
     $('#dinosaurListing').attr("hidden", "hidden");
