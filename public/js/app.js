@@ -24,14 +24,12 @@ $(() => {
 
   $('.notes-cancel').on('click', function(event) {
     event.preventDefault();
-    console.log("Clicked")
     $(this).parent().parent().parent().parent().parent().parent().find('.notes-desc').removeAttr("hidden");
     $(this).parent().parent().parent().parent().parent().parent().find('.notes-desc-form').attr("hidden", "hidden");
     $(this).parent().parent().parent().parent().parent().parent().find('.notes-edit-delete-buttons').removeAttr("hidden");
   });
 
   $('.notes-delete').on('click', function(event) {
-    event.preventDefault();
     let id = $(this).attr('data-note_id');
     let url = $('#notes-delete-form').attr("action");
     $('#notes-delete-form').attr("action", url+id);
@@ -39,7 +37,6 @@ $(() => {
   });
 
   $('.notes-save').on('click', function(event) {
-    console.log("clicked")
     $(this).parent().parent().parent().parent().parent().find('.notes-edit-form').submit();
   });
 
@@ -66,7 +63,6 @@ $(() => {
   });
 
   $('#dino_color').change(function(event) {
-    console.log("Changed")
     if ($(this).val() === 'Yes') {
       $('.regions').removeAttr("hidden");
     } else if ($(this).val() === 'No') {
@@ -74,7 +70,7 @@ $(() => {
     }
   });
 
-  $('.dinoColorPicker').change(function(event) {
+  $('.dinoColorPicker').change(function() {
     if ($(this).val() === 'na') {
     $(this).parent().find('.dinoColorBox').attr("hidden", "hidden");  
     } else {
@@ -82,6 +78,7 @@ $(() => {
       $(this).parent().find('.dinoColorBox').css("background-color", '#'+$(this).children('option:selected').attr("id"));
     }
   });
+
 
   $(function () {
     $('[data-toggle="popover"]').popover()
@@ -91,191 +88,117 @@ $(() => {
     trigger: 'focus'
   });
 
-  $('.delete-server').on('click', () => {
+  $('.delete').on('click', () => {
     return confirmDeletion();
   });
 
-  $('.delete-dinosaur').on('click', () => {
-    return confirmDeletion();
+  $('.edit-server').on('click', function() {
+    $('#editServerModal-server_id').val($(this).data("serverid"));
+    $('#editServerModal-id').val($(this).data("id"));
+    $('#editServerModal-server_name').val($(this).data("servername"));
+    $('#editServerModal-remove_server_id').val($(this).data("serverid"));
   });
 
-  $('.delete-dinosaur-color').on('click', () => {
-    return confirmDeletion();
+  $('.edit-dinosaur').on('click', function() {
+    $('#editDinosaurModal-dino_name').val($(this).data("dinoname"));
+    $('#editDinosaurModal-dino_id').val($(this).data("dinoid"));
+    $('#editDinosaurModal-remove_dino_id').val($(this).data("dinoid"));
   });
 
-  $('.confirm-add-server').on('click', () => {
-    return confirmAdd();
-  });
+  $('.edit-dinosaur-color').on('click', function() {
+    $('#editDinosaurColorModal-actual_id').val($(this).data("colorid"));
+    $('#editDinosaurColorModal-color_id').val($(this).data("dinocolorid"));
+    $('#editDinosaurColorModal-color_name').val($(this).data("dinocolorname"));
+    $('#editDinosaurColorModal-color_hex').val($(this).data("dinocolorhex"));
+    $('#editDinosaurColorModal-remove_id').val($(this).data("colorid"));
+  })
 
-  $('.confirm-add-dinosaur').on('click', () => {
-    return confirmAdd();
-  });
-
-  $('.confirm-add-dinosaur-color').on('click', () => {
-    return confirmAdd();
-  });
-
-  $('.add-server').on('click', function(event) {
-    event.preventDefault();
-    $(this).parent().parent().find('.add-server-form').removeAttr("hidden");
-    $(this).parent().attr("hidden", "hidden");
-  });
-
-  $('.add-dinosaur').on('click', function(event) {
-    event.preventDefault();
-    $(this).parent().parent().find('.add-dinosaur-form').removeAttr("hidden");
-    $(this).parent().attr("hidden", "hidden");
-  });
-
-  $('.add-dinosaur-color').on('click', function(event) {
-    event.preventDefault();
-    $(this).parent().parent().find('.add-dinosaur-color-form').removeAttr("hidden");
-    $(this).parent().attr("hidden", "hidden");
-  });
-
-  $('.cancel-add-dinosaur-color').on('click', function(event) {
-    event.preventDefault();
-    $(this).parent().parent().find('.add-dinosaur-color-div').removeAttr("hidden");
-    $(this).parent().attr("hidden", "hidden");
-  });
-
-  $('.cancel-add-dinosaur').on('click', function(event) {
-    event.preventDefault();
-    $(this).parent().parent().find('.add-dinosaur-div').removeAttr("hidden");
-    $(this).parent().attr("hidden", "hidden");
-  });
-
-  $('.cancel-add-server').on('click', function(event) {
-    event.preventDefault();
-    $(this).parent().parent().find('.add-server-div').removeAttr("hidden");
-    $(this).parent().attr("hidden", "hidden");
-  });
-
-  $('.edit-server').on('click', function(event) {
-    event.preventDefault();
-    $(this).parent().parent().find('.edit-server-form').removeAttr("hidden");
-    $(this).parent().attr("hidden", "hidden");
-  });
-
-  $('.edit-dinosaur').on('click', function(event) {
-    event.preventDefault();
-    $(this).parent().parent().find('.edit-dinosaur-form').removeAttr("hidden");
-    $(this).parent().attr("hidden", "hidden");
-  });
-
-  $('.edit-dinosaur-color').on('click', function(event) {
-    event.preventDefault();
-    $(this).parent().parent().find('.edit-dinosaur-color-form').removeAttr("hidden");
-    $(this).parent().attr("hidden", "hidden");
-  });
-
-  $('.save-server').on('click', () => {
-    return confirmSave();
-  });
-
-  $('.save-dinosaur').on('click', () => {
-    return confirmSave();
-  });
-
-  $('.save-dinosaur-color').on('click', () => {
-    return confirmSave();
-  });
-
-  $('.cancel-server').on('click', function(event) {
-    event.preventDefault();
-    $(this).parent().parent().find('.delete-server-form').removeAttr("hidden");
-    $(this).parent().attr("hidden", "hidden");
-  });
-
-  $('.cancel-dinosaur').on('click', function(event) {
-    event.preventDefault();
-    $(this).parent().parent().find('.delete-dinosaur-form').removeAttr("hidden");
-    $(this).parent().attr("hidden", "hidden");
-  });
-  
-  $('.cancel-dinosaur-color').on('click', function(event) {
-    event.preventDefault();
-    $(this).parent().parent().find('.delete-dinosaur-color-form').removeAttr("hidden");
-    $(this).parent().attr("hidden", "hidden");
-  });
-
-  $('#serverList').on('click', () => {
+  $('#serverTab').on('click', () => {
     $('#dinosaurListing').attr("hidden", "hidden");
     $('#dinosaurColorListing').attr("hidden", "hidden");
     $('#serverListing').removeAttr("hidden");
+    $('#serverTab').addClass("active");
+    $('#dinoTab').removeClass("active");
+    $('#dinoColorTab').removeClass("active");
   });
 
-  $('#dinosaurList').on('click', () => {
+  $('#dinoTab').on('click', () => {
     $('#dinosaurListing').removeAttr("hidden");
     $('#dinosaurColorListing').attr("hidden", "hidden");
     $('#serverListing').attr("hidden", "hidden");
+    $('#dinoTab').addClass("active");
+    $('#serverTab').removeClass("active");
+    $('#dinoColorTab').removeClass("active");
   });
 
-  $('#dinosaurColors').on('click', () => {
+  $('#dinoColorTab').on('click', () => {
     $('#dinosaurListing').attr("hidden", "hidden");
     $('#dinosaurColorListing').removeAttr("hidden");
     $('#serverListing').attr("hidden", "hidden");
+    $('#dinoColorTab').addClass("active");
+    $('#dinoTab').removeClass("active");
+    $('#serverTab').removeClass("active");
   });
 
-  $('.search').on('keyup', delay(function() {
-    let queryOpt = $(this)[0].id;
-    let searchQuery = $(this).val().toLowerCase();
-    let html = '<tr> <th class="ng-scope">Date Submitted</th> <th class="ng-scope">Ticket Type</th> <th class="ng-scope">User</th> <th class="ng-scope">Discord ID</th> <th class="ng-scope">Status</th> <th class="ng-scope">Date Completed</th> <th class="ng-scope">ID</th> </tr>'
-    $.ajax({
-      url: `https://support.domination-gaming.com/search`,
-      method: 'GET',
-      data: { data : searchQuery,
-              type : queryOpt },
-      success: function(data) {
-        $('.tickets-table').empty();
-        $('.tickets-table').append(html);
-        if (data.length === 0) {
-          $('.tickets-table').append('<tr class="ng-scope tickets"><td class="ng-scope">No data found</td></tr>');
-        } else {
-        for (let i = 0; i < data.length; i++) {
-          let submitted = `<tr class="ng-scope tickets"> <td class="ng-scope">${data[i].submitted_on}</td>`;
-          let type = `<td class="ng-scope">${data[i].type_of_ticket}</td>`;
-          let ign = `<td class="ng-scope">${data[i].ign}</td>`;
-          let discord = `<td class="ng-scope">${data[i].discord_name}</td>`;
-          let status = `<td class="ng-scope">${data[i].status}</td>`;
-          let closed = `<td class="ng-scope">${data[i].closed_on}</td>`;
-          let id = `<td class="ng-scope"><a href="/details/${data[i].id}">View ticket</a></td></tr>`;
-          $('.tickets-table').append(submitted+type+ign+discord+status+closed+id);
-        }
-      }
-    }
-    });
-  }, 500));
+  // $('.search').on('keyup', delay(function() {
+  //   let queryOpt = $(this)[0].id;
+  //   let searchQuery = $(this).val().toLowerCase();
+  //   let html = '<tr> <th class="ng-scope">Date Submitted</th> <th class="ng-scope">Ticket Type</th> <th class="ng-scope">User</th> <th class="ng-scope">Discord ID</th> <th class="ng-scope">Status</th> <th class="ng-scope">Date Completed</th> <th class="ng-scope">ID</th> </tr>'
+  //   $.ajax({
+  //     url: `https://support.domination-gaming.com/search`,
+  //     method: 'GET',
+  //     data: { data : searchQuery,
+  //             type : queryOpt },
+  //     success: function(data) {
+  //       $('.tickets-table').empty();
+  //       $('.tickets-table').append(html);
+  //       if (data.length === 0) {
+  //         $('.tickets-table').append('<tr class="ng-scope tickets"><td class="ng-scope">No data found</td></tr>');
+  //       } else {
+  //       for (let i = 0; i < data.length; i++) {
+  //         let submitted = `<tr class="ng-scope tickets"> <td class="ng-scope">${data[i].submitted_on}</td>`;
+  //         let type = `<td class="ng-scope">${data[i].type_of_ticket}</td>`;
+  //         let ign = `<td class="ng-scope">${data[i].ign}</td>`;
+  //         let discord = `<td class="ng-scope">${data[i].discord_name}</td>`;
+  //         let status = `<td class="ng-scope">${data[i].status}</td>`;
+  //         let closed = `<td class="ng-scope">${data[i].closed_on}</td>`;
+  //         let id = `<td class="ng-scope"><a href="/details/${data[i].id}">View ticket</a></td></tr>`;
+  //         $('.tickets-table').append(submitted+type+ign+discord+status+closed+id);
+  //       }
+  //     }
+  //   }
+  //   });
+  // }, 500));
 
-  $('.search_date').on('change', delay(function() {
-    let queryOpt = $(this)[0].id;
-    let searchQuery = $(this).val().toLowerCase();
-    let html = '<tr> <th class="ng-scope">Date Submitted</th> <th class="ng-scope">Ticket Type</th> <th class="ng-scope">User</th> <th class="ng-scope">Discord ID</th> <th class="ng-scope">Status</th> <th class="ng-scope">Date Completed</th> <th class="ng-scope">ID</th> </tr>'
-    $.ajax({
-      url: `http://localhost:3001/search`,
-      method: 'GET',
-      data: { data : searchQuery,
-              type : queryOpt },
-      success: function(data) {
-        $('.tickets-table').empty();
-        $('.tickets-table').append(html);
-        if (data.length === 0) {
-          $('.tickets-table').append('<tr class="ng-scope tickets"><td class="ng-scope">No data found</td></tr>');
-        } else {
-        for (let i = 0; i < data.length; i++) {
-          let submitted = `<tr class="ng-scope tickets"> <td class="ng-scope">${data[i].submitted_on}</td>`;
-          let type = `<td class="ng-scope">${data[i].type_of_ticket}</td>`;
-          let ign = `<td class="ng-scope">${data[i].ign}</td>`;
-          let discord = `<td class="ng-scope">${data[i].discord_name}</td>`;
-          let status = `<td class="ng-scope">${data[i].status}</td>`;
-          let closed = `<td class="ng-scope">${data[i].closed_on}</td>`;
-          let id = `<td class="ng-scope"><a href="/details/${data[i].id}">View ticket</a></td></tr>`;
-          $('.tickets-table').append(submitted+type+ign+discord+status+closed+id);
-        }
-      }
-    }
-    });
-  }, 500));
+  // $('.search_date').on('change', delay(function() {
+  //   let queryOpt = $(this)[0].id;
+  //   let searchQuery = $(this).val().toLowerCase();
+  //   let html = '<tr> <th class="ng-scope">Date Submitted</th> <th class="ng-scope">Ticket Type</th> <th class="ng-scope">User</th> <th class="ng-scope">Discord ID</th> <th class="ng-scope">Status</th> <th class="ng-scope">Date Completed</th> <th class="ng-scope">ID</th> </tr>'
+  //   $.ajax({
+  //     url: `http://localhost:3001/search`,
+  //     method: 'GET',
+  //     data: { data : searchQuery,
+  //             type : queryOpt },
+  //     success: function(data) {
+  //       $('.tickets-table').empty();
+  //       $('.tickets-table').append(html);
+  //       if (data.length === 0) {
+  //         $('.tickets-table').append('<tr class="ng-scope tickets"><td class="ng-scope">No data found</td></tr>');
+  //       } else {
+  //       for (let i = 0; i < data.length; i++) {
+  //         let submitted = `<tr class="ng-scope tickets"> <td class="ng-scope">${data[i].submitted_on}</td>`;
+  //         let type = `<td class="ng-scope">${data[i].type_of_ticket}</td>`;
+  //         let ign = `<td class="ng-scope">${data[i].ign}</td>`;
+  //         let discord = `<td class="ng-scope">${data[i].discord_name}</td>`;
+  //         let status = `<td class="ng-scope">${data[i].status}</td>`;
+  //         let closed = `<td class="ng-scope">${data[i].closed_on}</td>`;
+  //         let id = `<td class="ng-scope"><a href="/details/${data[i].id}">View ticket</a></td></tr>`;
+  //         $('.tickets-table').append(submitted+type+ign+discord+status+closed+id);
+  //       }
+  //     }
+  //   }
+  //   });
+  // }, 500));
 
 });
 
@@ -303,13 +226,14 @@ function confirmDeletion() {
   }
 }
 
-function delay(callback, ms) {
-  let timer = 0;
-  return function() {
-    let context = this, args = arguments;
-    clearTimeout(timer);
-    timer = setTimeout(function() {
-      callback.apply(context, args);
-    }, ms || 0);
-  };
-}
+// function delay(callback, ms) {
+//   let timer = 0;
+//   return function() {
+//     let context = this, args = arguments;
+//     clearTimeout(timer);
+//     timer = setTimeout(function() {
+//       callback.apply(context, args);
+//     }, ms || 0);
+//   };
+// }
+

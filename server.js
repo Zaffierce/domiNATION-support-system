@@ -31,7 +31,7 @@ app.get('/', catchAsync(async(req, res) => {
     res.redirect('/login');
   } else {
     const validateUser = await authenticateUser(req.cookies[TOKEN]);
-    if (validateUser.status === 404) {
+    if (validateUser.isFound === false) {
       res.render('./pages/user_not_found', {
         user: validateUser
       });
@@ -55,7 +55,7 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-  res.clearCookie(TOKEN);
+  res.clearCookie(TOKEN, {domain: '.domination-gaming.com', path: '/'});
   res.redirect('https://domination-gaming.com/');
 });
 
@@ -67,8 +67,9 @@ app.get('/all', catchAsync(async(req, res) => {
     if (validateUser.isAdmin === true || validateUser.isStudent) {
 
       let openTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'NEW' OR status = 'OPEN') ORDER BY submitted_on DESC;");
-      let closedTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY closed_on DESC LIMIT 20;");
+      let closedTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY closed_on DESC;");
 
+      console.log(openTickets);
       res.render('./pages/admin/adminPage', {
         user : validateUser,
         openTickets : openTickets,
@@ -372,6 +373,7 @@ app.get('/status', catchAsync(async(req, res) => {
     res.redirect('/login');
   } else {
     const validateUser = await authenticateUser(req.cookies[TOKEN]);
+    console.log(validateUser.id)
     let myTickets = await queryDatabaseCustom(`SELECT * FROM tickets WHERE discord_id = '${validateUser.id}' ORDER BY submitted_on DESC;`);
     res.render('./pages/public/status', {
       user : validateUser,
@@ -382,6 +384,7 @@ app.get('/status', catchAsync(async(req, res) => {
 
 app.post('/remove', catchAsync(async(req, res) => {
   let option = req.body;
+  console.log("option", option);
   let sqlQuery;
   //TODO:  Change to switch
   if (option.server_id) {
@@ -390,14 +393,15 @@ app.post('/remove', catchAsync(async(req, res) => {
   if (option.dino_id) {
     sqlQuery = `DELETE FROM dinosaurs WHERE id = '${option.dino_id}';`;
   }
-  if (option.color_id) {
-    sqlQuery = `DELETE FROM dinocolors WHERE id = '${option.color_id}';`;
+  if (option.dino_color_id) {
+    sqlQuery = `DELETE FROM dinocolors WHERE id = '${option.dino_color_id}';`;
   }
   client.query(sqlQuery).then(res.redirect('/admin'));
 }));
 
 app.post('/edit', catchAsync(async(req, res) => {
   let option = req.body;
+  console.log("option", option);
   let sqlQuery;
   let sqlValues = [];
   //TODO:  Change to switch
@@ -418,6 +422,7 @@ app.post('/edit', catchAsync(async(req, res) => {
 
 app.post('/add', catchAsync(async(req, res) => {
   let option = req.body;
+  console.log("option", option);
   let sqlQuery;
   let sqlValues = [];
   //TODO:  Change to switch
@@ -478,7 +483,7 @@ async function queryDinosaurList() {
 };
 
 async function queryDinosaurColors() {
-  return client.query('SELECT * FROM dinocolors ORDER BY id ASC');
+  return client.query('SELECT * FROM dinocolors ORDER BY color_id ASC');
 };
 
 async function queryDatabaseCustom(query) {
@@ -546,10 +551,23 @@ async function authenticateUser(token) {
     username: null,
     discriminator: null,
     id: null,
-    picture: null
+    picture: null,
+    isFound: false
   }
   let userSession = await superagent.get('https://auth.domination-gaming.com/user').set('X-Auth-Token', token);
   let user = userSession.body.discordGuildMember;
+  if (user === null) {
+    return result = {
+    isStudent: false,
+    isAdmin: false,
+    isPatreon: false,
+    username: null,
+    discriminator: null,
+    id: null,
+    picture: null,
+    isFound: false
+    }
+  }
 
   if (user.roles == null) {
     return result = {
@@ -608,6 +626,7 @@ function Ticket(ticket) {
   this.type_of_ticket = ticket.type_of_ticket;
   this.submitted_on = ticket.submitted_on;
   this.closed_on = ticket.closed_on ? ticket.closed_on : '-';
+  this.server_assistance = ticket.server_assistance ? ticket.server_assistance.split('#').splice(1) : '-';
 };
 
 client.connect((err) => {
