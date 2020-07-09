@@ -69,7 +69,6 @@ app.get('/all', catchAsync(async(req, res) => {
       let openTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'NEW' OR status = 'OPEN') ORDER BY submitted_on DESC;");
       let closedTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY closed_on DESC;");
 
-      console.log(openTickets);
       res.render('./pages/admin/adminPage', {
         user : validateUser,
         openTickets : openTickets,
@@ -373,7 +372,6 @@ app.get('/status', catchAsync(async(req, res) => {
     res.redirect('/login');
   } else {
     const validateUser = await authenticateUser(req.cookies[TOKEN]);
-    console.log(validateUser.id)
     let myTickets = await queryDatabaseCustom(`SELECT * FROM tickets WHERE discord_id = '${validateUser.id}' ORDER BY submitted_on DESC;`);
     res.render('./pages/public/status', {
       user : validateUser,
@@ -384,7 +382,6 @@ app.get('/status', catchAsync(async(req, res) => {
 
 app.post('/remove', catchAsync(async(req, res) => {
   let option = req.body;
-  console.log("option", option);
   let sqlQuery;
   //TODO:  Change to switch
   if (option.server_id) {
@@ -401,7 +398,6 @@ app.post('/remove', catchAsync(async(req, res) => {
 
 app.post('/edit', catchAsync(async(req, res) => {
   let option = req.body;
-  console.log("option", option);
   let sqlQuery;
   let sqlValues = [];
   //TODO:  Change to switch
@@ -422,7 +418,6 @@ app.post('/edit', catchAsync(async(req, res) => {
 
 app.post('/add', catchAsync(async(req, res) => {
   let option = req.body;
-  console.log("option", option);
   let sqlQuery;
   let sqlValues = [];
   //TODO:  Change to switch
