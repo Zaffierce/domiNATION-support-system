@@ -29,10 +29,15 @@
         <div class="col-sm-9 admincontainer">
           <div id="serverListing">
             <!--Server Listing-->
-            <div class="add-server-div">
-              <button class="fas fa-plus add-server"></button>
-              Add a server
-            </div> <!--Add form modal-->
+            <div class="pb-1">
+              <a class="add-server fas fa-plus"
+                href="#"
+                tabindex="-1"
+                role="button"
+                data-toggle="modal"
+                data-target="#addServerModal"> Add a new server
+              </a>
+            </div>
             <% for (let i = 0; i < servers.length; i++) { %>
               <div class="pb-1">
                 <a class="edit-server fas fa-edit" 
@@ -42,7 +47,7 @@
                   data-toggle="modal" 
                   data-target="#editServerModal" 
                   data-serverid="<%=servers[i].server_id%>"
-                  data-id="<%=servers[i].server_id%>"
+                  data-id="<%=servers[i].id%>"
                   data-servername="<%=servers[i].server_name%>">
                 </a>
                 DomiNATION #<%=servers[i].server_id%> - <%=servers[i].server_name%>
@@ -51,118 +56,280 @@
           </div>
           <div id="dinosaurListing" hidden>
             <!--Dinosaur Listing-->
-            <div class="add-dinosaur-div">
-              <button class="fas fa-plus add-dinosaur"></button>
-              Add a new dinosaur
-            </div>
-            <form action="/add" method="POST" class="add-dinosaur-form" hidden>
-              <button class="fas fa-save confirm-add-dinosaur"></button>
-              <button class="fas fa-ban cancel-add-dinosaur"></button>
-              <label for="dino_name">Dino Name:</label>
-              <input name="dino_name" type="text"/>
-            </form>
-            <% for (let i = 0; i < dino_names.length; i++) { %>
             <div class="pb-1">
-              <form action="/edit" method="POST" class="edit-dinosaur-form" hidden>
-                <button class="fas fa-save save-dinosaur"></button>
-                <button class="fas fa-ban cancel-dinosaur"></button>
-                <label for="dino_name">Dino Name:</label>
-                <input name="dino_id" type="hidden" value="<%=dino_names[i].id%>" />
-                <input name="dino_name" type="text" value="<%=dino_names[i].name%>" />
-              </form>
-              <form action="/remove" method="POST" class="delete-dinosaur-form">
-                <input name="dino_id" type="hidden" value="<%=dino_names[i].id%>" />
-                <button class="fas fa-edit edit-dinosaur"></button>
-                <button class="fas fa-trash delete-dinosaur"></button>
-                <%= dino_names[i].name %>
-              </form>
+              <a class="add-dinosaur fas fa-plus"
+                href="#"
+                tabindex="-1"
+                role="button"
+                data-toggle="modal"
+                data-target="#addDinosaurModal"> Add a new dinosaur
+              </a>
             </div>
-            <% } %>
+            <% for (let i = 0; i < dino_names.length; i++) { %>
+              <div class="pb-1">
+                <a class="edit-dinosaur fas fa-edit"
+                href="#"
+                tabindex="-1"
+                role="button"
+                data-toggle="modal"
+                data-target="#editDinosaurModal"
+                data-dinoid="<%=dino_names[i].id%>"
+                data-dinoname="<%=dino_names[i].name%>">
+              </a>
+              <%=dino_names[i].name%>
+            </div>
+              <% } %>
           </div>
           <div id="dinosaurColorListing" hidden>
             <!--Dinosaur Colors-->
-            <div class="add-dinosaur-color-div">
-              <button class="fas fa-plus add-dinosaur-color"></button>
-              Add a new dinosaur color
+            <div class="pb-1">
+              <a class="add-dino-color fas fa-plus"
+                href="#"
+                tabindex="-1"
+                role="button"
+                data-toggle="modal"
+                data-target="#addDinosaurColorModal"> Add a new color
+              </a>
             </div>
-            <form action="/add" method="POST" class="add-dinosaur-color-form" hidden>
-              <button class="fas fa-save confirm-add-dinosaur-color"></button>
-              <button class="fas fa-ban cancel-add-dinosaur-color"></button>
-              <label for="dino_color_id">Color #:</label>
-              <input name="dino_color_id" type="number" style="width:3em" />
-              <label for="dino_color_name">Color Name:</label>
-              <input name="dino_color_name" type="text"/>
-              <label for="dino_color_hex">Hex Code:</label>
-              <input name="dino_color_hex" type="text" style="width:3.5em"/>
-            </form>
             <% for (let i = 0; i < dino_colors.length; i++) { %>
               <div class="pb-1">
-                <form action="/edit" method="POST" class="edit-dinosaur-color-form" hidden>
-                  <button class="fas fa-save save-dinosaur-color"></button>
-                  <button class="fas fa-ban cancel-dinosaur-color"></button>
-                  <label for="dino_color_id">Color #:</label>
-                  <input name="dino_color_id" type="number" value="<%=dino_colors[i].color_id%>" style="width:3em" />
-                  <label for="dino_color_name">Color Name:</label>
-                  <input name="dino_color_name" type="text" value="<%=dino_colors[i].color_name%>" />
-                  <label for="dino_color_hex">Hex Code:</label>
-                  <input name="dino_color_hex" type="text" value="<%=dino_colors[i].color_hex%>" style="width:3.5em" />
-                  <input name="id" value="<%=dino_colors[i].id%>" hidden>
-                </form>
-                <form action="/remove" method="POST" class="delete-dinosaur-color-form">
-                  <input name="color_id" type="hidden" value="<%=dino_colors[i].id%>" />
-                  <button class="fas fa-edit edit-dinosaur-color"></button>
-                  <button class="fas fa-trash delete-dinosaur-color"></button>
-                  <%= dino_colors[i].color_name %>
-                </form>
+                <a class="edit-dinosaur-color fas fa-edit"
+                  href="#"
+                  tabindex="-1"
+                  role="button"
+                  data-toggle="modal"
+                  data-target="#editDinosaurColorModal"
+                  data-colorid="<%=dino_colors[i].id%>"
+                  data-dinocolorid="<%=dino_colors[i].color_id%>"
+                  data-dinocolorname="<%=dino_colors[i].color_name%>"
+                  data-dinocolorhex="<%=dino_colors[i].color_hex%>">
+                </a>
+                <%=dino_colors[i].color_name%>
               </div>
-              <% } %>
+            <% } %>
           </div>
         </div>
       </div>
     </div>    
   </div> <!--End of container-->
-  <!--Delete Modal-->
-  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Delete this content?</h5>
-          <button type="button" class="close" data-dismiss="modal" area-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-
-      </div>
-    </div>
-  </div>
   
-  <!--Edit Modal-->
+  <!--Server Modals-->
   <div class="modal fade" id="editServerModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Editing</h5>
+          <h5 class="modal-title">Edit</h5>
           <button type="button" class="close" data-dismiss="modal" area-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <form method="POST" action="/edit">
+        <form method="POST" action="/edit" id="edit-server-form">
           <div class="modal-body">
             <div class="form-row">
               <div class="form-group col-md-12">
-                <label for="server_id">Server Number:</label>
-                <input id="editServerModal-server_id" name="server_id" type="number" value="" style="width:2.5em" />
-                <input id="editServerModal-id" name="id" type="number" value="" hidden />
-                <label for="server_name">Server Name:</label>
-                <input id="editServerModal-server_name" name="server_name" type="text" value="" />
+                <div>
+                  <label for="server_id">Server Number:</label>
+                  <input id="editServerModal-server_id" name="server_id" type="number" value="" style="width:2.5em" />
+                  <input id="editServerModal-id" name="id" type="number" value="" hidden />
+                </div>
+                <div>
+                  <label for="server_name">Server Name:</label>
+                  <input id="editServerModal-server_name" name="server_name" type="text" value="" />
+                </div>
               </div>
             </div>
+          </div>
+        </form>
+        <form method="POST" action="/remove" id="delete-server-form">
+        <input id="editServerModal-remove_server_id" name="server_id" value="" hidden>
+        </form>
+            <div class="modal-footer text-center">
+              <button type="submit" form="edit-server-form" class="btn btn-success">Save</button>
+              <button type="submit" form="delete-server-form" class="btn btn-danger delete">Delete</button>
+              <a href="#" class="btn btn-secondary" data-dismiss="modal">Close</a>
+            </div>
+      </div>
+    </div>
+  </div>
+    
+  <div class="modal fade" id="addServerModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add</h5>
+          <button type="button" class="close" data-dismiss="modal" area-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="POST" action="/add">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <div>
+                <label for="server_id">Server Number:</label>
+                <input id="addServerModal-server_id" name="server_id" type="number" value="" style="width:2.5em" />
+              </div>
+              <div>
+                <label for="server_name">Server Name:</label>
+                <input id="addServerModal-server_name" name="server_name" type="text" value="" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button class="btn btn-success">Save</button>
+          <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+  <!--End Server Modals-->
+
+  <!--Dinosaur Modals-->
+  <div class="modal fade" id="editDinosaurModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit</h5>
+          <button type="button" class="close" data-dismiss="modal" area-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="POST" action="/edit" id="edit-dinosaur-form">
+          <div class="modal-body">
+            <div class="form-row">
+              <div class="form-group col-md-12">
+                <div>
+                  <label for="dinosaur_name">Dino name:</label>
+                  <input id="editDinosaurModal-dino_name" name="dino_name" type="text" value="" />
+                  <input id="editDinosaurModal-dino_id" name="dino_id" type="number" value="" hidden />
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <form method="POST" action="/remove" id="delete-dinosaur-form">
+        <input id="editDinosaurModal-remove_dino_id" name="dino_id" value="" hidden>
+        </form>
+            <div class="modal-footer text-center">
+              <button type="submit" form="edit-dinosaur-form" class="btn btn-success">Save</button>
+              <button type="submit" form="delete-dinosaur-form" class="btn btn-danger delete">Delete</button>
+              <a href="#" class="btn btn-secondary" data-dismiss="modal">Close</a>
+            </div>
+      </div>
+    </div>
+  </div>
+    
+  <div class="modal fade" id="addDinosaurModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add</h5>
+          <button type="button" class="close" data-dismiss="modal" area-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="POST" action="/add">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <div>
+                <label for="dino_name">Dinosaur Name:</label>
+                <input id="addServerModal-dino_name" name="dino_name" type="text">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <button class="btn btn-success">Save</button>
+          <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+  <!--End Dinosaur Modals-->
+
+  <div class="modal fade" id="editDinosaurColorModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit</h5>
+          <button type="button" class="close" data-dismiss="modal" area-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="POST" action="/edit" id="edit-dinosaur-color-form">
+          <div class="modal-body">
+            <div class="form-group col-md-12">
+              <div>
+                <label for="dinosaur_color_id">Color ID:</label>
+                <input id="editDinosaurColorModal-color_id" name="dino_color_id" type="number" value="" />
+                <input id="editDinosaurColorModal-actual_id" name="id" type="number" value="" hidden />
+              </div>
+              <div>
+                <label for="dinosaur_color_name">Color Name:</label>
+                <input id="editDinosaurColorModal-color_name" name="dino_color_name" type="text" value="" />
+              </div>
+              <div>
+                <label for="dinosaur_color_hex">Hex Code:</label>
+                <input id="editDinosaurColorModal-color_hex" name="dino_color_hex" type="text" value="" />
+              </div>
+            </div>
+          </div>
+        </form>
+        <form method="POST" action="/remove" id="delete-dinosaur-color-form">
+          <input id="editDinosaurColorModal-remove_id" name="dino_color_id" value="" hidden>
+        </form>
+        <div class="modal-footer text-center">
+          <button type="submit" form="edit-dinosaur-color-form" class="btn btn-success">Save</button>
+          <button type="submit" form="delete-dinosaur-color-form" class="btn btn-danger delete">Delete</button>
+          <a href="#" class="btn btn-secondary" data-dismiss="modal">Close</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="addDinosaurColorModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add</h5>
+          <button type="button" class="close" data-dismiss="modal" area-label="Close">
+            <span area-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="POST" action="/add">
+          <div class="modal-body">
+            <div class="form-row">
+              <div class="form-group col-md-12">
+                <div>
+                  <label for="dinosaur_color_id">Color ID:</label>
+                  <input id="editDinosaurColorModal-color_id" name="dino_color_id" type="number" value="" />
+                  <input id="editDinosaurColorModal-actual_id" name="id" type="number" value="" hidden />
+                </div>
+                <div>
+                  <label for="dinosaur_color_name">Color Name:</label>
+                  <input id="editDinosaurColorModal-color_name" name="dino_color_name" type="text" value="" />
+                </div>
+                <div>
+                  <label for="dinosaur_color_hex">Hex Code:</label>
+                  <input id="editDinosaurColorModal-color_hex" name="dino_color_hex" type="text" value="" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer text-center">
+            <button class="btn btn-success">Save</button>
+            <button class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </form>
       </div>
     </div>
   </div>
-    
+
+
 
 </div> <!--Close of content-->
 

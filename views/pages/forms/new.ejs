@@ -37,7 +37,7 @@
             <option value="">Please choose...</option>
             <option value="General Support Ticket">General assistance</option>
             <option value="Element Request">Element Request</option>
-            <% if (user.isPatreon === true) { %>
+            <% if (user.isPatreon === true || user.isAdmin === true) { %>
               <option value="Patreon Request">Patreon Request</option>
               <!--Include informational box about Patreon status-->
             <% } %>

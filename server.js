@@ -1,34 +1,23 @@
 'use strict';
 
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const superagent = require('superagent');
 const pg = require('pg');
 const app = express();
-const methodOverride = require('method-override');
-const fetch = require('node-fetch');
-const btoa = require('btoa');
+app.use(cookieParser());
 const Discord  = require('discord.js');
 const { catchAsync } = require('./util/utils');
-const router = express.Router();
-// const log = require('simple-node-logger').createSimpleLogger('./logs/project.log');
-
-//Configurable variables//
 require('dotenv').config();
-const CLIENT_ID = process.env.CLIENT_ID;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const DISCORD_BOT_ID = process.env.DISCORD_BOT_ID;
-const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID;
+
+const DISCORD_STUDENT_ADMIN_GROUP_ID = process.env.DISCORD_STUDENT_ADMIN_GROUP_ID;
 const DISCORD_ADMIN_GROUP_ID = process.env.DISCORD_ADMIN_GROUP_ID;
 const DISCORD_PATREON_SUPPORTER = process.env.DISCORD_PATREON_SUPPORTER;
 const DISCORD_PATREON_SUPPORTERPLUS = process.env.DISCORD_PATREON_SUPPORTERPLUS;
 const DISCORD_PATREON_SUPPORTERPLUSPLUS = process.env.DISCORD_PATREON_SUPPORTERPLUSPLUS;
 const DISCORD_PATREON_DOMINATOR = process.env.DISCORD_PATREON_DOMINATOR;
 const PORT = process.env.PORT || 3002;
-const CALLBACK = process.env.CALLBACK_URL;
-
-const redirect = encodeURIComponent(`${CALLBACK}`);
-
-const cookieParser = require('cookie-parser');
+const TOKEN = process.env.TOKEN;
 
 app.set('view engine', 'ejs');
 
@@ -37,99 +26,50 @@ const client = new pg.Client(process.env.DATABASE_URL);
 app.use(express.urlencoded({extended: true}));
 app.use(express.static('./public'));
 
-app.use(cookieParser());
-
-app.use(methodOverride((request, response) => {
-  if (request.body && typeof request.body === 'object' && '_method' in request.body) {
-    let method = request.body._method;
-    delete request.body._method;
-    return method;
-  }
-}));
-
 app.get('/', catchAsync(async(req, res) => {
-  if (req.cookies['Domi-Support-Token'] == null) {
+  if (req.cookies[TOKEN] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
-    if (validateUser.status === 404) {
+    const validateUser = await authenticateUser(req.cookies[TOKEN]);
+    if (validateUser.isFound === false) {
       res.render('./pages/user_not_found', {
-        user : validateUser
+        user: validateUser
       });
     } else {
-      //TODO:  Make status the home page, and clean the routes up.
       res.redirect('/status');
     }
   }
 }));
 
 app.get('/submitted', catchAsync(async(req, res) => {
-  if (req.cookies['Domi-Support-Token'] == null) {
+  if (req.cookies[TOKEN] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
+    const validateUser = await authenticateUser(req.cookies[TOKEN]);
     res.render('./pages/ticket_submitted', {user : validateUser});
     }
 }));
 
 app.get('/login', (req, res) => {
-  res.redirect(`https://discordapp.com/api/oauth2/authorize?client_id=${CLIENT_ID}&scope=identify&response_type=code&redirect_uri=${redirect}`);
+  res.redirect(`https://auth.domination-gaming.com/oauth/discord?redirect_uri=https://support.domination-gaming.com/`);
 });
 
 app.get('/logout', (req, res) => {
-  res.clearCookie('Domi-Support-Token');
-  res.redirect('/');
-});
-
-app.get('/api/discord/callback', catchAsync(async (req, res) => {
-  if (!req.query.code) throw new Error('NoCodeProvided');
-
-  const code = req.query.code;
-  const creds = btoa(`${CLIENT_ID}:${CLIENT_SECRET}`);
-  const response = await fetch(`https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${redirect}`,
-  {
-    method: 'POST',
-    headers: {
-      Authorization: `Basic ${creds}`,
-    },
-  });
-  const json = await response.json();
-  const cookieExpirationInMS = 604800000; // 7 days, since that's when the Discord Token expires
-  res.cookie('Domi-Support-Token', json.access_token, {maxAge: cookieExpirationInMS, httpOnly: false});
-  res.redirect('/');
-}));
-
-app.use('/api/discord', router);
-app.use((err, req, res, next) => {
-  switch (err.message) {
-    case 'NoCodeProvided':
-      return res.status(400).send({
-        status: 'PLEASE LOG IN',
-        error: err.message,
-      });
-    case 'InvalidCode':
-      return res.status(401).send({
-        status: 'REVOKED TOKEN',
-        error: err.message,
-      });  
-    default:
-      return res.status(500).send({
-        status: 'ERROR',
-        error: err.message,
-      });
-  }
+  res.clearCookie(TOKEN, {domain: '.domination-gaming.com', path: '/'});
+  res.redirect('https://domination-gaming.com/');
 });
 
 app.get('/all', catchAsync(async(req, res) => {
-  if (req.cookies['Domi-Support-Token'] == null) {
+  if (req.cookies[TOKEN] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
-    if (validateUser.isAdmin === true) {
+    const validateUser = await authenticateUser(req.cookies[TOKEN]);
+    if (validateUser.isAdmin === true || validateUser.isStudent) {
 
       let openTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'NEW' OR status = 'OPEN') ORDER BY submitted_on DESC;");
-      let closedTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY closed_on DESC LIMIT 20;");
+      let closedTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY closed_on DESC;");
 
+      console.log(openTickets);
       res.render('./pages/admin/adminPage', {
         user : validateUser,
         openTickets : openTickets,
@@ -142,10 +82,10 @@ app.get('/all', catchAsync(async(req, res) => {
 }));
 
 app.get('/admin', catchAsync(async(req, res) => {
-  if (req.cookies['Domi-Support-Token'] == null) {
+  if (req.cookies[TOKEN] == null) {
     res.redirect('/login');
   } else {
-    const validatedUser = await authenticateUser(req.cookies['Domi-Support-Token']);
+    const validatedUser = await authenticateUser(req.cookies[TOKEN]);
     const servers = await queryServerList();
     const dinos = await queryDinosaurList();
     const dino_colors = await queryDinosaurColors();
@@ -163,10 +103,10 @@ app.get('/admin', catchAsync(async(req, res) => {
 }));
 
 app.get('/anonymous', catchAsync(async(req,res) => {
-  if (req.cookies['Domi-Support-Token'] == null) {
+  if (req.cookies[TOKEN] == null) {
     res.redirect('/login');
   } else {
-    const validatedUser = await authenticateUser(req.cookies['Domi-Support-Token']);
+    const validatedUser = await authenticateUser(req.cookies[TOKEN]);
     res.render('./pages/public/anonymous', {
       user : validatedUser
     });
@@ -174,10 +114,10 @@ app.get('/anonymous', catchAsync(async(req,res) => {
 }));
 
 app.post('/creating-ticket', catchAsync(async(req, res) => {
-  if (req.cookies['Domi-Support-Token'] == null) {
+  if (req.cookies[TOKEN] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
+    const validateUser = await authenticateUser(req.cookies[TOKEN]);
     const servers = await queryServerList();
     let ticketType = req.body.ticketType;
     let initialInfo = req.body;
@@ -257,10 +197,10 @@ app.post('/creating-ticket', catchAsync(async(req, res) => {
 }));
 
 app.post('/ticket-submit', catchAsync(async(req, res) =>{
-  if (req.cookies['Domi-Support-Token'] == null) {
+  if (req.cookies[TOKEN] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
+    const validateUser = await authenticateUser(req.cookies[TOKEN]);
     let sqlQueryInsert;
     let sqlValueArr = [];
     let ticketType = req.body.typeOfRequest;
@@ -318,10 +258,10 @@ app.post('/ticket-submit', catchAsync(async(req, res) =>{
 }));
 
 app.post('/accept/:id', catchAsync(async(req, res) => {
-  if (req.cookies['Domi-Support-Token'] == null) {
+  if (req.cookies[TOKEN] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
+    const validateUser = await authenticateUser(req.cookies[TOKEN]);
     let ticket_id = req.params.id;
     let timestamp = currentDateAndTime();
     let sqlQuery = 'UPDATE tickets SET status=$1, accepted_by=$2, accepted_on=$3 where id=$4;'
@@ -332,10 +272,10 @@ app.post('/accept/:id', catchAsync(async(req, res) => {
 }));
 
 app.post('/cancel/:id', catchAsync(async(req, res) => {
-  if (req.cookies['Domi-Support-Token'] == null) {
+  if (req.cookies[TOKEN] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
+    const validateUser = await authenticateUser(req.cookies[TOKEN]);
     let ticket_id = req.params.id;
     let timestamp = currentDateAndTime();
     let sqlQuery = 'UPDATE tickets SET status=$1, closed_by=$2, closed_on=$3 where id=$4;'
@@ -346,10 +286,10 @@ app.post('/cancel/:id', catchAsync(async(req, res) => {
 }));
 
 app.post('/complete/:id', catchAsync(async(req, res) => {
-  if (req.cookies['Domi-Support-Token'] == null) {
+  if (req.cookies[TOKEN] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
+    const validateUser = await authenticateUser(req.cookies[TOKEN]);
     let ticket_id = req.params.id;
     let timestamp = currentDateAndTime();
     let sqlQuery = 'UPDATE tickets SET status=$1, closed_by=$2, closed_on=$3 where id=$4;'
@@ -360,10 +300,10 @@ app.post('/complete/:id', catchAsync(async(req, res) => {
 }));
 
 app.post('/notes-add/:id', catchAsync(async(req, res) => {
-  if (req.cookies['Domi-Support-Token'] == null) {
+  if (req.cookies[TOKEN] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
+    const validateUser = await authenticateUser(req.cookies[TOKEN]);
     let ticket_id = req.params.id;
     let timestamp = currentDateAndTime();
     let sqlQuery = 'INSERT INTO notes (note_id, ticket_id, description, date, discord_name, discord_id) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5);';
@@ -374,7 +314,7 @@ app.post('/notes-add/:id', catchAsync(async(req, res) => {
 }));
 
 app.post('/notes-delete/:note_id', catchAsync(async(req, res) => {
-  if (req.cookies['Domi-Support-Token'] == null) {
+  if (req.cookies[TOKEN] == null) {
     res.redirect('/login');
   } else {
     let ticket_id = req.body.id;
@@ -386,7 +326,7 @@ app.post('/notes-delete/:note_id', catchAsync(async(req, res) => {
 }));
 
 app.post('/notes-edit/:note_id', catchAsync(async(req, res) => {
-  if (req.cookies['Domi-Support-Token'] == null) {
+  if (req.cookies[TOKEN] == null) {
     res.redirect('/login');
   } else {
     let ticket_id = req.body.id;
@@ -398,10 +338,10 @@ app.post('/notes-edit/:note_id', catchAsync(async(req, res) => {
 }));
 
 app.get('/details/:id', catchAsync(async(req, res) => {
-  if (req.cookies['Domi-Support-Token'] == null) {
+  if (req.cookies[TOKEN] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
+    const validateUser = await authenticateUser(req.cookies[TOKEN]);
     let ticket_id = req.params.id;
     const queryNotes = await client.query(`SELECT * FROM notes WHERE ticket_id = '${ticket_id}' ORDER BY date ASC;`);
     client.query(`SELECT * FROM tickets WHERE id ='${ticket_id}';`).then(sqlRes => {
@@ -416,10 +356,10 @@ app.get('/details/:id', catchAsync(async(req, res) => {
 }));
 
 app.get('/new', catchAsync(async(req, res) => {
-  if (req.cookies['Domi-Support-Token'] == null) {
+  if (req.cookies[TOKEN] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
+    const validateUser = await authenticateUser(req.cookies[TOKEN]);
     const servers = await queryServerList();
     res.render('./pages/forms/new', {
       user : validateUser,
@@ -429,10 +369,11 @@ app.get('/new', catchAsync(async(req, res) => {
 }));
 
 app.get('/status', catchAsync(async(req, res) => {
-  if (req.cookies['Domi-Support-Token'] == null) {
+  if (req.cookies[TOKEN] == null) {
     res.redirect('/login');
   } else {
-    const validateUser = await authenticateUser(req.cookies['Domi-Support-Token']);
+    const validateUser = await authenticateUser(req.cookies[TOKEN]);
+    console.log(validateUser.id)
     let myTickets = await queryDatabaseCustom(`SELECT * FROM tickets WHERE discord_id = '${validateUser.id}' ORDER BY submitted_on DESC;`);
     res.render('./pages/public/status', {
       user : validateUser,
@@ -443,6 +384,7 @@ app.get('/status', catchAsync(async(req, res) => {
 
 app.post('/remove', catchAsync(async(req, res) => {
   let option = req.body;
+  console.log("option", option);
   let sqlQuery;
   //TODO:  Change to switch
   if (option.server_id) {
@@ -451,14 +393,15 @@ app.post('/remove', catchAsync(async(req, res) => {
   if (option.dino_id) {
     sqlQuery = `DELETE FROM dinosaurs WHERE id = '${option.dino_id}';`;
   }
-  if (option.color_id) {
-    sqlQuery = `DELETE FROM dinocolors WHERE id = '${option.color_id}';`;
+  if (option.dino_color_id) {
+    sqlQuery = `DELETE FROM dinocolors WHERE id = '${option.dino_color_id}';`;
   }
   client.query(sqlQuery).then(res.redirect('/admin'));
 }));
 
 app.post('/edit', catchAsync(async(req, res) => {
   let option = req.body;
+  console.log("option", option);
   let sqlQuery;
   let sqlValues = [];
   //TODO:  Change to switch
@@ -479,6 +422,7 @@ app.post('/edit', catchAsync(async(req, res) => {
 
 app.post('/add', catchAsync(async(req, res) => {
   let option = req.body;
+  console.log("option", option);
   let sqlQuery;
   let sqlValues = [];
   //TODO:  Change to switch
@@ -539,7 +483,7 @@ async function queryDinosaurList() {
 };
 
 async function queryDinosaurColors() {
-  return client.query('SELECT * FROM dinocolors ORDER BY id ASC');
+  return client.query('SELECT * FROM dinocolors ORDER BY color_id ASC');
 };
 
 async function queryDatabaseCustom(query) {
@@ -600,68 +544,78 @@ async function sendNotification(ticketID) {
 
 
 async function authenticateUser(token) {
-  //TODO:  Issue - token is failing to grab users information?
-  //Needs more troubleshooting
   let result = {
+    isStudent: false,
     isAdmin: false,
     isPatreon: false,
     username: null,
     discriminator: null,
     id: null,
-    picture: null
+    picture: null,
+    isFound: false
   }
-  if (token === undefined) {
+  let userSession = await superagent.get('https://auth.domination-gaming.com/user').set('X-Auth-Token', token);
+  let user = userSession.body.discordGuildMember;
+  if (user === null) {
     return result = {
-      isAdmin: false
+    isStudent: false,
+    isAdmin: false,
+    isPatreon: false,
+    username: null,
+    discriminator: null,
+    id: null,
+    picture: null,
+    isFound: false
     }
+  }
+
+  if (user.roles == null) {
+    return result = {
+      isStudent: false,
+      isAdmin: false,
+      isPatreon: false,
+      username: user.user.username,
+      discriminator: user.user.discriminator,
+      id: user.user.id,
+      picture: user.user.avatar
+    };
   } else {
     try {
-      let userResponse = await superagent.get('https://discordapp.com/api/users/@me').set('Authorization', `Bearer ${token}`);
-      let user = userResponse.body;
-      let rolesResponse = await superagent.get(`https://discordapp.com/api/guilds/${DISCORD_GUILD_ID}/members/${user.id}`).set('Authorization', `Bot ${DISCORD_BOT_ID}`);
-      let roles = rolesResponse.body.roles;
-      let userAvatar = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`;
-      if (roles == null) {
-        return result = {
-          isAdmin: false,
-          isPatreon: false,
-          username: user.username,
-          discriminator: user.discriminator,
-          id: user.id,
-          picture: userAvatar
-        };
-      } else {
-        roles.forEach(role => {
+      user.roles.forEach(role => {
         if (role === DISCORD_ADMIN_GROUP_ID) {
-            result.isAdmin = true;
+          result.isAdmin = true;
         }
         if (role === DISCORD_PATREON_SUPPORTER || role === DISCORD_PATREON_SUPPORTERPLUS || 
             role === DISCORD_PATREON_SUPPORTERPLUSPLUS || role === DISCORD_PATREON_DOMINATOR) {
           result.isPatreon = true;
         }
+        if (role === DISCORD_STUDENT_ADMIN_GROUP_ID) {
+          result.isStudent = true;
+        }
         });
         return result = {
+          isStudent: result.isStudent,
           isAdmin: result.isAdmin,
           isPatreon: result.isPatreon,
-          username: user.username,
-          discriminator: user.discriminator,
-          id: user.id,
-          picture: userAvatar
+          username: user.user.username,
+          discriminator: user.user.discriminator,
+          id: user.user.id,
+          picture: user.user.avatar
         };
-      }
-    } catch (e) {
-      return e;
+      } catch (e) {
+        console.log(e);
+        return e;
     }
   }
-};
+}
 
 function currentDateAndTime() {
-    let date = new Date();
-    return ("00" + (date.getMonth() + 1)).slice(-2) 
-    + "/" + ("00" + date.getDate()).slice(-2) 
-    + "/" + date.getFullYear() + " " 
-    + ("00" + date.getHours()).slice(-2) + ":" 
-    + ("00" + date.getMinutes()).slice(-2) 
+  let date = new Date();
+  return ("00" + (date.getMonth() + 1)).slice(-2) 
+  + "/" + ("00" + date.getDate()).slice(-2) 
+  + "/" + date.getFullYear() + " " 
+  + ("00" + date.getHours()).slice(-2) + ":" 
+  + ("00" + date.getMinutes()).slice(-2) 
 };
 
 function Ticket(ticket) {
@@ -672,6 +626,7 @@ function Ticket(ticket) {
   this.type_of_ticket = ticket.type_of_ticket;
   this.submitted_on = ticket.submitted_on;
   this.closed_on = ticket.closed_on ? ticket.closed_on : '-';
+  this.server_assistance = ticket.server_assistance ? ticket.server_assistance.split('#').splice(1) : '-';
 };
 
 client.connect((err) => {
