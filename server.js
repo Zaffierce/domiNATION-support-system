@@ -249,7 +249,11 @@ app.post('/ticket-submit', catchAsync(async(req, res) =>{
     client.query(sqlQueryInsert, sqlValueArr).then(() => {
       client.query('SELECT id from tickets ORDER BY incrementer DESC LIMIT 1;').then(sqlRes => {
         sendNotification(sqlRes.rows);
-        createNote(sqlRes.rows[0].id, 'NEW', timestamp, validateUser.username);
+        if (ticketType === 'Anonymous') {
+          createNote(sqlRes.rows[0].id, 'NEW', timestamp, 'ANON');
+        } else {
+          createNote(sqlRes.rows[0].id, 'NEW', timestamp, validateUser.username);
+        }
         res.redirect('/submitted');
       });
     });
