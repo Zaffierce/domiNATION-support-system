@@ -59,7 +59,9 @@
               <div><strong>Event name: </strong><%=ticket.event_name%></div>
               <div><strong>Server: </strong><%=ticket.event_serverid_dropoff%></div>
               <div><strong>Patreon: </strong><%=ticket.event_patreon_status%></div>
-              <div><strong>CCC: </strong><%=ticket.event_element_dropoff_location%></div>
+              <% if (ticket.event_element_dropoff_location) {%>
+                <div><strong>CCC: </strong><%=ticket.event_element_dropoff_location%></div>
+              <% } %>
             <% } %>
     
             <% if (ticket.type_of_ticket === 'Transfer Element') { %>
@@ -67,13 +69,17 @@
               <div><strong>CCC Pickup: </strong><%=ticket.transfer_server_pickup_location%></div>
               <div><strong>Amount: </strong><%=ticket.transfer_amount%></div>
               <div><strong>Transferring to: </strong><%=ticket.transfer_serverid_dropoff%></div>
-              <div><strong>CCC Dropoff: </strong><%=ticket.transfer_server_dropoff_location%></div>
+              <% if (ticket.transfer_server_dropoff_location) { %>
+                <div><strong>CCC Dropoff: </strong><%=ticket.transfer_server_dropoff_location%></div>
+             <% } %>
             <% } %>
     
             <% if (ticket.type_of_ticket === 'Patreon Monthly Dino') { %>
               <div><strong>Email Address: </strong><%=ticket.request_email_address%></div>
               <div><strong>Server: </strong><%=ticket.request_serverid_dropoff%></div>
-              <div><strong>CCC: </strong><%=ticket.request_server_dropoff_location%></div>
+              <% if (ticket.request_server_dropoff_location) { %>
+                <div><strong>CCC: </strong><%=ticket.request_server_dropoff_location%></div>
+             <% } %>
               <div><strong>Dino: </strong><%=ticket.request_dino_name%></div>
               <div><strong>Color option: </strong><%=ticket.request_colored%></div>
                 <% if (ticket.request_colored === "Yes") { %>
@@ -88,6 +94,7 @@
             <% } %>
     
             <% if (ticket.type_of_ticket === 'Patreon Insurance Request') { %>
+              <div><strong>Server: </strong> <%=ticket.server_assistance%></div>
               <div><strong>Email Address: </strong><%=ticket.insurance_email_address%></div>
               <div><strong>Dinosaur Link: </strong><a href="<%=ticket.insurance_dino_link%>"><%=ticket.insurance_dino_link%></a></div>
               <div><strong>Month claimed: </strong><%=ticket.insurance_month_claimed%></div>
