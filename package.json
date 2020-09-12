@@ -25,7 +25,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "method-override": "^3.0.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "pg": "^7.15.1",
     "simple-node-logger": "^18.12.24",
     "superagent": "^5.1.3"
