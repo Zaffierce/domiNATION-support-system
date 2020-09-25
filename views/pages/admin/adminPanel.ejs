@@ -74,6 +74,8 @@
                 data-toggle="modal"
                 data-target="#editDinosaurModal"
                 data-dinoid="<%=dino_names[i].id%>"
+                data-dinospawn="<%=dino_names[i].spawn%>"
+                data-dinolvl="<%=dino_names[i].lvl%>"
                 data-dinoname="<%=dino_names[i].name%>">
               </a>
               <%=dino_names[i].name%>
@@ -205,6 +207,14 @@
                   <input id="editDinosaurModal-dino_name" name="dino_name" type="text" value="" />
                   <input id="editDinosaurModal-dino_id" name="dino_id" type="number" value="" hidden />
                 </div>
+                <div>
+                  <label for="editDinosaurModal-dino_spawn">Spawn code:</label>
+                  <input id="editDinosaurModal-dino_spawn" name="dino_spawn" type="text" value="" />
+                </div>
+                <div>
+                  <label for="editDinosaurModal-dino_lvl">Max wild lvl:</label>
+                  <input id="editDinosaurModal-dino_lvl" name="dino_lvl" type="number" value="" />
+                </div>
               </div>
             </div>
           </div>
@@ -235,8 +245,16 @@
           <div class="form-row">
             <div class="form-group col-md-12">
               <div>
-                <label for="dino_name">Dinosaur Name:</label>
+                <label for="dino_name">Dino name:</label>
                 <input id="addServerModal-dino_name" name="dino_name" type="text">
+              </div>
+              <div>
+                <label for="dino_spawn">Spawn code:</label>
+                <input id="addServerModal-dino_spawn" name="dino_spawn" type="text">
+              </div>
+              <div>
+                <label for="dino_lvl">Max wild lvl:</label>
+                <input id="addServerModal-dino_lvl" name="dino_lvl" type="text">
               </div>
             </div>
           </div>

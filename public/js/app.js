@@ -92,6 +92,21 @@ $(() => {
     return confirmDeletion();
   });
 
+  new ClipboardJS('.btn');
+
+  $('#copy').on('click', function() {
+    $(this).attr('aria-label', 'Command copied!');
+    $(this).addClass('tooltipped')
+    $(this).addClass('tooltipped-s')
+  })
+
+  // $('#copyText').on('click', function() {
+  //   $('#spawnCode').text().focus();
+  //   $('#spawnCode').text().select();
+  //   document.execCommand('copy');
+  //   console.log('Clicked')
+  // });
+
   $('.edit-server').on('click', function() {
     $('#editServerModal-server_id').val($(this).data("serverid"));
     $('#editServerModal-id').val($(this).data("id"));
@@ -102,6 +117,8 @@ $(() => {
   $('.edit-dinosaur').on('click', function() {
     $('#editDinosaurModal-dino_name').val($(this).data("dinoname"));
     $('#editDinosaurModal-dino_id').val($(this).data("dinoid"));
+    $('#editDinosaurModal-dino_spawn').val($(this).data("dinospawn"));
+    $('#editDinosaurModal-dino_lvl').val($(this).data("dinolvl"));
     $('#editDinosaurModal-remove_dino_id').val($(this).data("dinoid"));
   });
 

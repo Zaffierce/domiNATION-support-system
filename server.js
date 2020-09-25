@@ -307,12 +307,18 @@ app.post('/notes-add/:id', catchAsync(async(req, res) => {
     res.redirect('/login');
   } else {
     const validateUser = await authenticateUser(req.cookies[TOKEN]);
-    let ticket_id = req.params.id;
+    let ticketID = req.params.id;
     let timestamp = currentDateAndTime();
     let sqlQuery = 'INSERT INTO notes (note_id, ticket_id, description, date, discord_name, discord_id) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5);';
-    let sqlArr = [ticket_id, req.body.description, timestamp, validateUser.username, validateUser.id];
-    // sendNoteNotification(ticket_id);
-    client.query(sqlQuery, sqlArr).then(res.redirect(`/details/${ticket_id}`));
+    let sqlArr = [ticketID, req.body.description, timestamp, validateUser.username, validateUser.id];
+    const originalUserID = await client.query(`SELECT discord_id FROM tickets where id = '${ticketID}';`);
+    // sendNoteNotification(ticketID);
+    // if (validateUser.id != originalUserID.rows[0].discord_id) {
+    //   if (originalUserID.rows[0].discord_id != null) {
+    //     sendNoteNotification(ticketID);
+    //   };
+    // }
+    client.query(sqlQuery, sqlArr).then(res.redirect(`/details/${ticketID}`));
   }
 }));
 
@@ -348,12 +354,15 @@ app.get('/details/:id', catchAsync(async(req, res) => {
     let ticket_id = req.params.id;
     const queryNotes = await client.query(`SELECT * FROM notes WHERE ticket_id = '${ticket_id}' ORDER BY date ASC;`);
     client.query(`SELECT * FROM tickets WHERE id ='${ticket_id}';`).then(sqlRes => {
-      res.render('./pages/public/detailed', {
-        user : validateUser,
-        ticket : sqlRes.rows[0],
-        notes : queryNotes.rows,
-        notesSize : queryNotes.rowCount
-      });
+      client.query(`SELECT * FROM dinosaurs WHERE name ='${sqlRes.rows[0].request_dino_name}';`).then(results => {
+        res.render('./pages/public/detailed', {
+          user : validateUser,
+          ticket : sqlRes.rows[0],
+          notes : queryNotes.rows,
+          notesSize : queryNotes.rowCount,
+          dino : results.rows[0]
+        });
+      })
     });   
   }
 }));
@@ -410,8 +419,8 @@ app.post('/edit', catchAsync(async(req, res) => {
     sqlValues = [req.body.server_id, req.body.server_name, req.body.id];
   }
   if (option.dino_id) {
-    sqlQuery = 'UPDATE dinosaurs SET name=$1 where id=$2;';
-    sqlValues = [req.body.dino_name, req.body.dino_id];
+    sqlQuery = 'UPDATE dinosaurs SET name=$1, spawn=$2, lvl=$3 where id=$4;';
+    sqlValues = [req.body.dino_name, req.body.dino_spawn, req.body.dino_lvl, req.body.dino_id];
   }
   if (option.dino_color_id) {
     sqlQuery = 'UPDATE dinocolors SET color_id=$1, color_name=$2, color_hex=$3 where id=$4;';
@@ -430,8 +439,8 @@ app.post('/add', catchAsync(async(req, res) => {
     sqlValues = [req.body.server_id, req.body.server_name];
   }
   if (option.dino_name) {
-    sqlQuery = 'INSERT INTO dinosaurs (name) values ($1);';
-    sqlValues = [req.body.dino_name];
+    sqlQuery = 'INSERT INTO dinosaurs (name, spawn, lvl) values ($1, $2, $3);';
+    sqlValues = [req.body.dino_name, req.body.dino_spawn, req.body.dino_lvl];
   }
   if (option.dino_color_id) {
     sqlQuery = 'INSERT INTO dinocolors (color_id, color_name, color_hex) values ($1, $2, $3);';
@@ -533,13 +542,13 @@ async function sendNotification(ticketID) {
   })
 };
 
-// async function sendNoteNotification(ticketID) {
-// const Webhook = new Discord.WebhookClient(process.env.WEBHOOK_NOTE_ID, process.env.WEBHOOK_NOTE_TOKEN);
-// client.query(`SELECT discord_id from tickets where id = '${ticketID}';`).then(sqlRes => {
-//   let userID = sqlRes.rows[0].discord_id;
-//   Webhook.send(`<@${userID}>, a new note has been added to your ticket!  Please check the website.`);
-// });
-// };
+async function sendNoteNotification(ticketID) {
+  const Webhook = new Discord.WebhookClient(process.env.WEBHOOK_NOTE_ID, process.env.WEBHOOK_NOTE_TOKEN);
+  client.query(`SELECT discord_id from tickets where id = '${ticketID}';`).then(sqlRes => {
+    let userID = sqlRes.rows[0].discord_id;
+    Webhook.send(`<@${userID}>,  https://support.domination-gaming.com/details/${ticketID}`);
+  });
+};
 
 
 async function authenticateUser(token) {
