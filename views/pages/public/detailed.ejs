@@ -94,9 +94,14 @@
               <div><strong>Sex: </strong><%=ticket.request_sex%></div>
               <br />
               <div><strong>Spawn Code: </strong><button class="btn btn-outline-dark btn-sm " data-clipboard-action="copy" data-clipboard-target="#spawnCode" id="copy"><i class="far fa-copy"></i></button>
-              <div id="spawnCode">cheat gmsummon "<%=dino.spawn%>" <%=dino.lvl%>
-                <% if (ticket.request_colored === "Yes") { %>
-                  | cheat settargetdinocolor 0 <%=ticket.request_region0%> | cheat settargetdinocolor 1 <%=ticket.request_region1%> | cheat settargetdinocolor 2 <%=ticket.request_region2%> | cheat settargetdinocolor 3 <%=ticket.request_region3%> | cheat settargetdinocolor 4 <%=ticket.request_region4%> | cheat settargetdinocolor 5 <%=ticket.request_region5%>
+              <div id="spawnCode">
+                <% if (ticket.request_dino_name === "Tek Skiff (No Insurance)") { %>
+                  cheat GFI HoverSkiff 1 0 0
+                <% } else { %>
+                  cheat gmsummon "<%=dino.spawn%>" <%=dino.lvl%>
+                  <% if (ticket.request_colored === "Yes") { %>
+                    | cheat settargetdinocolor 0 <%=ticket.request_region0%> | cheat settargetdinocolor 1 <%=ticket.request_region1%> | cheat settargetdinocolor 2 <%=ticket.request_region2%> | cheat settargetdinocolor 3 <%=ticket.request_region3%> | cheat settargetdinocolor 4 <%=ticket.request_region4%> | cheat settargetdinocolor 5 <%=ticket.request_region5%>
+                  <% } %>
                 <% } %>
                 </div>
             </div>
