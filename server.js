@@ -313,11 +313,11 @@ app.post('/notes-add/:id', catchAsync(async(req, res) => {
     let sqlArr = [ticketID, req.body.description, timestamp, validateUser.username, validateUser.id];
     const originalUserID = await client.query(`SELECT discord_id FROM tickets where id = '${ticketID}';`);
     // sendNoteNotification(ticketID);
-    // if (validateUser.id != originalUserID.rows[0].discord_id) {
-    //   if (originalUserID.rows[0].discord_id != null) {
-    //     sendNoteNotification(ticketID);
-    //   };
-    // }
+    if (validateUser.id != originalUserID.rows[0].discord_id) {
+      if (originalUserID.rows[0].discord_id != null) {
+        sendNoteNotification(ticketID);
+      };
+    }
     client.query(sqlQuery, sqlArr).then(res.redirect(`/details/${ticketID}`));
   }
 }));
