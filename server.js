@@ -556,6 +556,7 @@ async function authenticateUser(token) {
     isStudent: false,
     isAdmin: false,
     isPatreon: false,
+    isSupPlus: false,
     username: null,
     discriminator: null,
     id: null,
@@ -569,6 +570,7 @@ async function authenticateUser(token) {
     isStudent: false,
     isAdmin: false,
     isPatreon: false,
+    isSupPlus: false,
     username: null,
     discriminator: null,
     id: null,
@@ -582,6 +584,7 @@ async function authenticateUser(token) {
       isStudent: false,
       isAdmin: false,
       isPatreon: false,
+      isSupPlus: false,
       username: user.user.username,
       discriminator: user.user.discriminator,
       id: user.user.id,
@@ -597,6 +600,9 @@ async function authenticateUser(token) {
             role === DISCORD_PATREON_SUPPORTERPLUSPLUS || role === DISCORD_PATREON_DOMINATOR) {
           result.isPatreon = true;
         }
+        if (role === DISCORD_PATREON_SUPPORTERPLUS || role === DISCORD_PATREON_SUPPORTERPLUSPLUS || role === DISCORD_PATREON_DOMINATOR) {
+          result.isSupPlus = true;
+        }
         if (role === DISCORD_STUDENT_ADMIN_GROUP_ID) {
           result.isStudent = true;
         }
@@ -605,6 +611,7 @@ async function authenticateUser(token) {
           isStudent: result.isStudent,
           isAdmin: result.isAdmin,
           isPatreon: result.isPatreon,
+          isSupPlus: result.isSupPlus,
           username: user.user.username,
           discriminator: user.user.discriminator,
           id: user.user.id,
