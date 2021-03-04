@@ -66,8 +66,8 @@ app.get('/all', catchAsync(async(req, res) => {
     const validateUser = await authenticateUser(req.cookies[TOKEN]);
     if (validateUser.isAdmin === true || validateUser.isStudent) {
 
-      let openTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'NEW' OR status = 'OPEN') ORDER BY submitted_on DESC;");
-      let closedTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY closed_on DESC;");
+      let openTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'NEW' OR status = 'OPEN');");
+      let closedTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'COMPLETE' OR status = 'CANCELLED');");
 
       res.render('./pages/admin/adminPage', {
         user : validateUser,
@@ -450,35 +450,35 @@ app.post('/add', catchAsync(async(req, res) => {
   
 }));
 
-app.get('/search', catchAsync(async(req, res) => {
-  let tickets;
-  if (!req.query.data) {
-    tickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY closed_on DESC LIMIT 20;");
-  } else {
-    switch(req.query.type) {
-      case 'discordID':
-        tickets = await queryDatabaseSearchStatusByDiscordName(req.query.data);
-        break;
+// app.get('/search', catchAsync(async(req, res) => {
+//   let tickets;
+//   if (!req.query.data) {
+//     tickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY closed_on DESC LIMIT 20;");
+//   } else {
+//     switch(req.query.type) {
+//       case 'discordID':
+//         tickets = await queryDatabaseSearchStatusByDiscordName(req.query.data);
+//         break;
       
-      case 'ign':
-        tickets = await queryDatabaseCustom(`SELECT * FROM tickets WHERE lower(ign) LIKE '%${req.query.data}%' AND (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY closed_on DESC;`);
-        break;
+//       case 'ign':
+//         tickets = await queryDatabaseCustom(`SELECT * FROM tickets WHERE lower(ign) LIKE '%${req.query.data}%' AND (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY closed_on DESC;`);
+//         break;
 
-      case 'closed_on_or_before':
-        tickets = await queryDatabaseCustom(`SELECT * FROM tickets WHERE closed_on::date <= '${req.query.data}' ORDER BY closed_on DESC;`);
-        break;
+//       case 'closed_on_or_before':
+//         tickets = await queryDatabaseCustom(`SELECT * FROM tickets WHERE closed_on::date <= '${req.query.data}' ORDER BY closed_on DESC;`);
+//         break;
         
-      case 'closed_on_or_after':
-        tickets = await queryDatabaseCustom(`SELECT * FROM tickets WHERE closed_on::date >= '${req.query.data}' ORDER BY closed_on DESC;`);
-        break;
+//       case 'closed_on_or_after':
+//         tickets = await queryDatabaseCustom(`SELECT * FROM tickets WHERE closed_on::date >= '${req.query.data}' ORDER BY closed_on DESC;`);
+//         break;
 
-      case 'closed_by':
-        tickets = await queryDatabaseCustom(`SELECT * from tickets WHERE lower(closed_by) LIKE '%${req.query.data}%' AND (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY closed_on DESC;`);
-        break;
-    }
-  }
-  res.send(tickets);
-}));
+//       case 'closed_by':
+//         tickets = await queryDatabaseCustom(`SELECT * from tickets WHERE lower(closed_by) LIKE '%${req.query.data}%' AND (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY closed_on DESC;`);
+//         break;
+//     }
+//   }
+//   res.send(tickets);
+// }));
 
 app.get('*', (req, res) => {res.status(404).render('pages/error')});
 
@@ -639,8 +639,8 @@ function Ticket(ticket) {
   this.ign = ticket.ign;
   this.discord_name = ticket.discord_name;
   this.type_of_ticket = ticket.type_of_ticket;
-  this.submitted_on = ticket.submitted_on;
-  this.closed_on = ticket.closed_on ? ticket.closed_on : '-';
+  this.submitted_on = new Date(ticket.submitted_on).toLocaleString();
+  this.closed_on = new Date(ticket.closed_on).toLocaleString();
   this.server_assistance = ticket.server_assistance ? ticket.server_assistance.split('#').splice(1) : '-';
 };
 
