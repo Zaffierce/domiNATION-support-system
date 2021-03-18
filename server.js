@@ -640,7 +640,7 @@ function Ticket(ticket) {
   this.discord_name = ticket.discord_name;
   this.type_of_ticket = ticket.type_of_ticket;
   this.submitted_on = new Date(ticket.submitted_on).toLocaleString();
-  this.closed_on = new Date(ticket.closed_on).toLocaleString();
+  this.closed_on = new Date(ticket.closed_on).toLocaleString() ? ticket.closed_on : ' ';
   this.server_assistance = ticket.server_assistance ? ticket.server_assistance.split('#').splice(1) : '-';
 };
 
