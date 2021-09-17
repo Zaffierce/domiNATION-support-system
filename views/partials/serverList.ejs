@@ -1,6 +1,18 @@
-  <option value="">Please choose a server...</option>
-  <% for (let i = 0; i < servers.length; i++) { %>
-    <option value="DomiNATION #<%=servers[i].server_id%> - <%=servers[i].server_name%>">
-      DomiNATION #<%=servers[i].server_id%> - <%=servers[i].server_name%>
+<option value="">Please choose a server...</option>
+<% for (let i = 0; i < servers.length; i++) { %>
+  <% if (generalInfo) { %>
+    <% if (generalInfo.serverAssistance.split(" ")[1].slice(1, 3) == servers[i].server_id) { %>
+      <option value="DomiNATION #<%= servers[i].server_id %> - <%= servers[i].server_name %>" selected>
+        DomiNATION #<%= servers[i].server_id %> - <%= servers[i].server_name %>
+      </option>
+    <% } else { %>
+      <option value="DomiNATION #<%= servers[i].server_id %> - <%= servers[i].server_name %>">
+        DomiNATION #<%= servers[i].server_id %> - <%= servers[i].server_name %>
+      </option>
+    <% } %>
+  <% } else { %>
+    <option value="DomiNATION #<%= servers[i].server_id %> - <%= servers[i].server_name %>">
+      DomiNATION #<%= servers[i].server_id %> - <%= servers[i].server_name %>
     </option>
-  <% }; %>
+  <% } %>
+<% } %>

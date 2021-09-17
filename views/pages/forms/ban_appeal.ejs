@@ -18,8 +18,11 @@
         <div class="form-group col-md-6">
             <label for="steam_id">What is your Steam ID?</label>
             <!--Link to look up your steam ID-->
-            <input type="text" name="steam_id" class="form-control" required>
-            
+            <% if (user.steamID) { %>
+              <input type="text" name="steam_id" class="form-control" value="<%=user.steamID%>" required>
+            <% } else { %>
+              <input type="text" name="steam_id" class="form-control" required>
+            <% } %>
             <label for="email_address">What is a good email address to contact you at?</label>
             <input type="text" name="email_address" class="form-control" required>
   

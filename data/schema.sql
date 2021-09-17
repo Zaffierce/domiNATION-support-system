@@ -45,6 +45,8 @@ CREATE TABLE tickets (
     request_sex VARCHAR(20),
     request_server_dropoff_location VARCHAR(255),
     request_email_address VARCHAR(255),
+    request_character_id VARCHAR(255),
+    request_patreon_member_id VARCHAR(255)
     -- patreon insurance request
     insurance_dino_link VARCHAR(255),
     insurance_email_address VARCHAR(255),

@@ -18,7 +18,9 @@
         <div class="form-group col-md-7">
             <label for="serverid_dropoff">Which server do you want your dino on?</label>
             <select name="serverid_dropoff" class="form-control" id="serverid_dropoff" required>
-            <%- include('../../partials/serverList.ejs'); %>
+            <!-- <%- include('../../partials/serverList.ejs'); %> -->
+            <option value="<%= generalInfo.serverAssistance %>"><%= generalInfo.serverAssistance %></option>
+              <!--Put the rest of the servers in this list later on?-->
             </select>
   
             <label for="dino_choice">Please select what dino you would like</label>
@@ -86,7 +88,34 @@
             </select>
     
             <label for="email_address">Please provide your Patreon Email Address</label>
-            <input type="text" name="email_address" class="form-control" required>
+            <input type="text" name="email_address" class="form-control" value="<%= email_address %>" required>
+            <input type="text" name="patreonMemberID" class="form-control" value="<%= patreonMemberId %>" hidden>
+
+            <label for="email_address">ID of your character</label>
+            <a tabindex="0" 
+            data-toggle="popover" 
+            data-trigger="focus"
+            data-html="true" 
+            title="What is this number?" 
+            data-content="This is your characters ID on the server you've chosen to receive assistance on.<br />
+            <br />
+            If you see a drop down menu of all your characters, it means that we were not able to find a character on the map you initially chose.">
+            <i class="fas fa-info-circle"></i>
+            </a>
+            <% if (characterID) { %>
+              <input type="text" name="character_id" class="form-control" value="<%= characterID %>">
+            <% } else { %>
+              <select name="character_id" id="character_id" class="form-control" required>
+                <option value="">Please choose a character...</option>
+                <% for (let i = 0; i < user.servers.length; i++) { %>
+                  <option value='"<%=user.servers[i].characterName%>" <%=user.servers[i].characterID%>' id="<%=user.servers[i].serverID%>">
+                    <%=user.servers[i].characterName%> - Level <%=user.servers[i].characterLevel%>, DomiNATION #<%=user.servers[i].serverID%>
+                  </option>
+                <% }; %>
+              </select>
+              <div class="invalid-feedback">Please choose a valid character.</div>
+              <!-- <input type="text" name="character_id" class="form-control" value="Enter an ID"> -->
+            <% } %>
         </div>
         <div class="form-group col-md-2"></div>
       </div>

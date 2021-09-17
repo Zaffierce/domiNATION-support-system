@@ -15,8 +15,34 @@
       <div class="form-row">
         <div class="form-group col-md-6">
           <label for="ign">What is your in-game name?</label>
-          <input type="text" class="form-control" name="ign" required>
-          <div class="invalid-feedback">Please enter a name.</div>
+          <a tabindex="0" 
+            data-toggle="popover" 
+            data-trigger="focus"
+            data-html="true" 
+            title="Missing a character?" 
+            data-content="This is automatically pulled from our back-end database provided that you've linked your Steam and Discord accounts.  If you still do not see your account, wait for 10 minutes and try again.">
+            <i class="fas fa-info-circle"></i>
+            </a>
+          <% if (!user.servers.length) { %>
+            <input type="text" class="form-control" name="ign" required>
+          <% } else { %>
+          <select name="ign" class="form-control" id="ign" required>
+            <option value="">Please choose a character...</option>
+            <% for (let i = 0; i < user.servers.length; i++) { %>
+              <option value="<%=user.servers[i].characterName%>" id="<%=user.servers[i].serverID%>">
+                <%=user.servers[i].characterName%> - Level <%=user.servers[i].characterLevel%>, DomiNATION #<%=user.servers[i].serverID%>
+              </option>
+            <% }; %>
+          </select>
+          <div class="invalid-feedback">Please choose a valid character.</div>
+        <% } %>
+          <!-- <input type="text" class="form-control" name="ign" required> -->
+          <!-- <div class="invalid-feedback">Please enter a name.</div> -->
+          <!--If their character length is 1 then have it as a text box otherwise make dropdown-->
+          <!--Do we want to automatically pull characters?-->
+          <!--Zaffierce - Level 39, DomiNATION #1 Beginner?-->
+          <!--If no character exists, have them type name in-->
+          <!--Use jquery to update character name based on Server Assistance-->
         </div>
         <div class="form-group col-md-6">
           <label for="discordName">What is your discord name?</label>
@@ -36,7 +62,7 @@
           <select name="ticketType" class="form-control" id="generalTicketSelect" required>
             <option value="">Please choose...</option>
             <option value="General Support Ticket">General assistance</option>
-            <option value="Element Request">Element Request</option>
+            <option value="Element from Event">Element from Event</option>
             <% if (user.isSupPlus === true || user.isAdmin === true) { %>
               <option value="Patreon Request">Patreon Request</option>
               <!--Include informational box about Patreon status-->
@@ -50,7 +76,8 @@
         <div class="form-group col-md-6" text-center>
           <label for="timeToContact">Please provide the timezone you often play in so we can contact you better.</label>
           <div class="note">Example: 4PM - 10PM East Coast, or 1600-2200 UTC+0900</div>
-          <input type="text" class="form-control" name="timeToContact">
+          <input type="text" class="form-control" name="timeToContact" required>
+          <div class="invalid-feedback">Please enter your timezone.</div>
         </div>
         <div class="col-md-3"></div>
       </div>
