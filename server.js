@@ -27,8 +27,9 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.static('./public'));
 
 app.get('/', catchAsync(async(req, res) => {
+  let validateUser;
   if (req.cookies[TOKEN]) {
-    let validateUser = await authenticateUser(req.cookies[TOKEN]);
+    validateUser = await authenticateUser(req.cookies[TOKEN]);
     if (validateUser.isFound === false) {
       res.render('./pages/user_not_found', {
         user: validateUser
