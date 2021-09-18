@@ -42,16 +42,8 @@ app.get('/', catchAsync(async(req, res) => {
       });  
     }
   } else {
-    validateUser = {
-        userID: "Undefined",
-        username: "Undefined",
-        discriminator: "Undefined",
-        isFound: false
-      }  
-      res.render('./pages/user_not_found', {
-        user: validateUser
-      });
-    }
+    res.redirect("https://auth.domination-gaming.com/oauth/discord?redirect_uri=https://support.domination-gaming.com/");
+  }
 }));
 
 app.post('/accept/:id', catchAsync(async(req, res) => {
