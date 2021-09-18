@@ -27,18 +27,30 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.static('./public'));
 
 app.get('/', catchAsync(async(req, res) => {
-  const validateUser = await authenticateUser(req.cookies[TOKEN]);
-  if (validateUser.isFound === false) {
-    res.render('./pages/user_not_found', {
-      user: validateUser
-    });
+  if (req.cookies[TOKEN]) {
+    let validateUser = await authenticateUser(req.cookies[TOKEN]);
+    if (validateUser.isFound === false) {
+      res.render('./pages/user_not_found', {
+        user: validateUser
+      });
+    } else {
+      let myTickets = await queryDatabaseCustom(`SELECT * FROM tickets WHERE discord_id = '${validateUser.discordID}' ORDER BY submitted_on DESC;`);
+      res.render('./pages/public/status', {
+        user : validateUser,
+        myTickets      
+      });  
+    }
   } else {
-    let myTickets = await queryDatabaseCustom(`SELECT * FROM tickets WHERE discord_id = '${validateUser.discordID}' ORDER BY submitted_on DESC;`);
-    res.render('./pages/public/status', {
-      user : validateUser,
-      myTickets      
-    });  
-  }
+    validateUser = {
+        userID: "Undefined",
+        username: "Undefined",
+        discriminator: "Undefined",
+        isFound: false
+      }  
+      res.render('./pages/user_not_found', {
+        user: validateUser
+      });
+    }
 }));
 
 app.post('/accept/:id', catchAsync(async(req, res) => {
