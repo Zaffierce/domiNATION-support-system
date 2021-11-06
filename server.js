@@ -561,15 +561,22 @@ async function authenticateUser(token) {
     isFound: false
   }
   return superagent.get('https://auth.domination-gaming.com/user').set('X-Auth-Token', token).then(res => {
-    let user = res.body.discordGuildMember;
-    if (user === null) {
+    if (res.body.discordUserOnLogin === null) {
+      return result = {
+        userID: "Error",
+        username: "Error",
+        discriminator: "Error",
+        isFound: false
+      }
+    } else if (res.body.discordGuildMember === null) {
       return result = {
         userID: res.body.discordUserOnLogin.discordId,
         username: res.body.discordUserOnLogin.username,
         discriminator: res.body.discordUserOnLogin.discriminator,
         isFound: false
-      }   
+      }
     } else {
+      let user = res.body.discordGuildMember;
       if (user.roles.length != 0) {
         try {
           user.roles.forEach(role => {
