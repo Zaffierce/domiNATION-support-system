@@ -120,6 +120,14 @@ $(() => {
     $('#editDinosaurModal-dino_spawn').val($(this).data("dinospawn"));
     $('#editDinosaurModal-dino_lvl').val($(this).data("dinolvl"));
     $('#editDinosaurModal-remove_dino_id').val($(this).data("dinoid"));
+
+    if ($(this).data("dinoimprint") === false) {
+      $('#editDinosaurModal-dino_imprint option[value=false]').attr("selected", "selected");
+      $('#editDinosaurModal-dino_imprint option[value=true]').removeAttr("selected");
+    } else {
+      $('#editDinosaurModal-dino_imprint option[value=true]').attr("selected", "selected");
+      $('#editDinosaurModal-dino_imprint option[value=false]').removeAttr("selected");
+    }
   });
 
   $('.edit-dinosaur-color').on('click', function() {

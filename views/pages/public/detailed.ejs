@@ -132,7 +132,7 @@
                     <% if (ticket.request_colored === "Yes") { %>
                       | cheat settargetdinocolor 0 <%=ticket.request_region0%> | cheat settargetdinocolor 1 <%=ticket.request_region1%> | cheat settargetdinocolor 2 <%=ticket.request_region2%> | cheat settargetdinocolor 3 <%=ticket.request_region3%> | cheat settargetdinocolor 4 <%=ticket.request_region4%> | cheat settargetdinocolor 5 <%=ticket.request_region5%>
                     <% } %>
-                    <% if (ticket.request_character_id !== null) { %> 
+                    <% if ((ticket.request_character_id !== null) && (dino.imprint === true)) { %> 
                       | cheat setimprintedplayer <%= ticket.request_character_id %> | cheat setimprintquality 1
                     <% } %>
                   <% } %>

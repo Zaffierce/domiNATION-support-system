@@ -76,7 +76,8 @@
                 data-dinoid="<%=dino_names[i].id%>"
                 data-dinospawn="<%=dino_names[i].spawn%>"
                 data-dinolvl="<%=dino_names[i].lvl%>"
-                data-dinoname="<%=dino_names[i].name%>">
+                data-dinoname="<%=dino_names[i].name%>"
+                data-dinoimprint="<%=dino_names[i].imprint%>">
               </a>
               <%=dino_names[i].name%>
             </div>
@@ -215,6 +216,13 @@
                   <label for="editDinosaurModal-dino_lvl">Max wild lvl:</label>
                   <input id="editDinosaurModal-dino_lvl" name="dino_lvl" type="number" value="" />
                 </div>
+                <div>
+                  <label for="editDinosaurModal-dino_imprint">Can imprint:</label>
+                  <select id="editDinosaurModal-dino_imprint" name="dino_imprint">
+                    <option value="true" selected>true</option>
+                    <option value="false">false</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
@@ -255,6 +263,13 @@
               <div>
                 <label for="dino_lvl">Max wild lvl:</label>
                 <input id="addServerModal-dino_lvl" name="dino_lvl" type="text">
+              </div>
+              <div>
+                <label for="dino_imprint">Can imprint:</label>
+                <select name="dino_imprint" id="dino_imprint">
+                  <option value="true">True</option>
+                  <option value="false">False</option>
+                </select>
               </div>
             </div>
           </div>
