@@ -9,84 +9,78 @@
   <%- include('../../partials/nav.ejs'); %>
   <br />
   <div class="container">
-    <h1 class="ng-scope text-center">Submit a new ticket</h1>
-    <br />
-    <form class="needs-validation" novalidate action="creating-ticket" method="POST">
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="ign">What is your in-game name?</label>
-          <a tabindex="0" 
-            data-toggle="popover" 
-            data-trigger="focus"
-            data-html="true" 
-            title="Missing a character?" 
-            data-content="This is automatically pulled from our back-end database provided that you've linked your Steam and Discord accounts.  If you still do not see your account, wait for 10 minutes and try again.">
-            <i class="fas fa-info-circle"></i>
-            </a>
-          <% if (!user.servers.length) { %>
-            <input type="text" class="form-control" name="ign" required>
-          <% } else { %>
-          <select name="ign" class="form-control" id="ign" required>
-            <option value="">Please choose a character...</option>
-            <% for (let i = 0; i < user.servers.length; i++) { %>
-              <option value="<%=user.servers[i].characterName%>" id="<%=user.servers[i].serverID%>">
-                <%=user.servers[i].characterName%> - Level <%=user.servers[i].characterLevel%>, DomiNATION #<%=user.servers[i].serverID%>
-              </option>
-            <% }; %>
-          </select>
-          <div class="invalid-feedback">Please choose a valid character.</div>
-        <% } %>
-          <!-- <input type="text" class="form-control" name="ign" required> -->
-          <!-- <div class="invalid-feedback">Please enter a name.</div> -->
-          <!--If their character length is 1 then have it as a text box otherwise make dropdown-->
-          <!--Do we want to automatically pull characters?-->
-          <!--Zaffierce - Level 39, DomiNATION #1 Beginner?-->
-          <!--If no character exists, have them type name in-->
-          <!--Use jquery to update character name based on Server Assistance-->
-        </div>
-        <div class="form-group col-md-6">
-          <label for="discordName">What is your discord name?</label>
-          <!--Informational box about how this is automatically pulled-->
-          <input type="text" class="form-control" name="discordName" value="<%= user.username%>#<%=user.discriminator %>" readonly>
-          <div class="invalid-feedback">Please enter a name.</div>
-        </div>
-        <div class="form-group col-md-6">
-          <label for="serverAssistance">Which server do you need assistance on?</label>
-          <select name="serverAssistance" class="form-control" id="generalServerSelect" required>
-          <%- include('../../partials/serverList.ejs'); %>
-          </select>
-          <div class="invalid-feedback">Please choose a server.</div>
-        </div>
-        <div class="form-group col-md-6">
-          <label for="ticketType">What do you need help with?</label>
-          <select name="ticketType" class="form-control" id="generalTicketSelect" required>
-            <option value="">Please choose...</option>
-            <option value="General Support Ticket">General assistance</option>
-            <option value="Element from Event">Element from Event</option>
-            <% if (user.isSupPlus === true || user.isAdmin === true) { %>
-              <option value="Patreon Request">Patreon Request</option>
-              <!--Include informational box about Patreon status-->
+    <div class="row">
+      <div class="col-x1-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
+        <h1 class="ng-scope text-center">Submit a new ticket</h1>
+        <div class="px-2">
+          <form class="needs-validation justify-content-center" novalidate action="creating-ticket" method="POST">
+            <div class="form-group">
+              <label for="ign">What is your in-game name?</label>
+              <a tabindex="0" 
+                data-toggle="popover" 
+                data-trigger="focus"
+                data-html="true" 
+                title="Missing a character?" 
+                data-content="This is automatically pulled from our back-end database provided that you've linked your Steam and Discord accounts.  If you still do not see your account, wait for 10 minutes and try again.">
+                <i class="fas fa-info-circle"></i>
+                </a>
+              <% if (!user.servers.length) { %>
+                <input type="text" class="form-control" name="ign" required>
+              <% } else { %>
+              <select name="ign" class="form-control mx-auto" id="ign" required>
+                <option value="">Please choose a character...</option>
+                <% for (let i = 0; i < user.servers.length; i++) { %>
+                  <option value="<%=user.servers[i].characterName%>" id="<%=user.servers[i].serverID%>">
+                    <%=user.servers[i].characterName%> - Level <%=user.servers[i].characterLevel%>, DomiNATION #<%=user.servers[i].serverID%>
+                  </option>
+                <% }; %>
+              </select>
+              <div class="invalid-feedback">Please choose a valid character.</div>
             <% } %>
-            <option value="Ban Appeal">Ban Appeal</option>
-            <option value="Bug Report">Report a Bug</option>
-          </select>
-          <div class="invalid-feedback">Please choose a ticket type.</div>
+            </div>
+            <div class="form-group">
+              <label for="discordName">What is your discord name?</label>
+              <!--Informational box about how this is automatically pulled-->
+              <input type="text" class="form-control mx-auto" name="discordName" value="<%= user.username%>#<%=user.discriminator %>" readonly>
+              <div class="invalid-feedback">Please enter a name.</div>
+            </div>
+            <div class="form-group">
+              <label for="serverAssistance">Which server do you need assistance on?</label>
+              <select name="serverAssistance" class="form-control mx-auto" id="generalServerSelect" required>
+              <%- include('../../partials/serverList.ejs'); %>
+              </select>
+              <div class="invalid-feedback">Please choose a server.</div>
+            </div>
+            <div class="form-group">
+              <label for="ticketType">What do you need help with?</label>
+              <select name="ticketType" class="form-control mx-auto" id="generalTicketSelect" required>
+                <option value="">Please choose...</option>
+                <option value="General Support Ticket">General assistance</option>
+                <option value="Element from Event">Element from Event</option>
+                <% if (user.isSupPlus === true || user.isAdmin === true) { %>
+                  <option value="Patreon Request">Patreon Request</option>
+                  <!--Include informational box about Patreon status-->
+                <% } %>
+                <option value="Ban Appeal">Ban Appeal</option>
+                <option value="Bug Report">Report a Bug</option>
+              </select>
+              <div class="invalid-feedback">Please choose a ticket type.</div>
+            </div>
+            <div class="form-group">
+              <label for="timeToContact">What is the timezone you often play in?</label>
+              <div class="note">Example: 4PM - 10PM East Coast, or 1600-2200 UTC+0900</div>
+              <input type="text" class="form-control mx-auto" name="timeToContact" required>
+              <div class="invalid-feedback">Please enter your timezone.</div>
+            </div>
+            <div class="text-center">
+              <input type="submit" value="Continue">
+            </div>
+          </form>
+          <br />
+          <div class="text-center"><a href="/anonymous">Want to submit an anonymous ticket?  Click here.</a></div>
         </div>
-        <div class="col-md-3"></div>
-        <div class="form-group col-md-6" text-center>
-          <label for="timeToContact">Please provide the timezone you often play in so we can contact you better.</label>
-          <div class="note">Example: 4PM - 10PM East Coast, or 1600-2200 UTC+0900</div>
-          <input type="text" class="form-control" name="timeToContact" required>
-          <div class="invalid-feedback">Please enter your timezone.</div>
-        </div>
-        <div class="col-md-3"></div>
       </div>
-      <div class="text-center">
-        <input type="submit" value="Next">
-      </div>
-    </form>
-    <br />
-    <div class="text-center"><a href="/anonymous">Want to submit an anonymous ticket?  Click here.</a></div>
+    </div>
   </div>
 </body>
 </html>

@@ -9,36 +9,40 @@
   <%- include('../../partials/nav.ejs'); %>
   <br />
   <div class="container">
-    <h1 class="ng-scope text-center">Ban Appeal</h1>
-    <br />
-    <form class="needs-validation" novalidate action="ticket-submit" method="POST">
-      <%- include('../../partials/completedGeneralTicket.ejs'); %>
-      <div class="form-row">
-        <div class="form-group col-md-3"></div>
-        <div class="form-group col-md-6">
-            <label for="steam_id">What is your Steam ID?</label>
-            <!--Link to look up your steam ID-->
-            <% if (user.steamID) { %>
-              <input type="text" name="steam_id" class="form-control" value="<%=user.steamID%>" required>
-            <% } else { %>
-              <input type="text" name="steam_id" class="form-control" required>
-            <% } %>
-            <label for="email_address">What is a good email address to contact you at?</label>
-            <input type="text" name="email_address" class="form-control" required>
-  
-            <label for="banned_reason">Why were you banned?</label>
-            
-            <textarea class="form-control" id="banned_reason" name="banned_reason" rows="4"></textarea>
-            
-            <label for="unbanned_explanation">Why do you think your ban should be removed?</label>
-            <textarea class="form-control" id="unbanned_explanation" name="unbanned_explanation" rows="4"></textarea>
+    <div class="row">
+      <div class="col-x1-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
+        <h1 class="ng-scope text-center">Ban Appeal</h1>
+        <div class="px-2">
+          <form class="needs-validation justify-content-center" novalidate action="ticket-submit" method="POST">
+            <%- include('../../partials/completedGeneralTicket.ejs'); %>
+            <div class="form-group">
+              <label for="steam_id">What is your Steam ID?</label>
+              <div class="note mx-auto">Note:  You can find your Steam ID by searching for your profile on our <a href="https://ark.domination-gaming.com/player/search" target="_blank">website.</a></div>
+              <% if (user.steamID) { %>
+                <input type="text" name="steam_id" class="form-control mx-auto" value="<%=user.steamID%>" required>
+              <% } else { %>
+                <input type="text" name="steam_id" class="form-control mx-auto" required>
+              <% } %>
+            </div>
+            <div class="form-group">
+              <label for="email_address">What is a good email address to contact you at?</label>
+              <input type="text" name="email_address" class="form-control mx-auto" required>
+            </div>
+            <div class="form-group">
+              <label for="banned_reason">Why were you banned?</label>
+              <textarea class="form-control mx-auto" id="banned_reason" name="banned_reason" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="unbanned_explanation">Why do you think your ban should be removed?</label>
+              <textarea class="form-control mx-auto" id="unbanned_explanation" name="unbanned_explanation" rows="4"></textarea>
+            </div>
+            <div class="text-center">
+              <input type="submit" value="Submit Ticket">
+            </div>
+          </form>
         </div>
-        <div class="form-group col-md-3"></div>
       </div>
-      <div class="text-center">
-        <input type="submit" value="Submit Ticket">
-      </div>
-    </form>
+    </div>
   </div>
 </body>
 </html>

@@ -9,38 +9,40 @@
   <%- include('../../partials/nav.ejs'); %>
   <br />
   <div class="container">
-    <h1 class="ng-scope text-center">Patreon Dino Insurance</h1>
-    <form class="needs-validation" novalidate action="ticket-submit" method="POST">
-      <%- include('../../partials/completedGeneralTicket.ejs'); %>
-      <div class="form-row">
-        <div class="form-group col-md-3"></div>
-        <div class="form-group col-md-6">
-            <label for="link">Please provide the link from the website of the dead dino:</label>
-            <div class="note">
-              Need help getting the link to your dinosaur?
-              <a href='https://ark.spectrumdominus.com/dinos/search' target='_blank'>Search link!</a>
+    <div class="row">
+      <div class="col-x1-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
+        <h1 class="ng-scope text-center">Patreon Dino Insurance</h1>
+        <div class="px-2">
+          <form class="needs-validation justify-content-center" novalidate action="ticket-submit" method="POST">
+            <%- include('../../partials/completedGeneralTicket.ejs'); %>
+            <div class="form-group">
+              <label for="link">Please provide the link from the website of the dead dino:</label>
+              <div class="note">
+                Need help getting the link to your dinosaur?
+                <a href='https://ark.spectrumdominus.com/dinos/search' target='_blank'>Search link!</a>
+              </div>
+              <input type="text" name="link" class="form-control mx-auto" required>
             </div>
-            
-            <input type="text" name="link" class="form-control" required>
-  
-            <label for="email_address">Please provide your Patreon email address:</label>
-            <input type="text" name="email_address" class="form-control" value="<%=email_address%>"required>
-            <input type="text" name="patreonMemberID" class="form-control" value="<%= patreonMemberId %>" hidden>
-  
-            <label for="month_claimed">If you know it, please provide the month in which you originally claimed this dino:</label>
-            <input type="text" name="month_claimed" class="form-control">
-  
-            <label for="explanation">Please give a brief explanation as to how the dino died:</label>
-            <textarea class="form-control" id="explanation" name="explanation" rows="3" required></textarea>
-  
-          </fieldset>
+            <div class="form-group">
+              <label for="email_address">Please provide your Patreon email address:</label>
+              <input type="text" name="email_address" class="form-control mx-auto" value="<%=email_address%>"required>
+              <input type="text" name="patreonMemberID" class="form-control" value="<%= patreonMemberId %>" hidden>
+            </div>
+            <div class="form-group">
+              <label for="month_claimed">If you know it, please provide the month in which you originally claimed this dino:</label>
+              <input type="text" name="month_claimed" class="form-control mx-auto">
+            </div>
+            <div class="form-group">
+              <label for="explanation">Please give a brief explanation as to how the dino died:</label>
+              <textarea class="form-control mx-auto" id="explanation" name="explanation" rows="3" required></textarea>
+            </div>
+            <div class="text-center">
+              <input type="submit" value="Submit Ticket">
+            </div>
+          </form>
         </div>
-        <div class="form-group col-md-3"></div>
       </div>
-      <div class="text-center">
-        <input type="submit" value="Submit Ticket">
-      </div>
-    </form>
+    </div>
   </div>
 </body>
 </html>
