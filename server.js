@@ -97,7 +97,7 @@ app.get('/all', catchAsync(async(req, res) => {
     if (validateUser.isAdmin === true || validateUser.isStudent) {
 
       let openTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'NEW' OR status = 'OPEN') ORDER BY incrementer ASC;");
-      let closedTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY incrementer DESC LIMIT 10;");
+      let closedTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY incrementer DESC;");
 
       res.render('./pages/admin/adminPage', {
         user : validateUser,
