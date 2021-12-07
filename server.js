@@ -27,10 +27,10 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.static('./public'));
 
 app.get('/', catchAsync(async(req, res) => {
-  if (req.cookies[TOKEN] == null) res.redirect('/login');
+  if (req.cookies[TOKEN] === null) return res.redirect('/login');
   let validateUser = await authenticateUser(req.cookies[TOKEN]);
-  if (validateUser.principalId == null) res.redirect('/login');
-  else if (validateUser.isFound === false) res.render('./pages/user_not_found', { user: validateUser }) 
+  if (validateUser.principalId == null) return res.redirect('/login');
+  else if (validateUser.isFound === false) return res.render('./pages/user_not_found', { user: validateUser }); 
   else {
     let myTickets = await queryDatabaseCustom(`SELECT * FROM tickets WHERE discord_id = '${validateUser.discordID}' ORDER BY submitted_on DESC;`);
     res.render('./pages/public/status', {
@@ -71,7 +71,7 @@ app.post('/add', catchAsync(async(req, res) => {
 }));
 
 app.get('/admin', catchAsync(async(req, res) => {
-  if (req.cookies[TOKEN] == null) res.redirect('/login');
+  if (req.cookies[TOKEN] == null) return res.redirect('/login');
   else {
     const validatedUser = await authenticateUser(req.cookies[TOKEN]);
     if (validatedUser.isAdmin === true) {
@@ -91,13 +91,13 @@ app.get('/admin', catchAsync(async(req, res) => {
 }));
 
 app.get('/all', catchAsync(async(req, res) => {
-  if (req.cookies[TOKEN] == null) res.redirect('/login');
+  if (req.cookies[TOKEN] == null) return res.redirect('/login');
   else {
     const validateUser = await authenticateUser(req.cookies[TOKEN]);
     if (validateUser.isAdmin === true || validateUser.isStudent) {
 
       let openTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'NEW' OR status = 'OPEN') ORDER BY incrementer ASC;");
-      let closedTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY incrementer DESC;");
+      let closedTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY incrementer DESC LIMIT 10;");
 
       res.render('./pages/admin/adminPage', {
         user : validateUser,
@@ -112,9 +112,8 @@ app.get('/all', catchAsync(async(req, res) => {
 
 app.get('/anonymous', catchAsync(async(req,res) => {
   //TODO: Opt in functionality to tie ticket to user only for their SA only
-  if (req.cookies[TOKEN] == null) {
-    res.redirect('/login');
-  } else {
+  if (req.cookies[TOKEN] == null) return res.redirect('/login');
+  else {
     const validatedUser = await authenticateUser(req.cookies[TOKEN]);
     res.render('./pages/public/anonymous', {
       user : validatedUser
@@ -242,7 +241,7 @@ app.post('/creating-ticket', catchAsync(async(req, res) => {
 }));
 
 app.get('/details/:id', catchAsync(async(req, res) => {
-  if (req.cookies[TOKEN] == null) res.redirect('/login');
+  if (req.cookies[TOKEN] == null) return res.redirect('/login');
   else {
     const validateUser = await authenticateUser(req.cookies[TOKEN]);
     let ticket_id = req.params.id;
@@ -292,7 +291,7 @@ app.get('/logout', (req, res) => {
 });
 
 app.get('/new', catchAsync(async(req, res) => {
-  if (req.cookies[TOKEN] == null) res.redirect('/login');
+  if (req.cookies[TOKEN] == null) return res.redirect('/login');
   else {
     const validateUser = await authenticateUser(req.cookies[TOKEN]);
     const servers = await queryServerList();
@@ -356,7 +355,7 @@ app.post('/remove', catchAsync(async(req, res) => {
 }));
 
 app.get('/submitted', catchAsync(async(req, res) => {
-  if (req.cookies[TOKEN] == null) res.redirect('/login');
+  if (req.cookies[TOKEN] == null) return res.redirect('/login');
   else {
     const validateUser = await authenticateUser(req.cookies[TOKEN]);
     res.render('./pages/ticket_submitted', {user : validateUser});
@@ -472,6 +471,15 @@ async function sendNotification(ticketID) {
     console.log("An error has occured while sending to the webhook!!!", e);
   })
 };
+
+async function sendError(err) {
+  //TODO:  Implement error handling feature to pass to Discord.
+  const Webhook = new Discord.WebhookClient(process.env.WEBHOOK_ID, process.env.WEBHOOK_TOKEN);
+  Webhook.send(`<@143840467312836609>, ${err}`).then(() => {
+  }).catch(e => {
+    console.log("An error has occured while sending to the webhook!!!", e);
+  })
+}
 
 async function sendNoteNotification(ticketID) {
   const Webhook = new Discord.WebhookClient(process.env.WEBHOOK_NOTE_ID, process.env.WEBHOOK_NOTE_TOKEN);
@@ -620,7 +628,7 @@ function Ticket(ticket) {
   this.discord_name = ticket.discord_name;
   this.type_of_ticket = ticket.type_of_ticket;
   this.submitted_on = new Date(ticket.submitted_on).toLocaleString();
-  this.closed_on = ticket.closed_on ? new Date(ticket.submitted_on).toLocaleString() : '-'
+  this.closed_on = ticket.closed_on ? new Date(ticket.closed_on).toLocaleString() : '-'
   this.server_assistance = ticket.server_assistance ? ticket.server_assistance.split('#').splice(1) : '-';
 };
 
