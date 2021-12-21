@@ -209,14 +209,16 @@
 							<hr />
 						<% } %>
 						<div>
-							<form method="POST" action="/notes-add/<%=ticket.id%>">
-								<div class="form-row">
-									<div class="form-group col-md-12">
-										<textarea class="form-control" name="description" rows="2"></textarea>
-										<input type="submit" class="btn btn-outline-dark pull-right mt-1" value="Add a new note">
-									</div>
-								</div>
-							</form>
+              <% if (user.isAdmin || user.discordID === ticket.discord_id) { %>
+                <form method="POST" action="/notes-add/<%=ticket.id%>">
+                  <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <textarea class="form-control" name="description" rows="2"></textarea>
+                      <input type="submit" class="btn btn-outline-dark pull-right mt-1" value="Add a new note">
+                    </div>
+                  </div>
+                </form>
+              <% } %>
 						</div>
 					</div>
           </div>
@@ -225,8 +227,8 @@
 
     <!--Buttons-->
     <% if (ticket.status === "NEW" || ticket.status === "OPEN") { %>
-      <div class="row greybox text-center">
-        <% if (user.isAdmin && ticket.status == "NEW") { %>
+      <% if (user.isAdmin && ticket.status == "NEW") { %>
+        <div class="row greybox text-center">
           <div class="col-sm-6">
             <button class="cancel-ticket btn btn-danger btn-md" data-toggle="modal" data-target="#cancelModal">Cancel ticket</button>
           </div>
@@ -236,18 +238,21 @@
             </form>
           </div>
         <% } else if (user.isAdmin && ticket.status == "OPEN") { %>
-          <div class="col-sm-6">
-            <button class="cancel-ticket btn btn-danger btn-md" data-toggle="modal" data-target="#cancelModal">Cancel ticket</button>
+          <div class="row greybox text-center">
+            <div class="col-sm-6">
+              <button class="cancel-ticket btn btn-danger btn-md" data-toggle="modal" data-target="#cancelModal">Cancel ticket</button>
+            </div>
+            <div class="col-sm-6">
+              <form method="POST" action="/complete/<%=ticket.id%>">
+                <input type="submit" class="btn btn-success btn-md" value="Complete ticket">
+              </form>
+            </div>
           </div>
-          <div class="col-sm-6">
-            <form method="POST" action="/complete/<%=ticket.id%>">
-              <input type="submit" class="btn btn-success btn-md" value="Complete ticket">
-            </form>
-          </div>
-        <% } %>
-        <% if (!user.isAdmin && ticket.status === "NEW" || !user.isAdmin && ticket.status === "OPEN") { %>
-          <div class="col-sm-12">
-            <button class="cancel-ticket btn btn-danger btn-md" data-toggle="modal" data-target="#cancelModal">Cancel ticket</button>
+        <% } else if (user.discordID === ticket.discord_id) { %>
+          <div class="row greybox text-center">
+            <div class="col-sm-12">
+              <button class="cancel-ticket btn btn-danger btn-md" data-toggle="modal" data-target="#cancelModal">Cancel ticket</button>
+            </div>
           </div>
         <% } %>
       </div>
