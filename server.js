@@ -26,6 +26,10 @@ const client = new pg.Client(process.env.DATABASE_URL);
 app.use(express.urlencoded({extended: true}));
 app.use(express.static('./public'));
 
+app.get('/test', catchAsync(async(req, res) => {
+  throw new Error("Zaff forgot to save his cookies again.");
+}));
+
 app.get('/', catchAsync(async(req, res) => {
   if (req.cookies[TOKEN] == null) return res.redirect('/login');
   let validateUser = await authenticateUser(req.cookies[TOKEN]);
@@ -51,23 +55,26 @@ app.post('/accept/:id', catchAsync(async(req, res) => {
 }));
 
 app.post('/add', catchAsync(async(req, res) => {
-  let option = req.body;
+  let option = req.body.data;
   let sqlQuery;
   let sqlValues = [];
-  //TODO:  Change to switch
   if (option.server_id) {
     sqlQuery = 'INSERT INTO servers (server_id, server_name) values ($1, $2);';
-    sqlValues = [req.body.server_id, req.body.server_name];
+    sqlValues = [option.server_id, option.server_name];
   }
   if (option.dino_name) {
     sqlQuery = 'INSERT INTO dinosaurs (name, spawn, lvl, imprint) values ($1, $2, $3, $4);';
-    sqlValues = [req.body.dino_name, req.body.dino_spawn, req.body.dino_lvl, req.body.dino_imprint];
+    sqlValues = [option.dino_name, option.dino_spawn, option.dino_lvl, option.dino_imprint];
   }
   if (option.dino_color_id) {
     sqlQuery = 'INSERT INTO dinocolors (color_id, color_name, color_hex) values ($1, $2, $3);';
-    sqlValues = [req.body.dino_color_id, req.body.dino_color_name, req.body.dino_color_hex];
+    sqlValues = [option.dino_color_id, option.dino_color_name, option.dino_color_hex];
   }
-  client.query(sqlQuery, sqlValues).then(res.redirect('/admin'));
+  client.query(sqlQuery, sqlValues).then(r => {
+    res.end(`{ "success" : "Record updated." , "status" : 200 } `);
+  }).catch(e => {
+    console.log(e); //TODO:  Clean this up later and implement error log handling.
+  }); 
 }));
 
 app.get('/admin', catchAsync(async(req, res) => {
@@ -261,23 +268,44 @@ app.get('/details/:id', catchAsync(async(req, res) => {
 }));
 
 app.post('/edit', catchAsync(async(req, res) => {
-  let option = req.body;
+  let option = req.body.data;
   let sqlQuery;
   let sqlValues = [];
-  //TODO:  Change to switch
-  if (option.server_id) {
+
+  if (option.actual_server_id) {
     sqlQuery = 'UPDATE servers SET server_id=$1, server_name=$2 where id=$3;';
-    sqlValues = [req.body.server_id, req.body.server_name, req.body.id];
+    sqlValues = [option.server_id, option.server_name, option.actual_server_id];
   }
-  if (option.dino_id) {
+  if (option.actual_dino_id) {
     sqlQuery = 'UPDATE dinosaurs SET name=$1, spawn=$2, lvl=$3, imprint=$4 where id=$5;';
-    sqlValues = [req.body.dino_name, req.body.dino_spawn, req.body.dino_lvl, req.body.dino_imprint, req.body.dino_id];
+    sqlValues = [option.dino_name, option.dino_spawn, option.dino_lvl, option.dino_imprint, option.actual_dino_id];
+  }
+  if (option.actual_color_id) {
+    sqlQuery = 'UPDATE dinocolors SET color_id=$1, color_name=$2, color_hex=$3 where id=$4;';
+    sqlValues = [option.dino_color_id, option.dino_color_name, option.dino_color_hex, option.actual_color_id];
+  }
+  client.query(sqlQuery, sqlValues).then(r => {
+    res.end(`{ "success" : "Record updated." , "status" : 200 } `);
+  }).catch(e => {
+    console.log(e); //TODO:  Clean this up later and implement error log handling.
+  }); 
+}));
+
+app.get('/fetch', catchAsync(async(req, res) => {
+  let option = req.query.data;
+  let data;
+  if (option.server_id) {
+    data = await queryServerList();
+    return res.send(data.rows);
+  }
+  if (option.dino_name) {
+    data = await queryDinosaurList();
+    return res.send(data.rows);
   }
   if (option.dino_color_id) {
-    sqlQuery = 'UPDATE dinocolors SET color_id=$1, color_name=$2, color_hex=$3 where id=$4;';
-    sqlValues = [req.body.dino_color_id, req.body.dino_color_name, req.body.dino_color_hex, req.body.id];
+    data = await queryDinosaurColors();
+    return res.send(data.rows);
   }
-  client.query(sqlQuery, sqlValues).then(res.redirect('/admin'));
 }));
 
 app.get('/login', (req, res) => {
@@ -341,7 +369,6 @@ app.post('/notes-edit/:note_id', catchAsync(async(req, res) => {
 app.post('/remove', catchAsync(async(req, res) => {
   let option = req.body;
   let sqlQuery;
-  //TODO:  Change to switch
   if (option.server_id) {
     sqlQuery = `DELETE FROM servers WHERE server_id = '${option.server_id}';`;
   }
@@ -473,12 +500,12 @@ async function sendNotification(ticketID) {
 };
 
 async function sendError(err) {
-  //TODO:  Implement error handling feature to pass to Discord.
-  const Webhook = new Discord.WebhookClient(process.env.WEBHOOK_ID, process.env.WEBHOOK_TOKEN);
-  Webhook.send(`<@143840467312836609>, ${err}`).then(() => {
-  }).catch(e => {
-    console.log("An error has occured while sending to the webhook!!!", e);
-  })
+  //TODO:  Implement error handling feature to pass to Discord?
+  // const Webhook = new Discord.WebhookClient(process.env.WEBHOOK_ID, process.env.WEBHOOK_TOKEN);
+  // Webhook.send(`<@143840467312836609>, ${err}`).then(() => {
+  // }).catch(e => {
+  //   console.log("An error has occured while sending to the webhook!!!", e);
+  // })
 }
 
 async function sendNoteNotification(ticketID) {
@@ -618,7 +645,7 @@ function currentDateAndTime() {
   + "/" + ("00" + date.getDate()).slice(-2) 
   + "/" + date.getFullYear() + " " 
   + ("00" + date.getHours()).slice(-2) + ":" 
-  + ("00" + date.getMinutes()).slice(-2) 
+  + ("00" + date.getMinutes()).slice(-2);
 };
 
 function Ticket(ticket) {
@@ -627,8 +654,8 @@ function Ticket(ticket) {
   this.ign = ticket.ign;
   this.discord_name = ticket.discord_name;
   this.type_of_ticket = ticket.type_of_ticket;
-  this.submitted_on = new Date(ticket.submitted_on).toLocaleString();
-  this.closed_on = ticket.closed_on ? new Date(ticket.closed_on).toLocaleString() : '-'
+  this.submitted_on = ticket.submitted_on
+  this.closed_on = ticket.closed_on ? ticket.closed_on : '-'
   this.server_assistance = ticket.server_assistance ? ticket.server_assistance.split('#').splice(1) : '-';
 };
 
