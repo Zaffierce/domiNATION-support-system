@@ -1,20 +1,18 @@
 <login-bar class="ng-scope">
-    <div class="login-bar">
-        Logged in as <%= user.username %> - <a target="_self" href="/logout">Log Out</a></div>
-    </login-bar>
-    <div id="content" class="ng-scope ng-view">
-        <p class="ng-scope">
-            <a class="nav-button" href="/">Home</a>
-            <a class="nav-button" href="/new">Open a Ticket</a>
-            <a class="nav-button" href="/">My Ticket History</a>
-            <% if (user.isAdmin === true || user.isStudent === true) { %>
-              <a class="nav-button" href="/all">All Tickets</a>
-              <% } %>
-            <% if (user.isAdmin === true) { %>
-              <a class="nav-button" href="/admin">Admin Panel</a>
-            <% } %>
-            <a class="nav-button" href="https://domination-gaming.com/">Return to main website</a>
-              </p>
-
-
-  
+  <div class="login-bar">
+    Logged in as <%= user.username %> - <a target="_self" href="/logout">Log Out</a>
+  </div>
+</login-bar>
+  <div id="content" class="ng-scope ng-view">
+    <p class="ng-scope">
+      <a class="nav-button" href="/">Home</a>
+      <a class="nav-button" href="/new">Open a Ticket</a>
+      <a class="nav-button" href="/">My Ticket History</a>
+      <% if (user.isAdmin === true || user.isStudent === true) { %>
+        <a class="nav-button" href="/all">All Tickets</a>
+        <% } %>
+      <% if (user.isAdmin === true) { %>
+        <a class="nav-button" href="/admin">Admin Panel</a>
+      <% } %>
+      <a class="nav-button" href="https://domination-gaming.com/">Return to main website</a>
+        </p>
