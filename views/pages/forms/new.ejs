@@ -25,15 +25,21 @@
                 <i class="fas fa-info-circle"></i>
                 </a>
               <% if (!user.servers.length) { %>
-                <input type="text" class="form-control" name="ign" required>
+                <input type="text" class="form-control mx-auto" name="ign" required>
               <% } else { %>
-              <select name="ign" class="form-control mx-auto" id="ign" required>
-                <option value="">Please choose a character...</option>
-                <% for (let i = 0; i < user.servers.length; i++) { %>
-                  <option value="<%=user.servers[i].characterName%>" id="<%=user.servers[i].serverID%>">
-                    <%=user.servers[i].characterName%> - Level <%=user.servers[i].characterLevel%>, DomiNATION #<%=user.servers[i].serverID%>
+              <select name="ign" class="form-control mx-auto" id="ign" required readonly>
+                <% if (user.servers.length === 1) { %>
+                  <option value="<%=user.servers[0].characterName%>" id="<%=user.servers[0].serverID%>">
+                    <%=user.servers[0].characterName%> - Level <%=user.servers[0].characterLevel%>, DomiNATION #<%=user.servers[0].serverID%>
                   </option>
-                <% }; %>
+                <% } else { %>
+                  <option value="">Please choose a character...</option>
+                  <% for (let i = 0; i < user.servers.length; i++) { %>
+                    <option value="<%=user.servers[i].characterName%>" id="<%=user.servers[i].serverID%>">
+                      <%=user.servers[i].characterName%> - Level <%=user.servers[i].characterLevel%>, DomiNATION #<%=user.servers[i].serverID%>
+                    </option>
+                  <% }; %>
+                <% } %>
               </select>
               <div class="invalid-feedback">Please choose a valid character.</div>
             <% } %>

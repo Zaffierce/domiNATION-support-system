@@ -18,20 +18,24 @@
             <div class="form-group">
               <label for="tribe_name">What is your tribe name?</label>
               <input type="text" name="tribe_name" class="form-control mx-auto" required>
+              <div class="invalid-feedback">Please enter your Tribe name.</div>
             </div>
             <div class="form-group">
               <label for="coordinates">Please provide the CCC location:
                 <%- include('../../partials/ccc.ejs'); %>
               </label>
               <input type="text" name="coordinates" class="form-control mx-auto" required>
+              <div class="invalid-feedback">Please enter a CCC location, if you require additional help click the <i class="fas fa-info-circle"></i> icon.</div>
             </div>
             <div class="form-group">
               <label for="issue">Please describe your issue:</label>
               <textarea type="text" name="issue" class="form-control mx-auto" rows="3" required></textarea>
+              <div class="invalid-feedback">Please describe your issue.</div>
             </div>
             <div class="form-group">
               <label for="resolution">What have you done to resolve this issue?</label>
               <textarea type="text" name="resolution" class="form-control mx-auto" rows="3" required></textarea>
+              <div class="invalid-feedback">Please tell us what you've done in attempts to resolve this on your own.</div>
             </div>
             <div class="text-center">
               <input type="submit" value="Submit Ticket">

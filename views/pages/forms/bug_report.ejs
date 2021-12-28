@@ -17,17 +17,20 @@
             <%- include('../../partials/completedGeneralTicket.ejs'); %>
             <div class="form-group">
               <label for="issue">Please tell us your issue:</label>
-              <textarea class="form-control mx-auto" id="issue" name="issue" rows="5"></textarea>
+              <textarea class="form-control mx-auto" id="issue" name="issue" rows="5" required></textarea>
+              <div class="invalid-feedback">Please describe your issue to us.</div>
             </div>
             <div class="form-group">
               <label for="recreate">Are you able to re-create this?  If so, how?</label>
-              <textarea class="form-control mx-auto" id="recreate" name="recreate" rows="3"></textarea>
+              <textarea class="form-control mx-auto" id="recreate" name="recreate" rows="3" required></textarea>
+              <div class="invalid-feedback">Please answer whether you are able to re-create this issue or not.</div>
             </div>
             <div class="form-group">
               <label for="lost_items">Did you lose any items due to this?
                 <div class="note mx-auto">Note:  Only items that you have proof of ownership may be reclaimed! (i.e. screenshots of your inventory)</div>
               </label>
-              <textarea class="form-control mx-auto" id="lost_items" name="lost_items" rows="3"></textarea>
+              <textarea class="form-control mx-auto" id="lost_items" name="lost_items" rows="3" required></textarea>
+              <div class="invalid-feedback">Please let us know if you've lost any items or not.</div>
             </div>
             <div class="text-center">
               <input type="submit" value="Submit Ticket">
