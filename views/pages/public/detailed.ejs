@@ -37,226 +37,232 @@
         <h1 class="ng-scope text-center"><%=ticket.type_of_ticket%></h1>
         <hr>
 				<!-- Tabs section -->
-        <div class="tabs">
-          <ul class="nav nav-tabs">
-            <li class="nav-item">
-							<span class="nav-link active" id="ticketTab">Ticket</span>
-						</li>
-						<li class="nav-item">
-							<span class="nav-link" id="notesTab">Notes (<%=notesSize%>)</span>
-						</li>
-          </ul>
-          <div id="ticket">
-            <!-- Ticket info -->
-            <% if (ticket.type_of_ticket === 'General Support Ticket') { %>
-              <div><strong>Tribe Name: </strong><%=ticket.gen_tribe_name%></div>
-              <div><strong>Server: </strong><%=ticket.server_assistance%></div>
-              <div><strong>CCC: </strong><%=ticket.gen_coordinates%></div>
-              <div><strong>Issue: </strong><%=ticket.gen_issue%></div>
-              <div><strong>Resolution: </strong><%=ticket.gen_resolution%></div>
-            <% } %>
-    
-            <% if (ticket.type_of_ticket === 'Element from Event') { %>
-              <div><strong>Event name: </strong><%=ticket.event_name%></div>
-              <div><strong>Server: </strong><%=ticket.event_serverid_dropoff%></div>
-              <div><strong>Patreon: </strong><%=ticket.event_patreon_status%></div>
-              <% if (ticket.event_element_dropoff_location) {%>
-                <div><strong>CCC: </strong><%=ticket.event_element_dropoff_location%></div>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="ticket-tab" data-toggle="tab" role="tab" href="#ticketTab" aria-controls="ticket" aria-selected="true">Ticket</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="notes-tab" data-toggle="tab" role="tab" href="#notesTab" aria-controls="notes" aria-selected="false">Notes (<%=notesSize%>)</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane greybox active" id="ticketTab" role="tabpanel" aria-labelledby="ticket-tab">
+            <div>
+              <br />
+              <% if (ticket.type_of_ticket === 'General Support Ticket') { %>
+                <div><strong>Tribe Name: </strong><%=ticket.gen_tribe_name%></div>
+                <div><strong>Server: </strong><%=ticket.server_assistance%></div>
+                <div><strong>CCC: </strong><%=ticket.gen_coordinates%></div>
+                <div><strong>Issue: </strong><%=ticket.gen_issue%></div>
+                <div><strong>Resolution: </strong><%=ticket.gen_resolution%></div>
+              <% } %>
+  
+              <% if (ticket.type_of_ticket === 'Element from Event') { %>
+                <div><strong>Event name: </strong><%=ticket.event_name%></div>
+                <div><strong>Server: </strong><%=ticket.event_serverid_dropoff%></div>
+                <div><strong>Patreon: </strong><%=ticket.event_patreon_status%></div>
+                <% if (ticket.event_element_dropoff_location) {%>
+                  <div><strong>CCC: </strong><%=ticket.event_element_dropoff_location%></div>
+                <% } %>
+                <br />
+                <div><strong>Spawn Code: </strong><button class="btn btn-outline-dark btn-sm " data-clipboard-action="copy" data-clipboard-target="#spawnCode" id="copy"><i class="far fa-copy"></i></button>
+                  <div id="spawnCode">
+                    <% if (ticket.event_patreon_status === 'Yes') { %>
+                        Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0 | Cheat GFI Element 50 0 0
+                    <% } else { %>
+                      Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0
+                    <% } %>
+                  </div>
+                </div>
+              <% } %>
+  
+              <% if (ticket.type_of_ticket === 'Transfer Element') { %>
+                <div><strong>Transferring from: </strong><%=ticket.transfer_serverid_pickup%></div>
+                <div><strong>CCC Pickup: </strong><%=ticket.transfer_server_pickup_location%></div>
+                <div><strong>Amount: </strong><%=ticket.transfer_amount%></div>
+                <div><strong>Transferring to: </strong><%=ticket.transfer_serverid_dropoff%></div>
+                <% if (ticket.transfer_server_dropoff_location) { %>
+                  <div><strong>CCC Dropoff: </strong><%=ticket.transfer_server_dropoff_location%></div>
               <% } %>
               <br />
               <div><strong>Spawn Code: </strong><button class="btn btn-outline-dark btn-sm " data-clipboard-action="copy" data-clipboard-target="#spawnCode" id="copy"><i class="far fa-copy"></i></button>
                 <div id="spawnCode">
-                  <% if (ticket.event_patreon_status === 'Yes') { %>
-                      Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0 | Cheat GFI Element 50 0 0
-                  <% } else { %>
-                    Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0 | Cheat GFI Element 100 0 0
+                  <% let i = 0; %>
+                  <% while (ticket.transfer_amount > 100) { %>
+                    <% ticket.transfer_amount = ticket.transfer_amount - 100;%>
+                    <% i++; %>
                   <% } %>
+                  <% for (let j = 0; j < i; j++) { %>
+                    Cheat GFI Element 100 0 0 |
+                  <% } %>
+                    Cheat GFI Element <%=ticket.transfer_amount%> 0 0
                 </div>
               </div>
-            <% } %>
-    
-            <% if (ticket.type_of_ticket === 'Transfer Element') { %>
-              <div><strong>Transferring from: </strong><%=ticket.transfer_serverid_pickup%></div>
-              <div><strong>CCC Pickup: </strong><%=ticket.transfer_server_pickup_location%></div>
-              <div><strong>Amount: </strong><%=ticket.transfer_amount%></div>
-              <div><strong>Transferring to: </strong><%=ticket.transfer_serverid_dropoff%></div>
-              <% if (ticket.transfer_server_dropoff_location) { %>
-                <div><strong>CCC Dropoff: </strong><%=ticket.transfer_server_dropoff_location%></div>
-             <% } %>
-             <br />
-             <div><strong>Spawn Code: </strong><button class="btn btn-outline-dark btn-sm " data-clipboard-action="copy" data-clipboard-target="#spawnCode" id="copy"><i class="far fa-copy"></i></button>
-              <div id="spawnCode">
-                <% let i = 0; %>
-                <% while (ticket.transfer_amount > 100) { %>
-                  <% ticket.transfer_amount = ticket.transfer_amount - 100;%>
-                  <% i++; %>
-                <% } %>
-                <% for (let j = 0; j < i; j++) { %>
-                  Cheat GFI Element 100 0 0 |
-                <% } %>
-                  Cheat GFI Element <%=ticket.transfer_amount%> 0 0
-              </div>
-            </div>
-            <% } %>
-    
-            <% if (ticket.type_of_ticket === 'Patreon Monthly Dino') { %>
-              <div><strong>Email Address: </strong><%=ticket.request_email_address%></div>
-              <div><strong>Server: </strong><%=ticket.request_serverid_dropoff%></div>
-              <% if (ticket.request_server_dropoff_location) { %>
-                <div><strong>CCC: </strong><%=ticket.request_server_dropoff_location%></div>
-             <% } %>
-              <div><strong>Dino: </strong><%=ticket.request_dino_name%></div>
-              <div><strong>Color option: </strong><%=ticket.request_colored%></div>
-                <% if (ticket.request_colored === "Yes") { %>
-                  <div><strong>Region 0: </strong><%=ticket.request_region0%></div>
-                  <div><strong>Region 1: </strong><%=ticket.request_region1%></div>
-                  <div><strong>Region 2: </strong><%=ticket.request_region2%></div>
-                  <div><strong>Region 3: </strong><%=ticket.request_region3%></div>
-                  <div><strong>Region 4: </strong><%=ticket.request_region4%></div>
-                  <div><strong>Region 5: </strong><%=ticket.request_region5%></div>
-                <% } %>
-                <div><strong>Sex: </strong><%=ticket.request_sex%></div>
-                <br />
+              <% } %>
+  
+              <% if (ticket.type_of_ticket === 'Patreon Monthly Dino') { %>
+                <div><strong>Email Address: </strong><%=ticket.request_email_address%></div>
+                <div><strong>Server: </strong><%=ticket.request_serverid_dropoff%></div>
+                <% if (ticket.request_server_dropoff_location) { %>
+                  <div><strong>CCC: </strong><%=ticket.request_server_dropoff_location%></div>
+              <% } %>
+                <div><strong>Dino: </strong><%=ticket.request_dino_name%></div>
+                <div><strong>Color option: </strong><%=ticket.request_colored%></div>
+                  <% if (ticket.request_colored === "Yes") { %>
+                    <div><strong>Region 0: </strong><%=ticket.request_region0%></div>
+                    <div><strong>Region 1: </strong><%=ticket.request_region1%></div>
+                    <div><strong>Region 2: </strong><%=ticket.request_region2%></div>
+                    <div><strong>Region 3: </strong><%=ticket.request_region3%></div>
+                    <div><strong>Region 4: </strong><%=ticket.request_region4%></div>
+                    <div><strong>Region 5: </strong><%=ticket.request_region5%></div>
+                  <% } %>
+                  <div><strong>Sex: </strong><%=ticket.request_sex%></div>
+                  <br />
+                  <% if (ticket.request_patreon_member_id) { %>
+                    <div><strong>Rewards Link:</strong> <a href="https://rewards.domination-gaming.com/status/<%=ticket.request_patreon_member_id%>" target="_blank">https://rewards.domination-gaming.com/status/<%=ticket.request_patreon_member_id%></a></div>
+                  <% } else { %>
+                    <div><strong>Rewards Link:</strong> No link available</div>
+                  <% } %>
+                  <br />
+                <div><strong>Spawn Code: </strong><button class="btn btn-outline-dark btn-sm " data-clipboard-action="copy" data-clipboard-target="#spawnCode" id="copy"><i class="far fa-copy"></i></button>
+                  <div id="spawnCode">
+                    <% if (ticket.request_dino_name === "Tek Skiff (No Insurance)") { %>
+                      cheat GFI HoverSkiff 1 0 0
+                    <% } else { %>
+                      cheat gmsummon "<%=dino.spawn%>" <%=dino.lvl%>
+                      <% if (ticket.request_colored === "Yes") { %>
+                        | cheat settargetdinocolor 0 <%=ticket.request_region0%> | cheat settargetdinocolor 1 <%=ticket.request_region1%> | cheat settargetdinocolor 2 <%=ticket.request_region2%> | cheat settargetdinocolor 3 <%=ticket.request_region3%> | cheat settargetdinocolor 4 <%=ticket.request_region4%> | cheat settargetdinocolor 5 <%=ticket.request_region5%>
+                      <% } %>
+                      <% if ((ticket.request_character_id !== null) && (dino.imprint === true)) { %> 
+                        | cheat setimprintedplayer <%= ticket.request_character_id %> | cheat setimprintquality 1
+                      <% } %>
+                    <% } %>
+                  </div>
+                </div>
+              <% } %>
+  
+              <% if (ticket.type_of_ticket === 'Patreon Insurance Request') { %>
+                <div><strong>Server: </strong> <%=ticket.server_assistance%></div>
+                <div><strong>Email Address: </strong><%=ticket.insurance_email_address%></div>
+                <div><strong>Dinosaur Link: </strong><a href="<%=ticket.insurance_dino_link%>"><%=ticket.insurance_dino_link%></a></div>
                 <% if (ticket.request_patreon_member_id) { %>
                   <div><strong>Rewards Link:</strong> <a href="https://rewards.domination-gaming.com/status/<%=ticket.request_patreon_member_id%>" target="_blank">https://rewards.domination-gaming.com/status/<%=ticket.request_patreon_member_id%></a></div>
                 <% } else { %>
                   <div><strong>Rewards Link:</strong> No link available</div>
                 <% } %>
-                <br />
-              <div><strong>Spawn Code: </strong><button class="btn btn-outline-dark btn-sm " data-clipboard-action="copy" data-clipboard-target="#spawnCode" id="copy"><i class="far fa-copy"></i></button>
-                <div id="spawnCode">
-                  <% if (ticket.request_dino_name === "Tek Skiff (No Insurance)") { %>
-                    cheat GFI HoverSkiff 1 0 0
-                  <% } else { %>
-                    cheat gmsummon "<%=dino.spawn%>" <%=dino.lvl%>
-                    <% if (ticket.request_colored === "Yes") { %>
-                      | cheat settargetdinocolor 0 <%=ticket.request_region0%> | cheat settargetdinocolor 1 <%=ticket.request_region1%> | cheat settargetdinocolor 2 <%=ticket.request_region2%> | cheat settargetdinocolor 3 <%=ticket.request_region3%> | cheat settargetdinocolor 4 <%=ticket.request_region4%> | cheat settargetdinocolor 5 <%=ticket.request_region5%>
-                    <% } %>
-                    <% if ((ticket.request_character_id !== null) && (dino.imprint === true)) { %> 
-                      | cheat setimprintedplayer <%= ticket.request_character_id %> | cheat setimprintquality 1
-                    <% } %>
+                <div><strong>Month claimed: </strong><%=ticket.insurance_month_claimed%></div>
+                <div><strong>How it died: </strong><%=ticket.insurance_explanation%></div>
+              <% } %>
+  
+              <% if (ticket.type_of_ticket === 'Ban Appeal') { %>
+                <div><strong>Email Address: </strong><%=ticket.ban_email_address%></div>
+                <div><strong>Steam ID: </strong><%=ticket.ban_steam_id%></div>
+                <div><strong>Ban Reason: </strong><%=ticket.ban_banned_reason%></div>
+                <div><strong>Unban Reason: </strong><%=ticket.ban_unban_reason%></div>
+              <% } %>
+  
+              <% if (ticket.type_of_ticket === 'Bug Report') { %>
+                <div><strong>Server: </strong><%=ticket.server_assistance%></div>
+                <div><strong>Details: </strong><%=ticket.bug_issue%></div>
+                <div><strong>Are you able to re-create? </strong><%=ticket.bug_recreate%></div>
+                <div><strong>Any items lost? </strong><%=ticket.bug_lost_items%></div>
+              <% } %>
+  
+              <% if (ticket.type_of_ticket === 'Anonymous') { %>
+                <div><strong>Details: </strong><%=ticket.anonymous_description%></div>
+              <% } %>
+            </div>
+            <!-- Ticket info -->
+           
+          </div>
+          <div class="tab-pane greybox" id="notesTab" role="tabpanel" aria-labelledby="notes-tab">
+            <!-- Notes info -->
+            <br />
+            <% for (let i = 0; i < notes.length; i++) { %>
+              <div>
+                <div id="notes-user"><%=notes[i].discord_name%> - <%=notes[i].date%></div>
+                <div class="ml-2 notes-desc">
+                  <%=notes[i].description%>
+                  <% if (notes[i].edited) { %>
+                    <div class="edited m-1">(edited)</div>
+                  <% } %>
+                </div>
+                <div class="ml-2 notes-desc-form" hidden>
+                  <form method="POST" action="/notes-edit/<%=notes[i].note_id%>" class="notes-edit-form">
+                  <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <textarea class="form-control" name="description" rows="2"><%=notes[i].description%></textarea>
+                      <input type="text" name="id" value="<%=ticket.id%>" hidden>
+                      <div class="notes-options notes-save-cancel-buttons">
+                        <a class="notes-save" href="#" tabindex="-1" role="button" type="submit">Save</a>
+                        <a class="notes-cancel" href="#" tabindex="-1" role="button">Cancel</a>
+                      </div>
+                    </div>
+                  </div>
+                  </form>
+                </div>
+                <div class="notes-options notes-edit-delete-buttons ml-2">
+                  <% if (notes[i].discord_id === user.discordID) { %>
+                    <a class="notes-edit" href="#" tabindex="-1" role="button">Edit</a>
+                  <% } %>
+                  <% if (notes[i].discord_id === user.discordID || user.isAdmin === true) { %>
+                    <a class="notes-delete" href="#" tabindex="-1" role="button" data-toggle="modal" data-target="#deleteModal" data-note_id="<%=notes[i].note_id%>" >Delete</a>
                   <% } %>
                 </div>
               </div>
+              <hr />
             <% } %>
-    
-            <% if (ticket.type_of_ticket === 'Patreon Insurance Request') { %>
-              <div><strong>Server: </strong> <%=ticket.server_assistance%></div>
-              <div><strong>Email Address: </strong><%=ticket.insurance_email_address%></div>
-              <div><strong>Dinosaur Link: </strong><a href="<%=ticket.insurance_dino_link%>"><%=ticket.insurance_dino_link%></a></div>
-              <% if (ticket.request_patreon_member_id) { %>
-                <div><strong>Rewards Link:</strong> <a href="https://rewards.domination-gaming.com/status/<%=ticket.request_patreon_member_id%>" target="_blank">https://rewards.domination-gaming.com/status/<%=ticket.request_patreon_member_id%></a></div>
-              <% } else { %>
-                <div><strong>Rewards Link:</strong> No link available</div>
-              <% } %>
-              <div><strong>Month claimed: </strong><%=ticket.insurance_month_claimed%></div>
-              <div><strong>How it died: </strong><%=ticket.insurance_explanation%></div>
-            <% } %>
-    
-            <% if (ticket.type_of_ticket === 'Ban Appeal') { %>
-              <div><strong>Email Address: </strong><%=ticket.ban_email_address%></div>
-              <div><strong>Steam ID: </strong><%=ticket.ban_steam_id%></div>
-              <div><strong>Ban Reason: </strong><%=ticket.ban_banned_reason%></div>
-              <div><strong>Unban Reason: </strong><%=ticket.ban_unban_reason%></div>
-            <% } %>
-    
-            <% if (ticket.type_of_ticket === 'Bug Report') { %>
-              <div><strong>Server: </strong><%=ticket.server_assistance%></div>
-              <div><strong>Details: </strong><%=ticket.bug_issue%></div>
-              <div><strong>Are you able to re-create? </strong><%=ticket.bug_recreate%></div>
-              <div><strong>Any items lost? </strong><%=ticket.bug_lost_items%></div>
-            <% } %>
-    
-            <% if (ticket.type_of_ticket === 'Anonymous') { %>
-              <div><strong>Details: </strong><%=ticket.anonymous_description%></div>
-            <% } %>
-          </div>
-          <div id="notes" hidden>
-						<!-- Notes info -->
-						<br />
-						<% for (let i = 0; i < notes.length; i++) { %>
-							<div>
-								<div id="notes-user"><%=notes[i].discord_name%> - <%=notes[i].date%></div>
-								<div class="ml-2 notes-desc">
-									<%=notes[i].description%>
-									<% if (notes[i].edited) { %>
-										<div class="edited m-1">(edited)</div>
-									<% } %>
-								</div>
-								<div class="ml-2 notes-desc-form" hidden>
-									<form method="POST" action="/notes-edit/<%=notes[i].note_id%>" class="notes-edit-form">
-									<div class="form-row">
-										<div class="form-group col-md-12">
-											<textarea class="form-control" name="description" rows="2"><%=notes[i].description%></textarea>
-											<input type="text" name="id" value="<%=ticket.id%>" hidden>
-											<div class="notes-options notes-save-cancel-buttons">
-												<a class="notes-save" href="#" tabindex="-1" role="button" type="submit">Save</a>
-												<a class="notes-cancel" href="#" tabindex="-1" role="button">Cancel</a>
-											</div>
-										</div>
-									</div>
-									</form>
-								</div>
-								<div class="notes-options notes-edit-delete-buttons ml-2">
-                  <% if (notes[i].discord_id === user.id) { %>
-                    <a class="notes-edit" href="#" tabindex="-1" role="button">Edit</a>
-                  <% } %>
-                  <% if (notes[i].discord_id === user.id || user.isAdmin === true) { %>
-                    <a class="notes-delete" href="#" tabindex="-1" role="button" data-toggle="modal" data-target="#deleteModal" data-note_id="<%=notes[i].note_id%>" >Delete</a>
-                  <% } %>
-								</div>
-							</div>
-							<hr />
-						<% } %>
-						<div>
+            <div>
               <% if (user.isAdmin || user.discordID === ticket.discord_id) { %>
                 <form method="POST" action="/notes-add/<%=ticket.id%>">
                   <div class="form-row">
                     <div class="form-group col-md-12">
-                      <textarea class="form-control" name="description" rows="2"></textarea>
+                      <textarea class="form-control" name="description" rows="1"></textarea>
                       <input type="submit" class="btn btn-outline-dark pull-right mt-1" value="Add a new note">
                     </div>
                   </div>
                 </form>
               <% } %>
-						</div>
-					</div>
+            </div>
           </div>
         </div>
+        <div class="col-md-9 buttons mx-auto pt-2">
+          <!--Buttons-->
+          <% if (ticket.status === "NEW" || ticket.status === "OPEN") { %>
+            <% if (user.isAdmin && ticket.status == "NEW") { %>
+              <div class="row text-center">
+                <div class="col-sm-6">
+                  <button class="cancel-ticket btn btn-danger btn-md" data-toggle="modal" data-target="#cancelModal">Cancel ticket</button>
+                </div>
+                <div class="col-sm-6">
+                  <form method="POST" action="/accept/<%=ticket.id%>">
+                    <input type="submit" class="btn btn-success btn-md" value="Accept ticket">
+                  </form>
+                </div>
+              <% } else if (user.isAdmin && ticket.status == "OPEN") { %>
+                <div class="row greybox text-center">
+                  <div class="col-sm-6">
+                    <button class="cancel-ticket btn btn-danger btn-md" data-toggle="modal" data-target="#cancelModal">Cancel ticket</button>
+                  </div>
+                  <div class="col-sm-6">
+                    <form method="POST" action="/complete/<%=ticket.id%>">
+                      <input type="submit" class="btn btn-success btn-md" value="Complete ticket">
+                    </form>
+                  </div>
+                </div>
+              <% } else if (user.discordID === ticket.discord_id) { %>
+                <div class="row greybox text-center">
+                  <div class="col-sm-12">
+                    <button class="cancel-ticket btn btn-danger btn-md" data-toggle="modal" data-target="#cancelModal">Cancel ticket</button>
+                  </div>
+                </div>
+              <% } %>
+            </div>
+          <% } %>
+        </div>
       </div>
+    </div>
 
-    <!--Buttons-->
-    <% if (ticket.status === "NEW" || ticket.status === "OPEN") { %>
-      <% if (user.isAdmin && ticket.status == "NEW") { %>
-        <div class="row greybox text-center">
-          <div class="col-sm-6">
-            <button class="cancel-ticket btn btn-danger btn-md" data-toggle="modal" data-target="#cancelModal">Cancel ticket</button>
-          </div>
-          <div class="col-sm-6">
-            <form method="POST" action="/accept/<%=ticket.id%>">
-              <input type="submit" class="btn btn-success btn-md" value="Accept ticket">
-            </form>
-          </div>
-        <% } else if (user.isAdmin && ticket.status == "OPEN") { %>
-          <div class="row greybox text-center">
-            <div class="col-sm-6">
-              <button class="cancel-ticket btn btn-danger btn-md" data-toggle="modal" data-target="#cancelModal">Cancel ticket</button>
-            </div>
-            <div class="col-sm-6">
-              <form method="POST" action="/complete/<%=ticket.id%>">
-                <input type="submit" class="btn btn-success btn-md" value="Complete ticket">
-              </form>
-            </div>
-          </div>
-        <% } else if (user.discordID === ticket.discord_id) { %>
-          <div class="row greybox text-center">
-            <div class="col-sm-12">
-              <button class="cancel-ticket btn btn-danger btn-md" data-toggle="modal" data-target="#cancelModal">Cancel ticket</button>
-            </div>
-          </div>
-        <% } %>
-      </div>
-    <% } %>
   </div>
   <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
