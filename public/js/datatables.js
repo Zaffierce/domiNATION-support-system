@@ -1,5 +1,8 @@
+
+
 $(() => {
-    $.fn.dataTable.moment( 'M/D/YYYY, H:m:ss A' );
+    
+    $.fn.dataTable.moment('MM/DD/YYYY HH:mm');
 
     $('#openTickets').DataTable({
         "order": [[0, "asc"]],
