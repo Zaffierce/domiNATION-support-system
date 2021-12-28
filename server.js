@@ -424,8 +424,8 @@ app.post('/ticket-submit', catchAsync(async(req, res) =>{
       break;
 
     case 'Ban Appeal':
-      sqlQueryInsert = 'INSERT INTO tickets (id, ign, discord_name, discord_id, server_assistance, status, time_to_contact, type_of_ticket, submitted_on, ban_steam_id, ban_email_address, ban_banned_reason, ban_unban_reason) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);';
-      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.discordID, ticket.serverAssistance, "NEW", ticket.timeToContact, ticket.typeOfRequest, timestamp, ticket.steam_id, ticket.email_address, ticket.banned_reason, ticket.unbanned_explanation];
+      sqlQueryInsert = 'INSERT INTO tickets (id, ign, discord_name, discord_id, server_assistance, status, time_to_contact, type_of_ticket, submitted_on, ban_steam_id, ban_banned_reason, ban_unban_reason) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);';
+      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.discordID, ticket.serverAssistance, "NEW", ticket.timeToContact, ticket.typeOfRequest, timestamp, ticket.steam_id, ticket.banned_reason, ticket.unbanned_explanation];
       break;
 
     case 'Bug Report':
