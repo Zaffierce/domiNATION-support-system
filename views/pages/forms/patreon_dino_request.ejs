@@ -107,10 +107,11 @@
               <% if (characterID) { %>
                 <input type="text" name="character_id" class="form-control" value="<%= characterID %>">
               <% } else { %>
-                <select name="ign" class="form-control mx-auto" id="ign" required>
+                <select name="character_id" class="form-control mx-auto" id="character_id" required>
                   <option value="">Please choose a character...</option>
                   <% for (let i = 0; i < user.servers.length; i++) { %>
-                    <option value="<%=user.servers[i].characterName%>" id="<%=user.servers[i].serverID%>">
+                    <!--`"${server.characterName}" ${server.characterID}`-->
+                    <option value='"<%=user.servers[i].characterName%>" <%=user.servers[i].characterID%>'>
                       <%=user.servers[i].characterName%> - Level <%=user.servers[i].characterLevel%>, DomiNATION #<%=user.servers[i].serverID%>
                     </option>
                   <% }; %>

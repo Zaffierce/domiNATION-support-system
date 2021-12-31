@@ -209,6 +209,8 @@ app.post('/creating-ticket', catchAsync(async(req, res) => {
       const dinos = await queryDinosaurList();
       const dino_colors = await queryDinosaurColors();
       patreon = await fetchPatreon(validateUser, req.cookies[TOKEN]);
+      console.log("characterID", characterID);
+      console.log("generalInfo", initialInfo);
       res.render('./pages/forms/patreon_dino_request',
       {user : validateUser,
       generalInfo : initialInfo,
