@@ -159,8 +159,8 @@ function ajaxFetch(obj, tab) {
                           <th>Server Name</th> 
                           <th>Server Number</th> 
                           <th>Post Office CCC</th>
-                          <th>Post Office LON</th>
                           <th>Post Office LAT</th>
+                          <th>Post Office LON</th>
                         </tr>`
         ticketnew = `<tr class="ng-scope"> 
                       <td> 
