@@ -11,6 +11,8 @@
   - Admin's must fill out the Post Office tab before completing a ticket.
   - Post Office tab is meant to replace the Admin Book functionality.
 - Improved Note Notifications to also hook into with the Domi Bot
+- Cleared out "+ Add a new X" forms in Admin Panel
+  - If you were to add multiple items at once instead of refreshing the page type of thing.
 
 12/28/2021
 - Huge Rework on Admin Panel

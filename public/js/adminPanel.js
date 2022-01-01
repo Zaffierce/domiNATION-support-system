@@ -143,6 +143,27 @@ $(() => {
     $('#editDinosaurColorModal-remove_dino_color_id').val($(this).data("colorid"));
   });
 
+  $('.add-server').on('click', function() {
+    let elements = ["#addServerModal-server_id", "#addServerModal-server_name", "#addServerModal-post_office_ccc", "#addServerModal-post_office_lat", "#addServerModal-post_office_lon"];
+    for (let i in elements) {
+      $(elements[i]).val(null);
+    }
+  });
+
+  $('.add-dinosaur').on('click', function() {
+    let elements = ["#addDinosaurModal-dino_name", "#addDinosaurModal-dino_spawn", "#addDinosaurModal-dino_lvl", "#addDinosaurModal-dino_imprint"];
+    for (let i in elements) {
+      $(elements[i]).val(null);
+    }
+  });
+
+  $('.add-dino-color').on('click', function() {
+    let elements = ["#addDinosaurColorModal-dino_color_id", "#addDinosaurColorModal-dino_color_name", "#addDinosaurColorModal-dino_color_hex"];
+    for (let i in elements) {
+      $(elements[i]).val(null);
+    }
+  });
+
   
 });
 
@@ -169,7 +190,8 @@ function ajaxFetch(obj, tab) {
                           tabindex="-1" 
                           role="button" 
                           data-toggle="modal" 
-                          data-target="#addServerModal">
+                          data-target="#addServerModal"
+                          onclick="onServerAddClick();">
                           Add a new server 
                         </a> 
                       </td> 
@@ -189,7 +211,8 @@ function ajaxFetch(obj, tab) {
                           tabindex="-1" 
                           role="button" 
                           data-toggle="modal" 
-                          data-target="#addDinosaurModal">
+                          data-target="#addDinosaurModal"
+                          onclick="onDinosaurAddClick();">
                           Add a new Dinosaur
                         </a> 
                       </td> 
@@ -208,7 +231,8 @@ function ajaxFetch(obj, tab) {
                           tabindex="-1" 
                           role="button" 
                           data-toggle="modal" 
-                          data-target="#addDinosaurColorModal">
+                          data-target="#addDinosaurColorModal"
+                          onclick="onDinosaurColorAddClick();">
                           Add a new color
                         </a> 
                       </td> 
@@ -219,7 +243,6 @@ function ajaxFetch(obj, tab) {
       $(`#${tab}`).find('.table-body').append(ticketnew);
       for (let i = 0; i < data.length; i++) {
         if (tab === "serverTab") { 
-          console.log(data);
           ticketrow = `<tr class="ng-scope"> 
                         <td>
                           <a class="edit-server" 
@@ -295,6 +318,30 @@ function ajaxFetch(obj, tab) {
       }
     }
   });
+}
+
+function onServerAddClick() {
+  let elements = ["#addServerModal-server_id", "#addServerModal-server_name", "#addServerModal-post_office_ccc", "#addServerModal-post_office_lat", "#addServerModal-post_office_lon"];
+    for (let i in elements) {
+      $(elements[i]).val(null);
+    }
+    $('#add-server-form').removeClass('was-validated');
+}
+
+function onDinosaurAddClick() {
+  let elements = ["#addDinosaurModal-dino_name", "#addDinosaurModal-dino_spawn", "#addDinosaurModal-dino_lvl", "#addDinosaurModal-dino_imprint"];
+  for (let i in elements) {
+    $(elements[i]).val(null);
+  }
+  $('#add-dinosaur-form').removeClass('was-validated');
+}
+
+function onDinosaurColorAddClick() {
+  let elements = ["#addDinosaurColorModal-dino_color_id", "#addDinosaurColorModal-dino_color_name", "#addDinosaurColorModal-dino_color_hex"];
+  for (let i in elements) {
+    $(elements[i]).val(null);
+  }
+  $('#add-dinosaur-color-form').removeClass('was-validated');
 }
 
 function onServerFormClick(d) {
