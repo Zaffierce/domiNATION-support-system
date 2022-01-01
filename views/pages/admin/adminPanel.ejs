@@ -26,12 +26,15 @@
     <div class="tab-content">
       <div class="tab-pane active" id="serverTab" role="tabpanel" aria-labelledby="server-list-tab">
         <h1>Server Listing</h1>
-        <table class="table table-striped col-lg-8">
+        <table class="table table-striped col-lg-12">
           <tbody class="table-body">
             <tr>
               <th>Full Name</th>
               <th>Server Name</th>
               <th>Server Number</th>
+              <th>Post Office CCC</th>
+              <th>Post Office LAT</th>
+              <th>Post Office LON</th>
             </tr>
             <tr class="ng-scope">
               <td>
@@ -55,12 +58,19 @@
                     data-target="#editServerModal" 
                     data-serverid="<%=servers[i].server_id%>"
                     data-actualserverid="<%=servers[i].id%>"
-                    data-servername="<%=servers[i].server_name%>">
+                    data-servername="<%=servers[i].server_name%>"
+                    data-serverpoccc="<%=servers[i].po_ccc%>"
+                    data-serverpolat="<%=servers[i].po_lat%>"
+                    data-serverpolon="<%=servers[i].po_lon%>"
+                    >
                     DomiNATION #<%=servers[i].server_id%> - <%=servers[i].server_name%>
                   </a>
                 </td>
                 <td><%=servers[i].server_name%></td>
                 <td><%=servers[i].server_id%></td>
+                <td><%=servers[i].po_ccc%></td>
+                <td><%=servers[i].po_lat%></td>
+                <td><%=servers[i].po_lon%></td>
               </tr>
             <% } %>
           </tbody>
@@ -180,6 +190,18 @@
                 <input type="text" class="form-control" id="addServerModal-server_name" name="server_name" value="" required />
                   <div class="invalid-feedback">Please enter a valid Server Name.</div>
               </div>
+              <div class="form-group">
+                <label for="server_name">Post Office CCC:</label>
+                <input type="text" class="form-control" id="addServerModal-post_office_ccc" name="po_ccc" value="" />
+              </div>
+              <div class="form-group">
+                <label for="server_name">Post Office LAT:</label>
+                <input type="text" class="form-control" id="addServerModal-post_office_lat" name="po_lat" value="" />
+              </div>
+              <div class="form-group">
+                <label for="server_name">Post Office LON:</label>
+                <input type="text" class="form-control" id="addServerModal-post_office_lon" name="po_lon" value="" />
+              </div>
             </form>
           </div>
           <div class="modal-footer">
@@ -211,6 +233,18 @@
                 <label for="server_name">Server Name:</label>
                 <input type="text" class="form-control" id="editServerModal-server_name" name="server_name" value="" required/>
                   <div class="invalid-feedback">Please enter a valid Server Name.</div>
+              </div>
+              <div class="form-group">
+                <label for="server_name">Post Office CCC:</label>
+                <input type="text" class="form-control" id="editServerModal-post_office_ccc" name="po_ccc" value="" />
+              </div>
+              <div class="form-group">
+                <label for="server_name">Post Office LAT:</label>
+                <input type="text" class="form-control" id="editServerModal-post_office_lat" name="po_lat" value="" />
+              </div>
+              <div class="form-group">
+                <label for="server_name">Post Office LON:</label>
+                <input type="text" class="form-control" id="editServerModal-post_office_lon" name="po_lon" value="" />
               </div>
             </form>
           </div>

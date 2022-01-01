@@ -39,20 +39,6 @@ $(() => {
     $(this).parent().parent().parent().parent().parent().find('.notes-edit-form').submit();
   });
 
-  $('#ticketTab').on('click', () => {
-    $('#notes').attr("hidden", "hidden");
-    $('#notesTab').removeClass("active");
-    $('#ticket').removeAttr("hidden");
-    $('#ticketTab').addClass("active");
-  }); 
-
-  $('#notesTab').on('click', function(event) {
-    $('#ticket').attr("hidden", "hidden");
-    $('#ticketTab').removeClass("active");
-    $('#notes').removeAttr("hidden");
-    $('#notesTab').addClass("active");
-  });
-
   $('.cancel-ticket').on('click', function(event) {
     event.preventDefault();
   });
@@ -89,6 +75,8 @@ $(() => {
     $(this).addClass('tooltipped')
     $(this).addClass('tooltipped-s')
   });
+
+
 
 });
 

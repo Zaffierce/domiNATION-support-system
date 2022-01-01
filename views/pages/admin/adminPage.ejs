@@ -9,6 +9,8 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.22/sorting/datetime-moment.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+<script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.2.0/js/dataTables.fixedHeader.min.js"></script>
+<script src="/js/adminPage.js" type="text/javascript"></script>
 
 </head>
 <body>
@@ -16,7 +18,7 @@
   <h1 class="ng-scope text-center">Administrative Panel</h1>
   <h3 class="ng-scope text-center">Open Tickets</h3>
   <div class="container">
-    <table class="table table-striped" id="openTickets">
+    <table class="table table-striped openTickets" id="openTickets">
       <thead>
         <tr>
           <th class="ng-scope">Date Submitted</th>
@@ -45,7 +47,7 @@
     <br />
     <h3 class="ng-scope text-center">Closed Tickets</h3>
     <br />
-    <table class="table table-striped" id="closedTickets">
+    <table class="table table-striped closedTickets" id="closedTickets">
       <thead>
         <tr>
           <th class="ng-scope">Date Completed</th>

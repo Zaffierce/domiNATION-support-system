@@ -15,14 +15,14 @@ $(() => {
       let adminPanelObj = [
         { 
           form_name : "add-server-form",
-          elements : ["#addServerModal-server_id", "#addServerModal-server_name"],
+          elements : ["#addServerModal-server_id", "#addServerModal-server_name", "#addServerModal-post_office_ccc", "#addServerModal-post_office_lat", "#addServerModal-post_office_lon"],
           tab : "serverTab",
           url : "/add",
           modal : "#addServerModal"
         },
         { 
           form_name : "edit-server-form",
-          elements : ["#editServerModal-server_id", "#editServerModal-actual_server_id", "#editServerModal-server_name"],
+          elements : ["#editServerModal-server_id", "#editServerModal-actual_server_id", "#editServerModal-server_name", "#editServerModal-post_office_ccc", "#editServerModal-post_office_lat", "#editServerModal-post_office_lon"],
           tab : "serverTab",
           url : "/edit",
           modal : "#editServerModal"
@@ -113,6 +113,9 @@ $(() => {
     $('#editServerModal-server_id').val($(this).data("serverid"));
     $('#editServerModal-actual_server_id').val($(this).data("actualserverid"));
     $('#editServerModal-server_name').val($(this).data("servername"));
+    $('#editServerModal-post_office_ccc').val($(this).data("serverpoccc"));
+    $('#editServerModal-post_office_lat').val($(this).data("serverpolat"));
+    $('#editServerModal-post_office_lon').val($(this).data("serverpolon"));
     $('#editServerModal-remove_server_id').val($(this).data("serverid"));
   });
 
@@ -154,7 +157,10 @@ function ajaxFetch(obj, tab) {
         ticketheader = `<tr class="ng-scope"> 
                           <th>Full Name</th> 
                           <th>Server Name</th> 
-                          <th> Server Number</th> 
+                          <th>Server Number</th> 
+                          <th>Post Office CCC</th>
+                          <th>Post Office LON</th>
+                          <th>Post Office LAT</th>
                         </tr>`
         ticketnew = `<tr class="ng-scope"> 
                       <td> 
@@ -213,6 +219,7 @@ function ajaxFetch(obj, tab) {
       $(`#${tab}`).find('.table-body').append(ticketnew);
       for (let i = 0; i < data.length; i++) {
         if (tab === "serverTab") { 
+          console.log(data);
           ticketrow = `<tr class="ng-scope"> 
                         <td>
                           <a class="edit-server" 
@@ -224,12 +231,18 @@ function ajaxFetch(obj, tab) {
                             data-serverid="${data[i].server_id}"
                             data-actualserverid="${data[i].id}"
                             data-servername="${data[i].server_name}"
+                            data-serverpoccc="${data[i].po_ccc}"
+                            data-serverpolat="${data[i].po_lat}"
+                            data-serverpolon="${data[i].po_lon}"
                             onclick="onServerFormClick($(this));">
                             DomiNATION #${data[i].server_id} - ${data[i].server_name} 
                           </a>
                         </td>
                         <td>${data[i].server_name}</td>
                         <td>${data[i].server_id}</td>
+                        <td>${data[i].po_ccc ? data[i].po_ccc : '-'}</td>
+                        <td>${data[i].po_lat ? data[i].po_lat : '-'}</td>
+                        <td>${data[i].po_lon ? data[i].po_lon : '-'}</td>
                       </tr>`
           $(`#${tab}`).find('.table-body').append(ticketrow);
         }
@@ -290,6 +303,9 @@ function onServerFormClick(d) {
   $('#editServerModal-actual_server_id').val(d.data("actualserverid"));
   $('#editServerModal-server_name').val(d.data("servername"));
   $('#editServerModal-remove_server_id').val(d.data("serverid"));
+  $('#editServerModal-post_office_ccc').val(d.data("serverpoccc"));
+  $('#editServerModal-post_office_lat').val(d.data("serverpolat"));
+  $('#editServerModal-post_office_lon').val(d.data("serverpolon"));
 }
 
 function onDinosaurFormClick(d) {

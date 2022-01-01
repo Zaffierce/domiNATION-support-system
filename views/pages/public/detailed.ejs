@@ -41,6 +41,11 @@
           <li class="nav-item">
             <a class="nav-link active" id="ticket-tab" data-toggle="tab" role="tab" href="#ticketTab" aria-controls="ticket" aria-selected="true">Ticket</a>
           </li>
+          <% if (ticket.type_of_ticket === 'Patreon Monthly Dino') { %>
+            <li class="nav-item">
+              <a class="nav-link" id="post-office-tab" data-toggle="tab" role="tab" href="#postOfficeTab" aria-controls="notes" aria-selected="false">Post Office</a>
+            </li>
+          <% } %>
           <li class="nav-item">
             <a class="nav-link" id="notes-tab" data-toggle="tab" role="tab" href="#notesTab" aria-controls="notes" aria-selected="false">Notes (<%=notesSize%>)</a>
           </li>
@@ -175,7 +180,6 @@
            
           </div>
           <div class="tab-pane greybox" id="notesTab" role="tabpanel" aria-labelledby="notes-tab">
-            <!-- Notes info -->
             <br />
             <% for (let i = 0; i < notes.length; i++) { %>
               <div>
@@ -224,6 +228,52 @@
               <% } %>
             </div>
           </div>
+          <div class="tab-pane greybox" id="postOfficeTab" role="tabpanel" aria-labelledby="post-office-tab">
+            <div>
+              <% if ((ticket.status === "NEW" || ticket.status === "OPEN") && ticket.po_saved === false ) { %> 
+                <% if (!user.isAdmin) { %>
+                  <div>Your ticket has not yet been completed, please check this tab again later.</div>
+                <% } else { %>
+                  <div><strong><%=ticket.request_serverid_dropoff%></strong> <button class="btn btn-outline-dark btn-sm " data-clipboard-action="copy" data-clipboard-target="#serverCCC" id="copy"><i class="far fa-copy"></i></button>
+                    <div id="serverCCC">
+                      cheat setplayerpos <%=server.po_ccc%>
+                    </div>
+                  </div>
+                  <form class="needs-validation justify-content-center" novalidate method="POST" action="/save-pat-dino/<%=ticket.id%>" id="save-pat-dino-form">
+                    <div class="form-group">
+                      <label for="container_type">Container Type:</label>
+                      <select class="form-control" id="save-pat-container-type" name="container_type" required>
+                        <option value="" selected >Please choose a container...</option>
+                        <option value="Cryofridge">Cryofridge</option>
+                        <option value="Dedicated Storage">Dedicated Storage</option>
+                        <option value="Tek Storage">Tek Storage</option>
+                        <option value="Vault">Vault</option>
+                      </select>
+                        <div class="invalid-feedback">Please choose a valid container.</div>
+                    </div>
+                    <div class="form-group">
+                      <label for="container_number">Container Number:</label>
+                      <input type="number" class="form-control" id="save-pat-container-number" name="container_number" value="" required/>
+                        <div class="invalid-feedback">Please enter a container number.</div>
+                    </div>
+                    <div class="form-group">
+                      <label for="container_pin">PIN Code:</label>
+                      <input type="text" class="form-control" id="save-pat-container-pin" name="container_pin" value="" minlength="4" maxlength="4" required />
+                      <div class="invalid-feedback">Please enter a PIN number.</div>
+                      <input type="text" id="ticket-id" name="ticket_id" value="<%=ticket.id%>" hidden>
+                    </div>
+                  </form>
+                  <button type="submit" form="save-pat-dino-form" class="btn btn-success">Save</button>
+                <% } %>
+              <% } else { %>
+                <div><strong>Server: </strong><%=ticket.request_serverid_dropoff%></div>
+                <div><strong>Post Office Coords: </strong> LAT <%=server.po_lat%>, LON <%=server.po_lon%></div>
+                <div><strong>Container Type: </strong><%=ticket.po_type%></div>
+                <div><strong>Container Number: </strong><%=ticket.po_num%></div>
+                <div><strong>PIN Code: </strong><%=ticket.po_pin%></div>
+              <% } %>
+            </div>
+          </div>
         </div>
         <div class="col-md-9 buttons mx-auto pt-2">
           <!--Buttons-->
@@ -243,11 +293,20 @@
                   <div class="col-sm-6">
                     <button class="cancel-ticket btn btn-danger btn-md" data-toggle="modal" data-target="#cancelModal">Cancel ticket</button>
                   </div>
+                  <% if (ticket.type_of_ticket === 'Patreon Monthly Dino' && ticket.po_saved === false) { %>
+                    <div class="col-sm-6">
+                      <form method="POST" action="/complete/<%=ticket.id%>">
+                        <input type="submit" class="btn btn-success btn-md complete-button" value="Complete ticket" disabled>
+                        <div class="button-note">You must complete the Post Office tab first.</div>
+                      </form>
+                    </div>
+                  <% } else { %>
                   <div class="col-sm-6">
                     <form method="POST" action="/complete/<%=ticket.id%>">
                       <input type="submit" class="btn btn-success btn-md" value="Complete ticket">
                     </form>
                   </div>
+                  <% } %>
                 </div>
               <% } else if (user.discordID === ticket.discord_id) { %>
                 <div class="row greybox text-center">

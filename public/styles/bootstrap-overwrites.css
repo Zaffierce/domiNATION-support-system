@@ -21,3 +21,16 @@ body {
 .table-striped>tbody>tr:nth-of-type(odd) {
   background-color: #f9f9f9;
 }
+
+thead input {
+  width: 100%;
+}
+
+.button-note { 
+  display: none;
+}
+
+.complete-button:hover + .button-note {
+  display: block;
+  color: red;
+}

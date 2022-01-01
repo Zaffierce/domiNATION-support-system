@@ -50,7 +50,7 @@ app.post('/accept/:id', catchAsync(async(req, res) => {
   let timestamp = currentDateAndTime();
   let sqlQuery = 'UPDATE tickets SET status=$1, accepted_by=$2, accepted_on=$3 where id=$4;'
   let sqlArr = ["OPEN", validateUser.username, timestamp, ticket_id];
-  createNote(ticket_id, 'OPEN', timestamp, validateUser.username);
+  createNote(ticket_id, 'OPEN', timestamp, `${validateUser.username}#${validateUser.discriminator}`);
   client.query(sqlQuery, sqlArr).then(res.redirect(`/details/${ticket_id}`));
 }));
 
@@ -59,8 +59,8 @@ app.post('/add', catchAsync(async(req, res) => {
   let sqlQuery;
   let sqlValues = [];
   if (option.server_id) {
-    sqlQuery = 'INSERT INTO servers (server_id, server_name) values ($1, $2);';
-    sqlValues = [option.server_id, option.server_name];
+    sqlQuery = 'INSERT INTO servers (server_id, server_name, po_ccc, po_lat, po_lon) values ($1, $2, $3, $4, $5);';
+    sqlValues = [option.server_id, option.server_name, option.post_office_ccc, option.post_office_lat, option.post_office_lon];
   }
   if (option.dino_name) {
     sqlQuery = 'INSERT INTO dinosaurs (name, spawn, lvl, imprint) values ($1, $2, $3, $4);';
@@ -134,7 +134,13 @@ app.post('/cancel/:id', catchAsync(async(req, res) => {
   let timestamp = currentDateAndTime();
   let sqlQuery = 'UPDATE tickets SET status=$1, closed_by=$2, closed_on=$3 where id=$4;'
   let sqlArr = ["CANCELLED", validateUser.username, timestamp, ticket_id];
-  createNote(ticket_id, `Ticket cancelled for reason:  ${req.body.cancel_desc} - ${validateUser.username}`, timestamp, validateUser.username);
+  const originalUserID = await client.query(`SELECT discord_id FROM tickets where id = '${ticket_id}';`);
+  createNote(ticket_id, `Ticket cancelled for reason:  ${req.body.cancel_desc} - ${validateUser.username}#${validateUser.discriminator}`, timestamp, validateUser.username);
+  if (validateUser.discordID != originalUserID.rows[0].discord_id) {
+    if (originalUserID.rows[0].discord_id != null) {
+      sendNoteNotification(ticket_id, 'CANCELLED');
+    };
+  }
   client.query(sqlQuery, sqlArr).then(res.redirect(`/details/${ticket_id}`));
 }));
 
@@ -144,7 +150,13 @@ app.post('/complete/:id', catchAsync(async(req, res) => {
   let timestamp = currentDateAndTime();
   let sqlQuery = 'UPDATE tickets SET status=$1, closed_by=$2, closed_on=$3 where id=$4;'
   let sqlArr = ["COMPLETE", validateUser.username, timestamp, ticket_id];
-  createNote(ticket_id, `COMPLETE`, timestamp, validateUser.username);
+  const originalUserID = await client.query(`SELECT discord_id FROM tickets where id = '${ticket_id}';`);
+  createNote(ticket_id, `COMPLETE`, timestamp, `${validateUser.username}#${validateUser.discriminator}`);
+  if (validateUser.discordID != originalUserID.rows[0].discord_id) {
+    if (originalUserID.rows[0].discord_id != null) {
+      sendNoteNotification(ticket_id, 'COMPLETED');
+    };
+  }
   client.query(sqlQuery, sqlArr).then(res.redirect('/all'));
 }));
 
@@ -209,8 +221,6 @@ app.post('/creating-ticket', catchAsync(async(req, res) => {
       const dinos = await queryDinosaurList();
       const dino_colors = await queryDinosaurColors();
       patreon = await fetchPatreon(validateUser, req.cookies[TOKEN]);
-      console.log("characterID", characterID);
-      console.log("generalInfo", initialInfo);
       res.render('./pages/forms/patreon_dino_request',
       {user : validateUser,
       generalInfo : initialInfo,
@@ -256,14 +266,19 @@ app.get('/details/:id', catchAsync(async(req, res) => {
     let ticket_id = req.params.id;
     const queryNotes = await client.query(`SELECT * FROM notes WHERE ticket_id = '${ticket_id}' ORDER BY date ASC;`);
     client.query(`SELECT * FROM tickets WHERE id ='${ticket_id}';`).then(sqlRes => {
+      let gross = '1';
+      if (sqlRes.rows[0].request_serverid_dropoff) gross = sqlRes.rows[0].request_serverid_dropoff.split("#").splice(1)[0].split(" ")[0];
       client.query(`SELECT * FROM dinosaurs WHERE name ='${sqlRes.rows[0].request_dino_name}';`).then(results => {
-        res.render('./pages/public/detailed', {
-          user : validateUser,
-          ticket : sqlRes.rows[0],
-          notes : queryNotes.rows,
-          notesSize : queryNotes.rowCount,
-          dino : results.rows[0]
-        });
+        client.query(`SELECT * FROM servers WHERE server_id = '${gross}';`).then(r => {
+          res.render('./pages/public/detailed', {
+            user : validateUser,
+            ticket : sqlRes.rows[0],
+            notes : queryNotes.rows,
+            notesSize : queryNotes.rowCount,
+            dino : results.rows[0],
+            server : r.rows[0]
+          });
+        })
       })
     });   
   }
@@ -275,8 +290,8 @@ app.post('/edit', catchAsync(async(req, res) => {
   let sqlValues = [];
 
   if (option.actual_server_id) {
-    sqlQuery = 'UPDATE servers SET server_id=$1, server_name=$2 where id=$3;';
-    sqlValues = [option.server_id, option.server_name, option.actual_server_id];
+    sqlQuery = 'UPDATE servers SET server_id=$1, server_name=$2, po_ccc=$3, po_lat=$4, po_lon=$5 where id=$6;';
+    sqlValues = [option.server_id, option.server_name, option.post_office_ccc, option.post_office_lat, option.post_office_lon, option.actual_server_id];
   }
   if (option.actual_dino_id) {
     sqlQuery = 'UPDATE dinosaurs SET name=$1, spawn=$2, lvl=$3, imprint=$4 where id=$5;';
@@ -291,6 +306,30 @@ app.post('/edit', catchAsync(async(req, res) => {
   }).catch(e => {
     console.log(e); //TODO:  Clean this up later and implement error log handling.
   }); 
+}));
+
+app.post('/save-pat-dino/:id', catchAsync(async(req, res) => {
+  const validateUser = await authenticateUser(req.cookies[TOKEN]);
+  let ticket_id = req.params.id;
+  let ticket = req.body;
+  let sqlQuery = 'UPDATE tickets SET po_type=$1, po_num=$2, po_pin=$3, po_saved=$4 WHERE id=$5';
+  let sqlValue = [ticket.container_type, ticket.container_number, ticket.container_pin, true, ticket_id];
+  let timestamp = currentDateAndTime();
+  let status = `Your request has been completed by ${validateUser.username}#${validateUser.discriminator}!  Please view the "Post Office" tab for specific details on how to claim your reward.`
+  const originalUserID = await client.query(`SELECT discord_id FROM tickets where id = '${ticket_id}';`);
+  
+  client.query(sqlQuery, sqlValue).then(r => {
+    createNote(ticket_id, status, timestamp, `${validateUser.username}#${validateUser.discriminator}`);
+    if (validateUser.discordID != originalUserID.rows[0].discord_id) {
+      if (originalUserID.rows[0].discord_id != null) {
+        sendNoteNotification(ticket_id, 'UPDATE');
+      };
+    }
+    res.redirect(`/details/${ticket_id}`)
+  }
+  ).catch(e => {
+    console.log(e); //TODO:  Error handling.
+  });
 }));
 
 app.get('/fetch', catchAsync(async(req, res) => {
@@ -343,10 +382,9 @@ app.post('/notes-add/:id', catchAsync(async(req, res) => {
   let sqlQuery = 'INSERT INTO notes (note_id, ticket_id, description, date, discord_name, discord_id) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5);';
   let sqlArr = [ticketID, req.body.description, timestamp, validateUser.username, validateUser.discordID];
   const originalUserID = await client.query(`SELECT discord_id FROM tickets where id = '${ticketID}';`);
-  // sendNoteNotification(ticketID);
   if (validateUser.discordID != originalUserID.rows[0].discord_id) {
     if (originalUserID.rows[0].discord_id != null) {
-      sendNoteNotification(ticketID);
+      sendNoteNotification(ticketID, 'UPDATE');
     };
   }
   client.query(sqlQuery, sqlArr).then(res.redirect(`/details/${ticketID}`));
@@ -416,8 +454,8 @@ app.post('/ticket-submit', catchAsync(async(req, res) =>{
       break;
 
     case 'Patreon Monthly Dino':
-      sqlQueryInsert = 'INSERT INTO tickets (id, ign, discord_name, discord_id, server_assistance, status, time_to_contact, type_of_ticket, submitted_on, request_serverid_dropoff, request_dino_name, request_colored, request_region0, request_region1, request_region2, request_region3, request_region4, request_region5, request_sex, request_email_address, request_character_id, request_patreon_member_id) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21);';
-      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.discordID, ticket.serverAssistance, "NEW", ticket.timeToContact, ticket.typeOfRequest, timestamp, ticket.serverid_dropoff, ticket.dino_choice, ticket.dino_color, ticket.region0, ticket.region1, ticket.region2, ticket.region3, ticket.region4, ticket.region5, ticket.sex, ticket.email_address, ticket.character_id, ticket.patreonMemberID];
+      sqlQueryInsert = 'INSERT INTO tickets (id, ign, discord_name, discord_id, server_assistance, status, time_to_contact, type_of_ticket, submitted_on, request_serverid_dropoff, request_dino_name, request_colored, request_region0, request_region1, request_region2, request_region3, request_region4, request_region5, request_sex, request_email_address, request_character_id, request_patreon_member_id, po_saved) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22);';
+      sqlValueArr = [ticket.ign, ticket.discordName, validateUser.discordID, ticket.serverAssistance, "NEW", ticket.timeToContact, ticket.typeOfRequest, timestamp, ticket.serverid_dropoff, ticket.dino_choice, ticket.dino_color, ticket.region0, ticket.region1, ticket.region2, ticket.region3, ticket.region4, ticket.region5, ticket.sex, ticket.email_address, ticket.character_id, ticket.patreonMemberID, false];
       break;
 
     case 'Patreon Insurance Request':
@@ -483,6 +521,9 @@ async function createNote(ticket_id, status, timestamp, user_name) {
     case 'COMPLETE' :
       status = `Ticket completed - ${user_name}`;
       break;
+    
+    default :
+      status ? status : 'ERROR.';
   }
 
   let sqlQuery = 'INSERT INTO notes (note_id, ticket_id, description, date, discord_name, discord_id) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5);'
@@ -510,22 +551,23 @@ async function sendError(err) {
   // })
 }
 
-async function sendNoteNotification(ticketID) {
+async function sendNoteNotification(ticketID, type) {
   const Webhook = new Discord.WebhookClient(process.env.WEBHOOK_NOTE_ID, process.env.WEBHOOK_NOTE_TOKEN);
   client.query(`SELECT discord_id from tickets where id = '${ticketID}';`).then(sqlRes => {
     let userID = sqlRes.rows[0].discord_id;
-    Webhook.send(`<@${userID}>,  https://support.domination-gaming.com/details/${ticketID}`);
+    Webhook.send(`<@${userID}>, ${type}, https://support.domination-gaming.com/details/${ticketID}`);
   });
 };
 
 async function authenticateUser(token) {
-  let result = {
+    let result = {
     isStudent: false,
     isAdmin: false,
     isPatreon: false,
     isSupPlus: false,
     username: null,
     discriminator: null,
+    nickname: null,
     discordID: null,
     steamID: null,
     patronID: null,
@@ -574,6 +616,7 @@ async function authenticateUser(token) {
             isSupPlus: result.isSupPlus,
             username: user.user.username,
             discriminator: user.user.discriminator,
+            nickname: user.nick,
             discordID: user.user.id,
             steamID: res.body.steamId,
             patronID: null,
@@ -596,6 +639,7 @@ async function authenticateUser(token) {
           username: user.user.username,
           discriminator: user.user.discriminator,
           discordID: user.user.id,
+          nickname: user.nick,
           steamID: res.body.steamId,
           patronID: null,
           email: null,

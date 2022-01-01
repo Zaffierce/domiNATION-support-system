@@ -136,3 +136,11 @@ label {
   background-color: #dbdbdb;
   padding: 5px;
 }
+
+#serverCCC {
+  border: 1px solid black;
+  font-family: monospace;
+  font-size: 12px;
+  background-color: #dbdbdb;
+  padding: 5px;
+}

@@ -1,5 +1,17 @@
 # DomiNATION Change Log
 
+
+12/30/2021
+- Corrected bug with character_id on Patreon Dino Tickets
+- Implemented Sort/Search functionality on Closed Tickets
+- Implemented Post Office functionality for each Server
+  - Each Server has a CCC, X and Y location for that cooresponding Post Office
+  - tickets and server DB modified with new columns
+- Patreon Dino Tickets now have a "Post Office" tab implemented
+  - Admin's must fill out the Post Office tab before completing a ticket.
+  - Post Office tab is meant to replace the Admin Book functionality.
+- Improved Note Notifications to also hook into with the Domi Bot
+
 12/28/2021
 - Huge Rework on Admin Panel
   - AP is now rendered into a Table and displays additional data for each section
