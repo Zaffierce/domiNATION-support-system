@@ -464,7 +464,7 @@ app.post('/ticket-submit', catchAsync(async(req, res) =>{
       break;
 
     case 'Ban Appeal':
-      sqlQueryInsert = 'INSERT INTO tickets (id, ign, discord_name, discord_id, server_assistance, status, time_to_contact, type_of_ticket, submitted_on, ban_steam_id, ban_banned_reason, ban_unban_reason) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);';
+      sqlQueryInsert = 'INSERT INTO tickets (id, ign, discord_name, discord_id, server_assistance, status, time_to_contact, type_of_ticket, submitted_on, ban_steam_id, ban_banned_reason, ban_unban_reason) VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);';
       sqlValueArr = [ticket.ign, ticket.discordName, validateUser.discordID, ticket.serverAssistance, "NEW", ticket.timeToContact, ticket.typeOfRequest, timestamp, ticket.steam_id, ticket.banned_reason, ticket.unbanned_explanation];
       break;
 
@@ -479,7 +479,7 @@ app.post('/ticket-submit', catchAsync(async(req, res) =>{
   }
   client.query(sqlQueryInsert, sqlValueArr).then(() => {
     client.query('SELECT id from tickets ORDER BY incrementer DESC LIMIT 1;').then(sqlRes => {
-      sendNotification(sqlRes.rows);
+      sendNotification(sqlRes.rows, validateUser, sqlValueArr);
       if (ticketType === 'Anonymous') {
         createNote(sqlRes.rows[0].id, 'NEW', timestamp, 'ANON');
       } else {
@@ -531,15 +531,22 @@ async function createNote(ticket_id, status, timestamp, user_name) {
   client.query(sqlQuery, sqlArr);
 }
 
-async function sendNotification(ticketID) {
+async function sendNotification(ticketID, userInfo, ticketInfo) {
   const Webhook = new Discord.WebhookClient(process.env.WEBHOOK_ID, process.env.WEBHOOK_TOKEN);
-  let content;
-  let id = ticketID[0].id
-  content = `<https://support.domination-gaming.com/details/${id}>`;
-  Webhook.send('```**A new ticket has been submitted!**```\n'+content).then(() => {
-  }).catch(e => {
-    console.log("An error has occured while sending to the webhook!!!", e);
-  })
+  let embed = new Discord.MessageEmbed()
+    .setColor("#3E82F7")
+    .setTitle("A new ticket has been submitted!")
+    .setURL(`https://support.domination-gaming.com/details/${ticketID[0].id}`)
+    .setAuthor(`${userInfo.nickname ? userInfo.nickname : userInfo.username }`, `https://cdn.discordapp.com/avatars/${userInfo.discordID}/${userInfo.picture}`)
+    .setThumbnail("https://cdn.discordapp.com/attachments/655243934355816448/923441232573763644/KakoenWeWoo.gif")
+    .addFields( 
+      { name: "User", value: `${ticketInfo[0]} / ${ticketInfo[1]}` },
+      { name: "Ticket Type", value: ticketInfo[6] },
+      { name: "Ticket Link", value: `https://support.domination-gaming.com/details/${ticketID[0].id}` },
+    )
+    .setTimestamp()
+    .setFooter('Submitted on')
+  Webhook.send({embeds: [embed]})
 };
 
 async function sendError(err) {
