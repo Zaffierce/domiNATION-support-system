@@ -534,18 +534,35 @@ async function createNote(ticket_id, status, timestamp, user_name) {
 async function sendNotification(ticketID, userInfo, ticketInfo) {
   const Webhook = new Discord.WebhookClient(process.env.WEBHOOK_ID, process.env.WEBHOOK_TOKEN);
   let embed = new Discord.MessageEmbed()
-    .setColor("#3E82F7")
-    .setTitle("A new ticket has been submitted!")
-    .setURL(`https://support.domination-gaming.com/details/${ticketID[0].id}`)
-    .setAuthor(`${userInfo.nickname ? userInfo.nickname : userInfo.username }`, `https://cdn.discordapp.com/avatars/${userInfo.discordID}/${userInfo.picture}`)
-    .setThumbnail("https://cdn.discordapp.com/attachments/655243934355816448/923441232573763644/KakoenWeWoo.gif")
-    .addFields( 
-      { name: "User", value: `${ticketInfo[0]} / ${ticketInfo[1]}` },
-      { name: "Ticket Type", value: ticketInfo[6] },
-      { name: "Ticket Link", value: `https://support.domination-gaming.com/details/${ticketID[0].id}` },
-    )
-    .setTimestamp()
-    .setFooter('Submitted on')
+  if (ticketInfo[1] === "Anonymous") {
+    embed
+      .setColor("#3E82F7")
+      .setTitle("A new ticket has been submitted!")
+      .setURL(`https://support.domination-gaming.com/details/${ticketID[0].id}`)
+      .setAuthor(`Anonymous`)
+      .setThumbnail("https://cdn.discordapp.com/attachments/655243934355816448/923441232573763644/KakoenWeWoo.gif")
+      .addFields( 
+        { name: "User", value: `Anonymous` },
+        { name: "Ticket Type", value: ticketInfo[1] },
+        { name: "Ticket Link", value: `https://support.domination-gaming.com/details/${ticketID[0].id}` },
+      )
+      .setTimestamp()
+      .setFooter('Submitted on')
+  } else {
+    embed
+      .setColor("#3E82F7")
+      .setTitle("A new ticket has been submitted!")
+      .setURL(`https://support.domination-gaming.com/details/${ticketID[0].id}`)
+      .setAuthor(`${userInfo.nickname ? userInfo.nickname : userInfo.username }`, `https://cdn.discordapp.com/avatars/${userInfo.discordID}/${userInfo.picture}`)
+      .setThumbnail("https://cdn.discordapp.com/attachments/655243934355816448/923441232573763644/KakoenWeWoo.gif")
+      .addFields( 
+        { name: "User", value: `${ticketInfo[0]} / ${ticketInfo[1]}` },
+        { name: "Ticket Type", value: ticketInfo[6] },
+        { name: "Ticket Link", value: `https://support.domination-gaming.com/details/${ticketID[0].id}` },
+      )
+      .setTimestamp()
+      .setFooter('Submitted on')
+  }
   Webhook.send({embeds: [embed]})
 };
 
