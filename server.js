@@ -33,7 +33,6 @@ app.get('/test', catchAsync(async(req, res) => {
 app.get('/', catchAsync(async(req, res) => {
   if (req.cookies[TOKEN] == null) return res.redirect('/login');
   let validateUser = await authenticateUser(req.cookies[TOKEN]);
-  console.log(validateUser);
   if (validateUser.principalId == null) return res.redirect('/login');
   else if (validateUser.isFound === false) return res.render('./pages/user_not_found', { user: validateUser }); 
   else {
@@ -106,7 +105,6 @@ app.get('/all', catchAsync(async(req, res) => {
 
       let openTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'NEW' OR status = 'OPEN') ORDER BY incrementer ASC;");
       let closedTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY incrementer DESC;");
-      console.log(openTickets)
       res.render('./pages/admin/adminPage', {
         user : validateUser,
         openTickets : openTickets,
@@ -604,7 +602,6 @@ async function sendNoteNotification(ticketID, type) {
 };
 
 async function authenticateUser(token) {
-  console.log("authenticateUser hit")
     let result = {
     isStudent: false,
     isAdmin: false,
@@ -699,7 +696,6 @@ async function authenticateUser(token) {
 }
 
 async function fetchSteam(validateUser) {
-  console.log("fetchSteam hit")
   if (validateUser.steamID) {
     try {
       return superagent.get(`https://ark-stats-backend.domination-gaming.com/player?filter=steam.id==${validateUser.steamID}`).then(resPlayer => {
@@ -726,7 +722,6 @@ async function fetchSteam(validateUser) {
 }
 
 async function fetchPatreon(validateUser, token) {
-  console.log("fetchPatreon hit")
   return superagent.get(`https://rewards-backend.domination-gaming.com/patreon/patrons?filter=discordId==${validateUser.discordID}`).set('X-Auth-Token', token).then(res => {
     return res.body.data;
   });
