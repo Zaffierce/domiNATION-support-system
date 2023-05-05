@@ -33,6 +33,7 @@ app.get('/test', catchAsync(async(req, res) => {
 app.get('/', catchAsync(async(req, res) => {
   if (req.cookies[TOKEN] == null) return res.redirect('/login');
   let validateUser = await authenticateUser(req.cookies[TOKEN]);
+  console.log(validateUser);
   if (validateUser.principalId == null) return res.redirect('/login');
   else if (validateUser.isFound === false) return res.render('./pages/user_not_found', { user: validateUser }); 
   else {
@@ -50,7 +51,7 @@ app.post('/accept/:id', catchAsync(async(req, res) => {
   let timestamp = currentDateAndTime();
   let sqlQuery = 'UPDATE tickets SET status=$1, accepted_by=$2, accepted_on=$3 where id=$4;'
   let sqlArr = ["OPEN", validateUser.username, timestamp, ticket_id];
-  createNote(ticket_id, 'OPEN', timestamp, `${validateUser.username}#${validateUser.discriminator}`);
+  createNote(ticket_id, 'OPEN', timestamp, `${validateUser.username}`);
   client.query(sqlQuery, sqlArr).then(res.redirect(`/details/${ticket_id}`));
 }));
 
@@ -105,7 +106,7 @@ app.get('/all', catchAsync(async(req, res) => {
 
       let openTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'NEW' OR status = 'OPEN') ORDER BY incrementer ASC;");
       let closedTickets = await queryDatabaseCustom("SELECT * FROM tickets WHERE (status = 'COMPLETE' OR status = 'CANCELLED') ORDER BY incrementer DESC;");
-
+      console.log(openTickets)
       res.render('./pages/admin/adminPage', {
         user : validateUser,
         openTickets : openTickets,
@@ -135,7 +136,7 @@ app.post('/cancel/:id', catchAsync(async(req, res) => {
   let sqlQuery = 'UPDATE tickets SET status=$1, closed_by=$2, closed_on=$3 where id=$4;'
   let sqlArr = ["CANCELLED", validateUser.username, timestamp, ticket_id];
   const originalUserID = await client.query(`SELECT discord_id FROM tickets where id = '${ticket_id}';`);
-  createNote(ticket_id, `Ticket cancelled for reason:  ${req.body.cancel_desc} - ${validateUser.username}#${validateUser.discriminator}`, timestamp, validateUser.username);
+  createNote(ticket_id, `Ticket cancelled for reason:  ${req.body.cancel_desc} - ${validateUser.username}`, timestamp, validateUser.username);
   if (validateUser.discordID != originalUserID.rows[0].discord_id) {
     if (originalUserID.rows[0].discord_id != null) {
       sendNoteNotification(ticket_id, 'CANCELLED');
@@ -144,6 +145,25 @@ app.post('/cancel/:id', catchAsync(async(req, res) => {
   client.query(sqlQuery, sqlArr).then(res.redirect(`/details/${ticket_id}`));
 }));
 
+// app.post('/claim-ark-dino', catchAsync(async(req, res) => {
+//   //Character (for imprint ID)
+//   //Server for delivery
+//   //Dino
+//   //Colored (Y/N)
+//     //Y has Region 0 through 5 color boxes
+//   //Dino Sex (M/F/E) (Male/Female/Either)
+//   //Patreon Email Address
+//   //ID of your character ("Zaff" 256833265)
+// }));
+
+// app.post('/claim-ark-insurance', catchAsync(async(req, res) => {
+//   //
+// }));
+
+// app.post('/claim-conan', catchAsync(async(req, res) => {
+//   //
+// }));
+
 app.post('/complete/:id', catchAsync(async(req, res) => {
   const validateUser = await authenticateUser(req.cookies[TOKEN]);
   let ticket_id = req.params.id;
@@ -151,7 +171,7 @@ app.post('/complete/:id', catchAsync(async(req, res) => {
   let sqlQuery = 'UPDATE tickets SET status=$1, closed_by=$2, closed_on=$3 where id=$4;'
   let sqlArr = ["COMPLETE", validateUser.username, timestamp, ticket_id];
   const originalUserID = await client.query(`SELECT discord_id FROM tickets where id = '${ticket_id}';`);
-  createNote(ticket_id, `COMPLETE`, timestamp, `${validateUser.username}#${validateUser.discriminator}`);
+  createNote(ticket_id, `COMPLETE`, timestamp, `${validateUser.username}`);
   if (validateUser.discordID != originalUserID.rows[0].discord_id) {
     if (originalUserID.rows[0].discord_id != null) {
       sendNoteNotification(ticket_id, 'COMPLETED');
@@ -315,11 +335,11 @@ app.post('/save-pat-dino/:id', catchAsync(async(req, res) => {
   let sqlQuery = 'UPDATE tickets SET po_type=$1, po_num=$2, po_pin=$3, po_saved=$4 WHERE id=$5';
   let sqlValue = [ticket.container_type, ticket.container_number, ticket.container_pin, true, ticket_id];
   let timestamp = currentDateAndTime();
-  let status = `Your request has been completed by ${validateUser.username}#${validateUser.discriminator}!  Please view the "Post Office" tab for specific details on how to claim your reward.`
+  let status = `Your request has been completed by ${validateUser.username}!  Please view the "Post Office" tab for specific details on how to claim your reward.`
   const originalUserID = await client.query(`SELECT discord_id FROM tickets where id = '${ticket_id}';`);
   
   client.query(sqlQuery, sqlValue).then(r => {
-    createNote(ticket_id, status, timestamp, `${validateUser.username}#${validateUser.discriminator}`);
+    createNote(ticket_id, status, timestamp, `${validateUser.username}`);
     if (validateUser.discordID != originalUserID.rows[0].discord_id) {
       if (originalUserID.rows[0].discord_id != null) {
         sendNoteNotification(ticket_id, 'UPDATE');
@@ -556,7 +576,7 @@ async function sendNotification(ticketID, userInfo, ticketInfo) {
       .setAuthor(`${userInfo.nickname ? userInfo.nickname : userInfo.username }`, `https://cdn.discordapp.com/avatars/${userInfo.discordID}/${userInfo.picture}`)
       .setThumbnail("https://cdn.discordapp.com/attachments/655243934355816448/923441232573763644/KakoenWeWoo.gif")
       .addFields( 
-        { name: "User", value: `${ticketInfo[0]} / ${ticketInfo[1]}` },
+        { name: "User", value: `<@${ticketInfo[2]}>` },
         { name: "Ticket Type", value: ticketInfo[6] },
         { name: "Ticket Link", value: `https://support.domination-gaming.com/details/${ticketID[0].id}` },
       )
@@ -584,13 +604,14 @@ async function sendNoteNotification(ticketID, type) {
 };
 
 async function authenticateUser(token) {
+  console.log("authenticateUser hit")
     let result = {
     isStudent: false,
     isAdmin: false,
     isPatreon: false,
     isSupPlus: false,
     username: null,
-    discriminator: null,
+    // discriminator: null,
     nickname: null,
     discordID: null,
     steamID: null,
@@ -610,7 +631,7 @@ async function authenticateUser(token) {
       return result = {
         userID: res.body.discordUserOnLogin.discordId,
         username: res.body.discordUserOnLogin.username,
-        discriminator: res.body.discordUserOnLogin.discriminator,
+        // discriminator: res.body.discordUserOnLogin.discriminator,
         principalId: res.body.principalId,
         isFound: false
       }
@@ -639,7 +660,7 @@ async function authenticateUser(token) {
             isPatreon: result.isPatreon,
             isSupPlus: result.isSupPlus,
             username: user.user.username,
-            discriminator: user.user.discriminator,
+            // discriminator: user.user.discriminator,
             nickname: user.nick,
             discordID: user.user.id,
             steamID: res.body.steamId,
@@ -661,7 +682,7 @@ async function authenticateUser(token) {
           isPatreon: false,
           isSupPlus: false,
           username: user.user.username,
-          discriminator: user.user.discriminator,
+          // discriminator: user.user.discriminator,
           discordID: user.user.id,
           nickname: user.nick,
           steamID: res.body.steamId,
@@ -678,6 +699,7 @@ async function authenticateUser(token) {
 }
 
 async function fetchSteam(validateUser) {
+  console.log("fetchSteam hit")
   if (validateUser.steamID) {
     try {
       return superagent.get(`https://ark-stats-backend.domination-gaming.com/player?filter=steam.id==${validateUser.steamID}`).then(resPlayer => {
@@ -704,6 +726,7 @@ async function fetchSteam(validateUser) {
 }
 
 async function fetchPatreon(validateUser, token) {
+  console.log("fetchPatreon hit")
   return superagent.get(`https://rewards-backend.domination-gaming.com/patreon/patrons?filter=discordId==${validateUser.discordID}`).set('X-Auth-Token', token).then(res => {
     return res.body.data;
   });
@@ -723,6 +746,7 @@ function Ticket(ticket) {
   this.status = ticket.status;
   this.ign = ticket.ign;
   this.discord_name = ticket.discord_name;
+  this.discord_id = ticket.discord_id;
   this.type_of_ticket = ticket.type_of_ticket;
   this.submitted_on = ticket.submitted_on
   this.closed_on = ticket.closed_on ? ticket.closed_on : '-'
