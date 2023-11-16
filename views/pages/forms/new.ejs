@@ -3,6 +3,7 @@
 <link rel="stylesheet" type="text/css" href="styles/forms.css">
 <script src="/js/app.js" type="text/javascript"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/css/bootstrapValidator.min.css" integrity="sha256-gBxd65TVOCRCDC48+AXN6hhg3I/fZqE/BnwgKwdzJG4=" crossorigin="anonymous" />
+<!-- <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css"/> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js" integrity="sha256-PbFF1Mdg86urwOYXWNJPP4z5Ge9KLp6KXX1NURQY8Ho=" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -10,80 +11,31 @@
   <br />
   <div class="container">
     <div class="row">
-      <div class="col-x1-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4 panel-body">
+      <div class="col-x1-5 col-lg-6 col-md-8 col-sm-10 mx-auto form p-4 panel-body">
         <h1 class="ng-scope text-center">Submit a new ticket</h1>
         <div class="px-2">
-          <form class="needs-validation justify-content-center" novalidate action="creating-ticket" method="POST">
+          <form class="needs-validation justify-content-center ticket" action="test-post" method="POST">
             <div class="form-group">
-              <label for="ign">What is your in-game name?</label>
-              <a tabindex="0" 
-                data-toggle="popover" 
-                data-trigger="focus"
-                data-html="true" 
-                title="Missing a character?" 
-                data-content="This is automatically pulled from our back-end database provided that you've linked your Steam and Discord accounts.  If you still do not see your account, wait for 10 minutes and try again.">
-                <i class="fas fa-info-circle"></i>
-                </a>
-              <% if (!user.servers.length) { %>
-                <input type="text" class="form-control mx-auto" name="ign" required>
-              <% } else { %>
-              <select name="ign" class="form-control mx-auto" id="ign" required>
-                <% if (user.servers.length === 1) { %>
-                  <option value="<%=user.servers[0].characterName%>" id="<%=user.servers[0].serverID%>">
-                    <%=user.servers[0].characterName%> - Level <%=user.servers[0].characterLevel%>, DomiNATION #<%=user.servers[0].serverID%>
-                  </option>
-                <% } else { %>
-                  <option value="">Please choose a character...</option>
-                  <% for (let i = 0; i < user.servers.length; i++) { %>
-                    <option value="<%=user.servers[i].characterName%>" id="<%=user.servers[i].serverID%>">
-                      <%=user.servers[i].characterName%> - Level <%=user.servers[i].characterLevel%>, DomiNATION #<%=user.servers[i].serverID%>
-                    </option>
-                  <% }; %>
-                <% } %>
+              <label for="identifygame">Which game / service is this for?</label>
+              <select name="identifygame" class="form-control mx-auto" id="identifygame" required>
+                <option value="na">Please choose...</option> 
+                <option value="ARK: Survival Evolved">ARK: Survival Evolved</option>
+                <option value="Conan: Exiles">Conan: Exiles</option>
+                <option value="Mineacraft (All the Mods 8)">Minecraft (All the Mods 8)</option>
+                <option value="Valheim">Valheim</option>
+                <option value="Dark and Light">Dark and Light</option>
+                <option value="7 Days To Die">7 Days To Die</option>
+                <option value="Empyrion: Galactic Survival">Empyrion: Galactic Survival</option>
               </select>
-              <% } %>
-              <div class="invalid-feedback">Please choose a valid character.</div>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
               <label for="discordName">What is your discord name?</label>
-              <!--Informational box about how this is automatically pulled-->
               <input type="text" class="form-control mx-auto" name="discordName" value="<%= user.username%>" readonly>
               <div class="invalid-feedback">Please enter a name.</div>
-            </div>
-            <div class="form-group">
-              <label for="serverAssistance">Which server do you need assistance on?</label>
-              <select name="serverAssistance" class="form-control mx-auto" id="generalServerSelect" required>
-              <%- include('../../partials/serverList.ejs'); %>
-              </select>
-              <div class="invalid-feedback">Please choose a server.</div>
-            </div>
-            <div class="form-group">
-              <label for="ticketType">What do you need help with?</label>
-              <select name="ticketType" class="form-control mx-auto" id="generalTicketSelect" required>
-                <option value="">Please choose...</option>
-                <option value="General Support Ticket">General assistance</option>
-                <option value="Element from Event">Element from Event</option>
-                <% if (user.isSupPlus === true || user.isAdmin === true) { %>
-                  <option value="Patreon Request">Patreon Request</option>
-                  <!--Include informational box about Patreon status-->
-                <% } %>
-                <option value="Ban Appeal">Ban Appeal</option>
-                <option value="Bug Report">Report a Bug</option>
-              </select>
-              <div class="invalid-feedback">Please choose a ticket type.</div>
-            </div>
-            <div class="form-group">
-              <label for="timeToContact">What is the timezone you often play in?</label>
-              <div class="note">Example: 4PM - 10PM East Coast, or 1600-2200 UTC+0900</div>
-              <input type="text" class="form-control mx-auto" name="timeToContact" required>
-              <div class="invalid-feedback">Please enter your timezone.</div>
-            </div>
-            <div class="text-center">
-              <input type="submit" value="Continue">
-            </div>
+            </div> -->
+            <!-- <div class="form-group ticketDetails">
+            </div> -->
           </form>
-          <br />
-          <div class="text-center"><a href="/anonymous">Want to submit an anonymous ticket?  Click here.</a></div>
         </div>
       </div>
     </div>

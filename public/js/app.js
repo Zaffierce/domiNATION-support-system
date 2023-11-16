@@ -76,6 +76,176 @@ $(() => {
     $(this).addClass('tooltipped-s')
   });
 
+  $('#identifygame').change(function() {
+    $(this).parent().parent().find('.ticketDetails').empty();
+    let identifyValue = $(this).val();
+    console.log(`DEBUG: #identifygame on change, identifyValue is`, identifyValue);
+
+    if (identifyValue == "na") return;
+
+    let genericOptions = `
+    <div class="form-group ticketDetails">
+      <label for="ticketType">What do you need help with?</label>
+      <select name="ticketType" class="form-control mx-auto" id="ticketType" >
+        <option value="na">Please choose...</option>
+        <option value="General Support Ticket">General assistance</option>
+        <option value="Ban Appeal">Ban Appeal</option>
+        <option value="Bug Report">Report a Bug</option>
+      </select>
+      <div class="invalid-feedback">Please choose a ticket type.</div>
+    </div>
+    `;
+
+    let additionalOptions;
+
+    $(this).parent().parent().parent().find('.ticket').append(genericOptions);
+
+  //TODO: AJAX fetch to validate user permissions
+    switch(identifyValue) {
+      case 'ARK: Survival Evolved': 
+        additionalOptions = `
+          <option value="Element from Event">Element from Event</option>
+          <% if (user.isSupPlus === true || user.isAdmin === true) { %>
+            <!-- TODO: Find references of "Patreon Request" -->
+            <option value="ARK Patreon Request">Patreon Request</option>
+          <% } %>
+        `
+      break;
+
+      case 'Conan: Exiles': 
+        additionalOptions = `
+          <% if (user.isSupPlus === true || user.isAdmin === true) { %>
+            <option value="Conan Patreon Request">Patreon Request</option>
+          <% } %>
+        `
+      break;
+        
+    }
+
+    return $(this).parent().parent().find('#ticketType').append(additionalOptions);
+  });
+
+  $('.ticket').on('change', '#ticketType', function() {
+    // $(this).parent().parent().find('.ticketDetails').empty();
+    console.log("ticketDetails hit")
+    let identifyValue = $(this).val();
+    console.log(`DEBUG: .ticketDetails on change, identifyValue is`, identifyValue);
+    console.log($(this).parent().parent())
+
+    if (identifyValue == "na") return;
+    let ticketTypeSelect;
+
+    let additionalOptions;
+
+    switch(identifyValue) {
+      case 'General Support Ticket':
+        additionalOptions = `
+          <div class="form-group">
+            <label for="tribe_name">What is your tribe name?</label>
+            <input type="text" name="tribe_name" class="form-control mx-auto" required>
+            <div class="invalid-feedback">Please enter your Tribe name.</div>
+          </div>
+          <div class="form-group">
+            <label for="coordinates">Please provide the CCC location:
+              <a tabindex="0" 
+              data-toggle="popover" 
+              data-trigger="focus"
+              data-html="true" 
+              title="What is CCC?" 
+              data-content="CCC is a command that you run in the Ark terminal, which will copy your current position to your clipboard.  This can be utilized to allow us to teleport directly to where you ran this command, allowing us to complete your ticket sooner.<br />
+              <br />
+              1.  In Ark, press the TAB button on your keyboard to open the ingame console.<br />
+              <br />
+              2.  Type CCC into the console and press enter<br />
+              <br />
+              3.  Return to this page and paste the coordinates by pressing CTRL+V into the box below!">
+              <i class="fas fa-info-circle"></i>
+              </a>
+            </label>
+            <input type="text" name="coordinates" class="form-control mx-auto" required>
+            <div class="invalid-feedback">Please enter a CCC location, if you require additional help click the <i class="fas fa-info-circle"></i> icon.</div>
+          </div>
+          <div class="form-group">
+            <label for="issue">Please describe your issue:</label>
+            <textarea type="text" name="issue" class="form-control mx-auto" rows="3" required></textarea>
+            <div class="invalid-feedback">Please describe your issue.</div>
+          </div>
+          <div class="form-group">
+            <label for="resolution">What have you done to resolve this issue?</label>
+            <textarea type="text" name="resolution" class="form-control mx-auto" rows="3" required></textarea>
+            <div class="invalid-feedback">Please tell us what you've done in attempts to resolve this on your own.</div>
+          </div>
+          <div class="text-center">
+            <input type="submit" value="Submit Ticket">
+          </div>
+        `
+        break;
+
+      case 'Ban Appeal':
+        break;
+
+      case 'Bug Report':
+        break;
+
+      case 'Element from Event':
+        break;
+
+      case 'Patreon Request':
+        break;
+    }
+    $(this).parent().parent().parent().parent().find('.ticketDetails').append(additionalOptions);
+    // $(this).parent().parent().find('#ticketType').append(additionalOptions);
+
+
+
+
+    //General Support Ticket
+    //Ban Appeal
+    //Bug Report
+    //Element from Event
+    //Patreon Request
+
+
+    
+
+  //   let genericTicketType = `
+  //   <div class="form-group ticketType">
+  //     <label for="ticketType">What do you need help with?</label>
+  //     <select name="ticketType" class="form-control mx-auto" id="generalTicketSelect" >
+  //       <option value="">Please choose...</option>
+  //       <option value="General Support Ticket">General assistance</option>
+  //       <option value="Ban Appeal">Ban Appeal</option>
+  //       <option value="Bug Report">Report a Bug</option>
+  //     </select>
+  //     <div class="invalid-feedback">Please choose a ticket type.</div>
+  //   </div>
+  //   `;
+
+  //   $(this).parent().parent().find('.ticketDetails').append(genericTicketType);
+
+  // //TODO: AJAX fetch to validate user permissions
+  //   switch(identifyValue) {
+  //     case 'ark': 
+  //       ticketTypeSelect = `
+  //         <option value="Element from Event">Element from Event</option>
+  //         <% if (user.isSupPlus === true || user.isAdmin === true) { %>
+  //           <option value="Patreon Request">Patreon Request</option>
+  //         <% } %>
+  //       `
+  //     break;
+
+  //     case 'conan': 
+  //       ticketTypeSelect = `
+  //         <% if (user.isSupPlus === true || user.isAdmin === true) { %>
+  //           <option value="Patreon Request">Patreon Request</option>
+  //         <% } %>
+  //       `
+  //     break;
+        
+  //   }
+
+  //   $(this).parent().parent().find('#generalTicketSelect').append(ticketTypeSelect);
+  });
 
 
 });

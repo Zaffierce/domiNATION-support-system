@@ -26,6 +26,20 @@ const client = new pg.Client(process.env.DATABASE_URL);
 app.use(express.urlencoded({extended: true}));
 app.use(express.static('./public'));
 
+app.post('/test-post', catchAsync(async(req, res) => {
+
+  console.log('/test-post hit');
+  console.log(req.body);
+  res.redirect('/new');
+
+  let ticketType = req.body.ticketType;
+  let initialInfo = req.body;
+  let characterID;
+  let patreon;
+
+  
+}));
+
 app.get('/test', catchAsync(async(req, res) => {
   throw new Error("Zaff forgot to save his cookies again.");
 }));
